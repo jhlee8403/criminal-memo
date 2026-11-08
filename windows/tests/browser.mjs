@@ -191,7 +191,11 @@ try {
   }));
   assert.match(scan.text.replace(/\s/g, ""), /이민주/);
   assert.match(scan.text.replace(/\s/g, ""), /상해/);
-  assert.equal(scan.draft.defendants[0].name, "이민주");
+  assert.ok(
+    scan.draft.evidence
+      .find((f) => f.key === "person.0.name")
+      .candidates.some((c) => c.value === "이민주"),
+  );
   assert.equal(scan.draft.defendants[0].counsel.status, "needsReview");
   assert.equal(scan.draft.defendants[0].birthReview, true);
   report.ocr = {
@@ -216,8 +220,16 @@ try {
     mixed.defendants.map((p) => p.name),
     ["김유나", "이영수"],
   );
-  assert.ok(mixed.defendants[1].charges.some((c) => c.includes("상해")));
-  assert.ok(mixed.defendants[1].charges.some((c) => c.includes("절도")));
+  assert.ok(
+    mixed.evidence
+      .find((f) => f.key === "person.1.charges")
+      .candidates.some((c) => c.value.includes("상해")),
+  );
+  assert.ok(
+    mixed.evidence
+      .find((f) => f.key === "person.1.charges")
+      .candidates.some((c) => c.value.includes("절도")),
+  );
   report.mixedPDF = { passed: true, defendants: 2, crossPageCharges: true };
   // Verify edits invalidate output and insecure/unknown fields cannot silently generate.
   await page.locator("#people input").first().fill("수정된이름");

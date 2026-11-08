@@ -1,3 +1,4 @@
+import * as diagnostics from "./diagnostics.js";
 import * as services from "./services.js";
 import * as core from "./core.js";
 const $ = (id) => document.getElementById(id);
@@ -7,9 +8,12 @@ const state = {
   draft: null,
   busy: false,
   tab: "source",
+  page: 1,
   zoom: 1,
   renderToken: 0,
   outputBytes: null,
+  analysis: null,
+  selectedRegion: null,
 };
 const status = (text, error = false) => {
   $("status").textContent = text;
@@ -18,10 +22,11 @@ const status = (text, error = false) => {
 function busy(value) {
   state.busy = value;
   for (const el of document.querySelectorAll(
-    "aside button,aside input,aside select,aside textarea",
+    "aside button,aside input,aside select,aside textarea,#ocrTools button,#ocrTools select,#ocrTools input,#evidence button",
   ))
     el.disabled = value;
   $("analyze").disabled = value || !state.source;
+  $("rerunRegion").disabled = value || !state.selectedRegion;
 }
 function invalidate() {
   state.outputBytes = null;
@@ -55,19 +60,35 @@ async function preview() {
   if (!doc) return;
   $("canvasHost").replaceChildren();
   try {
-    for (let i = 1; i <= doc.numPages; i++) {
+    state.page = Math.max(1, Math.min(state.page, doc.numPages));
+    $("previewPage").replaceChildren(
+      ...Array.from({ length: doc.numPages }, (_, index) => {
+        const o = document.createElement("option");
+        o.value = index + 1;
+        o.textContent = `${index + 1} / ${doc.numPages}`;
+        return o;
+      }),
+    );
+    $("previewPage").value = state.page;
+    for (const i of [state.page]) {
       const canvas = await services.PDFTextExtractor.render(
         await doc.getPage(i),
         state.zoom * 1.25,
       );
       if (token !== state.renderToken) return;
-      $("canvasHost").append(canvas);
+      const wrapper = document.createElement("div");
+      wrapper.className = "page-wrap";
+      canvas.style.margin = "0";
+      wrapper.append(canvas);
+      $("canvasHost").append(wrapper);
+      if (state.tab === "source")
+        attachRegionSelection(canvas, wrapper, i, doc);
     }
   } catch (e) {
     if (token === state.renderToken) status(e.message, true);
   }
 }
-function input(label, value, type, onChange) {
+function input(label, value, type, onChange, fieldKey = null) {
   const l = document.createElement("label");
   l.textContent = label;
   const el = document.createElement(type === "textarea" ? "textarea" : "input");
@@ -75,13 +96,21 @@ function input(label, value, type, onChange) {
   el.value = value ?? "";
   el.addEventListener("input", () => {
     onChange(el.value);
+    if (fieldKey)
+      diagnostics.chooseField(
+        state.draft,
+        fieldKey,
+        diagnostics.getField(state.draft, fieldKey),
+        true,
+      );
+    renderDiagnostics();
     invalidate();
     warnings();
   });
   l.append(el);
   return l;
 }
-function select(label, value, choices, onChange) {
+function select(label, value, choices, onChange, fieldKey = null) {
   const l = document.createElement("label");
   l.textContent = label;
   const el = document.createElement("select");
@@ -94,6 +123,14 @@ function select(label, value, choices, onChange) {
   el.value = value;
   el.onchange = () => {
     onChange(el.value);
+    if (fieldKey)
+      diagnostics.chooseField(
+        state.draft,
+        fieldKey,
+        diagnostics.getField(state.draft, fieldKey),
+        true,
+      );
+    renderDiagnostics();
     invalidate();
     warnings();
   };
@@ -102,6 +139,14 @@ function select(label, value, choices, onChange) {
 }
 function renderPeople() {
   $("people").replaceChildren();
+  $("regionPerson").replaceChildren(
+    ...state.draft.defendants.map((p, i) => {
+      const option = document.createElement("option");
+      option.value = i;
+      option.textContent = `${i + 1}. ${p.name}`;
+      return option;
+    }),
+  );
   state.draft.defendants.forEach((p, index) => {
     const card = document.createElement("div");
     card.className = "person";
@@ -118,7 +163,13 @@ function renderPeople() {
           : "") + a.warnings.join("\n");
     };
     card.append(
-      input("이름", p.name, "text", (v) => (p.name = v)),
+      input(
+        "이름",
+        p.name,
+        "text",
+        (v) => (p.name = v),
+        `person.${index}.name`,
+      ),
       input("생년월일 앞 6자리 YYMMDD", p.birthDigits, "text", (v) => {
         p.birthDigits = v;
         refresh();
@@ -141,6 +192,7 @@ function renderPeople() {
             .split("\n")
             .map((s) => s.trim())
             .filter(Boolean)),
+        `person.${index}.charges`,
       ),
       select(
         "변호인 기재 상태",
@@ -152,12 +204,14 @@ function renderPeople() {
           ["needsReview", "판독 불확실 · 확인 필요"],
         ],
         (v) => (p.counsel.status = v),
+        `person.${index}.counsel`,
       ),
       input(
         "변호인 이름 (이름이 있는 경우만 출력)",
         p.counsel.name,
         "text",
         (v) => (p.counsel.name = v),
+        `person.${index}.counsel`,
       ),
       select(
         "구속 여부",
@@ -168,6 +222,7 @@ function renderPeople() {
           ["released", "불구속 · 검은 X"],
         ],
         (v) => (p.detention = v),
+        `person.${index}.detention`,
       ),
     );
     refresh();
@@ -189,7 +244,11 @@ $("file").onchange = async () => {
   busy(true);
   invalidate();
   $("editor").hidden = true;
+  state.page = 1;
   state.draft = null;
+  state.analysis = null;
+  state.selectedRegion = null;
+  renderDiagnostics();
   $("rawText").textContent = "";
   try {
     if (state.source) await state.source.destroy();
@@ -213,10 +272,26 @@ $("analyze").onclick = async () => {
   try {
     const extracted = await services.analyze(state.source, {
       forceOCR: $("forceOCR").checked,
+      verifyCritical: $("verifyCritical").checked,
+      fieldSettings: {
+        prosecutor: {
+          psm: +$("prosecutorPSM").value,
+          language: $("prosecutorLanguage").value,
+        },
+        charges: {
+          psm: +$("chargesPSM").value,
+          language: $("chargesLanguage").value,
+        },
+      },
       progress: (s, p) =>
         status(`${s}${Number.isFinite(p) ? ` · ${Math.round(p * 100)}%` : ""}`),
     });
-    state.draft = core.IndictmentParser.parse(extracted);
+    state.analysis = extracted;
+    state.draft = extracted.draft ?? core.IndictmentParser.parse(extracted);
+    $("incompleteReview").hidden =
+      !state.draft.incompleteAnalysis?.pages.length;
+    $("confirmIncomplete").checked = false;
+    renderDiagnostics();
     $("rawText").textContent = extracted.text;
     $("prosecutor").value = state.draft.prosecutor;
     $("filingDate").value = state.draft.filingDate ?? "";
@@ -252,12 +327,24 @@ $("analyze").onclick = async () => {
   }
 };
 $("prosecutor").oninput = () => {
-  state.draft.prosecutor = $("prosecutor").value;
+  diagnostics.chooseField(
+    state.draft,
+    "prosecutor",
+    $("prosecutor").value,
+    true,
+  );
+  renderDiagnostics();
   invalidate();
   warnings();
 };
 $("filingDate").oninput = () => {
-  state.draft.filingDate = $("filingDate").value;
+  diagnostics.chooseField(
+    state.draft,
+    "filingDate",
+    $("filingDate").value,
+    true,
+  );
+  renderDiagnostics();
   invalidate();
   renderPeople();
   warnings();
@@ -279,6 +366,7 @@ $("generate").onclick = async () => {
     state.output = await services.PDFInputService.fromBytes(data);
     state.outputBytes = data;
     state.tab = "output";
+    state.page = 1;
     $("outputTab").disabled = false;
     $("export").hidden = false;
     await preview();
@@ -311,7 +399,13 @@ for (const [id, delta] of [
     $("zoomLabel").textContent = Math.round(state.zoom * 100) + "%";
     void preview();
   };
-window.CM = { ...services, ...core, getDraft: () => state.draft };
+window.CM = {
+  ...services,
+  ...core,
+  ...diagnostics,
+  getDraft: () => state.draft,
+  getAnalysis: () => state.analysis,
+};
 // Exposed library API powers the feasibility and browser regression tests; no telemetry.
 services.PDFInputService.fromBytes(services.bytes(window.CM_DOCUMENTS.template))
   .then(async (pdf) => {
@@ -321,3 +415,267 @@ services.PDFInputService.fromBytes(services.bytes(window.CM_DOCUMENTS.template))
   })
   .catch((e) => status(e.message, true));
 status("로컬 실행 준비됨 · 문서는 외부로 전송하지 않습니다.");
+
+function renderDiagnostics() {
+  const diag = state.analysis?.diagnostics;
+  $("diagnostics").hidden = !diag;
+  if (!diag) return;
+  const pageSelect = $("diagnosticPage"),
+    previous = pageSelect.value;
+  pageSelect.replaceChildren(
+    ...diag.pages.map((p) => {
+      const o = document.createElement("option");
+      o.value = p.page;
+      o.textContent = `${p.page}페이지`;
+      return o;
+    }),
+  );
+  if (previous) pageSelect.value = previous;
+  const record = diag.pages[+(pageSelect.value || 1) - 1],
+    stage = $("diagnosticStage").value;
+  const output =
+    stage === "embedded"
+      ? record.embedded
+      : stage === "whole"
+        ? record.wholeOCR
+        : stage === "precision"
+          ? record.precision
+          : {
+              quality: record.quality,
+              decisions: record.decisions,
+              nativeDPI: record.nativeDPI,
+              attempts: diag.attempts,
+              elapsedMs: diag.elapsedMs,
+              estimatedImagePeakBytes: diag.estimatedImagePeakBytes,
+              heapBefore: diag.heapBefore,
+              heapAfter: diag.heapAfter,
+              limits: diag.limitReasons,
+            };
+  $("diagnosticText").textContent =
+    typeof output === "string" ? output : JSON.stringify(output, null, 2);
+  $("evidence").replaceChildren();
+  for (const field of state.draft?.evidence ?? []) {
+    const card = document.createElement("div");
+    card.className = "evidence-card";
+    const title = document.createElement("strong");
+    title.textContent =
+      field.label +
+      (field.conflict
+        ? " · 후보 충돌"
+        : field.needsReview
+          ? " · 확인 필요"
+          : " · 선택됨");
+    card.append(title);
+    const chosen = document.createElement("p");
+    chosen.textContent = `최종: ${field.finalValue === null ? "미선택" : JSON.stringify(field.finalValue)}${field.manualValue !== null ? " (직접 수정)" : ""}`;
+    card.append(chosen);
+    for (const c of field.candidates) {
+      const row = document.createElement("div");
+      const text = document.createElement("span");
+      text.textContent = `${c.source} · ${c.page ?? "?"}쪽 · ${c.method ?? ""} · 신뢰도 ${c.confidence ?? "없음"}: ${JSON.stringify(c.value)}`;
+      const button = document.createElement("button");
+      button.className = "secondary";
+      button.textContent = "이 후보 적용";
+      button.onclick = () => {
+        diagnostics.chooseField(state.draft, field.key, c.value);
+        $("prosecutor").value = state.draft.prosecutor;
+        $("filingDate").value = state.draft.filingDate ?? "";
+        invalidate();
+        renderPeople();
+        renderDiagnostics();
+        warnings();
+      };
+      const locate = document.createElement("button");
+      locate.className = "secondary";
+      locate.textContent = "원문 위치";
+      locate.disabled = !c.page || !c.box;
+      locate.onclick = () => showLocation(c);
+      row.append(text, button, locate);
+      card.append(row);
+    }
+    $("evidence").append(card);
+  }
+}
+$("diagnosticPage").onchange = renderDiagnostics;
+$("diagnosticStage").onchange = renderDiagnostics;
+function attachRegionSelection(canvas, wrapper, pageNumber, doc) {
+  let start = null,
+    overlay = null;
+  const point = (e) => {
+    const b = canvas.getBoundingClientRect();
+    return [
+      Math.max(0, Math.min(b.width, e.clientX - b.left)),
+      Math.max(0, Math.min(b.height, e.clientY - b.top)),
+    ];
+  };
+  canvas.onpointerdown = (e) => {
+    if (!$("regionMode").checked || state.busy) return;
+    e.preventDefault();
+    start = point(e);
+    canvas.setPointerCapture(e.pointerId);
+    wrapper.querySelector(".region-box")?.remove();
+    overlay = document.createElement("div");
+    overlay.className = "region-box";
+    wrapper.append(overlay);
+  };
+  canvas.onpointermove = (e) => {
+    if (!start) return;
+    const end = point(e);
+    Object.assign(overlay.style, {
+      left: Math.min(start[0], end[0]) + "px",
+      top: Math.min(start[1], end[1]) + "px",
+      width: Math.abs(end[0] - start[0]) + "px",
+      height: Math.abs(end[1] - start[1]) + "px",
+    });
+  };
+  canvas.onpointerup = async (e) => {
+    if (!start) return;
+    const end = point(e),
+      a = start;
+    start = null;
+    const b = canvas.getBoundingClientRect(),
+      unit = (await doc.getPage(pageNumber)).getViewport({ scale: 1 });
+    const box = [
+      (Math.min(a[0], end[0]) / b.width) * unit.width,
+      (Math.min(a[1], end[1]) / b.height) * unit.height,
+      (Math.abs(end[0] - a[0]) / b.width) * unit.width,
+      (Math.abs(end[1] - a[1]) / b.height) * unit.height,
+    ];
+    if (box[2] < 3 || box[3] < 3) {
+      status("영역을 조금 더 크게 선택하세요.", true);
+      return;
+    }
+    state.selectedRegion = { page: pageNumber, box };
+    $("rerunRegion").disabled = false;
+    $("selectionInfo").textContent =
+      `${pageNumber}쪽 영역 선택 (${Math.round(box[2])} × ${Math.round(box[3])} pt)`;
+  };
+}
+$("rerunRegion").onclick = async () => {
+  if (!state.selectedRegion || !state.draft) return;
+  busy(true);
+  const field = $("regionField").value,
+    index = +$("regionPerson").value,
+    key = ["prosecutor", "filingDate"].includes(field)
+      ? field
+      : `person.${index}.${field}`,
+    region = {
+      ...state.selectedRegion,
+      field,
+      key,
+      personIndex: key.startsWith("person.") ? index : null,
+      method: "manual",
+      anchor: "",
+    };
+  state.draft.evidence ??= [];
+  if (!state.analysis)
+    state.analysis = {
+      diagnostics: {
+        pages: Array.from({ length: state.source.numPages }, (_, i) => ({
+          page: i + 1,
+          embedded: { text: "" },
+          wholeOCR: [],
+          precision: [],
+          quality: {},
+          decisions: ["수동 영역 OCR"],
+        })),
+        limitReasons: [],
+        fields: state.draft.evidence,
+        attempts: 0,
+        elapsedMs: 0,
+      },
+    };
+  const ocr = new services.OCRService((s, p) =>
+    status(`${s} ${Math.round((p ?? 0) * 100)}%`),
+  );
+  try {
+    const results = await services.recognizeRegion(
+      await state.source.getPage(region.page),
+      region,
+      ocr,
+      {
+        psm: +$("regionPSM").value,
+        language: $("fieldLanguage").value,
+        methods: [$("preprocess").value],
+      },
+    );
+    state.analysis.diagnostics.manualAttempts =
+      (state.analysis.diagnostics.manualAttempts ?? 0) + results.length;
+    state.analysis.diagnostics.pages[region.page - 1].precision.push(
+      ...results,
+    );
+    let target = state.draft.evidence.find((f) => f.key === key);
+    if (!target) {
+      target = {
+        key,
+        label: field,
+        required: true,
+        candidates: [],
+        selectedValue: null,
+        finalValue: null,
+        manualValue: null,
+        needsReview: true,
+        conflict: false,
+      };
+      state.draft.evidence.push(target);
+    }
+    for (const r of results)
+      for (const value of r.values)
+        target.candidates.push({
+          value,
+          source: "precision",
+          page: region.page,
+          box: region.box,
+          confidence: r.confidence,
+          method: `수동/${r.method}/PSM${r.psm}`,
+          trusted: false,
+        });
+    diagnostics.reconcile(target);
+    invalidate();
+    renderDiagnostics();
+    warnings();
+    status(
+      "선택 영역 OCR 완료. 진단의 후보를 확인하여 적용하거나 직접 수정하세요.",
+    );
+  } catch (e) {
+    status(e.message, true);
+  } finally {
+    await ocr.close();
+    busy(false);
+  }
+};
+
+$("previewPage").onchange = () => {
+  state.page = +$("previewPage").value;
+  void preview();
+};
+async function showLocation(candidate) {
+  if (!candidate.box || !candidate.page) return;
+  state.tab = "source";
+  state.page = candidate.page;
+  await preview();
+  const wrapper = $("canvasHost").querySelector(".page-wrap"),
+    canvas = wrapper?.querySelector("canvas");
+  if (!canvas) return;
+  const view = (await state.source.getPage(candidate.page)).getViewport({
+      scale: 1,
+    }),
+    [x, y, w, h] = candidate.box;
+  const marker = document.createElement("div");
+  marker.className = "region-box";
+  Object.assign(marker.style, {
+    left: (x / view.width) * canvas.clientWidth + "px",
+    top: (y / view.height) * canvas.clientHeight + "px",
+    width: (w / view.width) * canvas.clientWidth + "px",
+    height: (h / view.height) * canvas.clientHeight + "px",
+  });
+  wrapper.append(marker);
+  marker.scrollIntoView({ block: "center", inline: "center" });
+}
+
+$("confirmIncomplete").onchange = () => {
+  if (state.draft.incompleteAnalysis)
+    state.draft.incompleteAnalysis.confirmed = $("confirmIncomplete").checked;
+  invalidate();
+  warnings();
+};

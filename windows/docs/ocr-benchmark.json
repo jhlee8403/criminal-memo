@@ -1,0 +1,5197 @@
+{
+  "mode": "in-memory HTML diagnostic; NOT Windows Edge file://",
+  "browser": "156.0.8078.79",
+  "platform": "linux",
+  "windowsEdgeVerified": false,
+  "offline": true,
+  "externalRequests": [],
+  "cases": [
+    {
+      "version": "before",
+      "name": "native1",
+      "kind": "native",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.8p4d2x0z5bt",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "charges": [
+              "상해",
+              "폭행치상"
+            ],
+            "detention": "detained"
+          }
+        ],
+        "prosecutor": "이승엽",
+        "filingDate": "2025-08-22",
+        "warnings": []
+      },
+      "elapsedMs": 23.700000017881393,
+      "attempts": 0,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 370216960,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 1,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 1
+      }
+    },
+    {
+      "version": "before",
+      "name": "native2",
+      "kind": "native",
+      "expected": {
+        "names": [
+          "김유나",
+          "이영수"
+        ],
+        "prosecutor": "이정현",
+        "charges": [
+          [
+            "공무집행방해"
+          ],
+          [
+            "상해",
+            "절도"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.a87glhqyz7a",
+            "name": "김유나",
+            "birthDigits": "720324",
+            "statedAge": 54,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "named",
+              "name": "윤상일(국선)"
+            },
+            "charges": [
+              "공무집행방해"
+            ],
+            "detention": "detained"
+          },
+          {
+            "id": "0.xuzcydvt7ir",
+            "name": "이영수",
+            "birthDigits": "710305",
+            "statedAge": 55,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentMissing",
+              "name": ""
+            },
+            "charges": [
+              "상해",
+              "절도"
+            ],
+            "detention": "released"
+          }
+        ],
+        "prosecutor": "이정현",
+        "filingDate": "2026-10-27",
+        "warnings": []
+      },
+      "elapsedMs": 17.19999998807907,
+      "attempts": 0,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 400605184,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 2,
+        "chargeFields": 2,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 2
+      }
+    },
+    {
+      "version": "before",
+      "name": "scan300",
+      "kind": "scan",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.d1iygf5agml",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": "_ 없음"
+            },
+            "charges": [
+              "_ 상해",
+              "폭행치상"
+            ],
+            "detention": "unknown"
+          }
+        ],
+        "prosecutor": "이승엽",
+        "filingDate": "2025-08-22",
+        "warnings": []
+      },
+      "elapsedMs": 4779.799999982119,
+      "attempts": 1,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 682446848,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 1,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "before",
+      "name": "scan90",
+      "kind": "scan",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.xcp42v7gzva",
+            "name": "히민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": ""
+            },
+            "charges": [],
+            "detention": "unknown"
+          }
+        ],
+        "prosecutor": "",
+        "filingDate": "2025-08-22",
+        "warnings": [
+          "검사 이름을 확인하세요."
+        ]
+      },
+      "elapsedMs": 5014.300000011921,
+      "attempts": 1,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 589877248,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": false,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "before",
+      "name": "skew-noise",
+      "kind": "scan-skew",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [],
+        "prosecutor": "",
+        "filingDate": null,
+        "warnings": [
+          "피고인을 찾지 못했습니다. 직접 입력하세요.",
+          "검사 이름을 확인하세요.",
+          "첫 페이지 기소일을 확정하지 못했습니다."
+        ]
+      },
+      "elapsedMs": 6312,
+      "attempts": 1,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 646844416,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": false,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "before",
+      "name": "shifted",
+      "kind": "shifted-text",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.s11ippi3rej",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "charges": [],
+            "detention": "detained"
+          }
+        ],
+        "prosecutor": "",
+        "filingDate": "2025-08-22",
+        "warnings": [
+          "검사 이름을 확인하세요."
+        ]
+      },
+      "elapsedMs": 29.099999994039536,
+      "attempts": 0,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 448671744,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": false,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "before",
+      "name": "small",
+      "kind": "small-scan",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.ckeobix3sba",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": ""
+            },
+            "charges": [],
+            "detention": "detained"
+          }
+        ],
+        "prosecutor": "",
+        "filingDate": "2025-08-22",
+        "warnings": [
+          "검사 이름을 확인하세요."
+        ]
+      },
+      "elapsedMs": 1454.9000000059605,
+      "attempts": 1,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 509763584,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": false,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "before",
+      "name": "wrong-selectable",
+      "kind": "bad-text-layer",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.xpzzcxeftc",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "charges": [
+              "사기"
+            ],
+            "detention": "detained"
+          }
+        ],
+        "prosecutor": "홍길동",
+        "filingDate": "2025-08-22",
+        "warnings": []
+      },
+      "elapsedMs": 30.19999998807907,
+      "attempts": 0,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 511610880,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": true,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 1,
+        "prosecutorCandidateCorrect": false,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "before",
+      "name": "broken-selectable",
+      "kind": "bad-text-layer",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.q07583gr4ia",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "charges": [
+              "사기"
+            ],
+            "detention": "detained"
+          }
+        ],
+        "prosecutor": "홍\u0000동",
+        "filingDate": "2025-08-22",
+        "warnings": []
+      },
+      "elapsedMs": 37.20000001788139,
+      "attempts": 0,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 618725376,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": true,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 1,
+        "prosecutorCandidateCorrect": false,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "before",
+      "name": "mixed-two",
+      "kind": "mixed",
+      "expected": {
+        "names": [
+          "김유나",
+          "이영수"
+        ],
+        "prosecutor": "이정현",
+        "charges": [
+          [
+            "공무집행방해"
+          ],
+          [
+            "상해",
+            "절도"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.gdrqrkytjq",
+            "name": "김유나",
+            "birthDigits": "720324",
+            "statedAge": 54,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": "윤상일(국선)"
+            },
+            "charges": [
+              "공무집행방해"
+            ],
+            "detention": "detained"
+          },
+          {
+            "id": "0.644u6lqgz72",
+            "name": "이영수",
+            "birthDigits": "710305",
+            "statedAge": 55,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": ""
+            },
+            "charges": [
+              "_ 상해",
+              "절도"
+            ],
+            "detention": "unknown"
+          }
+        ],
+        "prosecutor": "이정현",
+        "filingDate": "2026-10-27",
+        "warnings": []
+      },
+      "elapsedMs": 1639.9000000059605,
+      "attempts": 1,
+      "wholeOCR": [],
+      "precision": [],
+      "quality": [],
+      "limits": [],
+      "heapBefore": null,
+      "heapAfter": 91700000,
+      "imageMemoryEstimate": null,
+      "rendererRSSAfterBytes": 719036416,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 1,
+        "chargeFields": 2,
+        "chargesWrong": 1,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 1
+      }
+    },
+    {
+      "version": "after",
+      "name": "native1",
+      "kind": "native",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.ocd64j2avyk",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "charges": [
+              "상해",
+              "폭행치상"
+            ],
+            "chargeNeedsReview": false,
+            "detention": "detained"
+          }
+        ],
+        "prosecutor": "이승엽",
+        "filingDate": "2025-08-22",
+        "warnings": [],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이승엽",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이승엽",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": 96,
+                "method": "original/PSM7/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": "이승엽",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": 96,
+                "method": "contrast/PSM7/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": "이승엽",
+            "finalValue": "이승엽",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [
+              {
+                "value": "2025-08-22",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  442.7326125,
+                  100.59785095000007,
+                  153.26738749999998,
+                  90
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "2025-08-22",
+            "finalValue": "2025-08-22",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이민주",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  75.984375,
+                  381.39787095,
+                  520.015625,
+                  43.19997999999998
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "이민주",
+            "finalValue": "이민주",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  156.73359375,
+                  509.79783095000005,
+                  93.9,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  156.73359375,
+                  509.79783095000005,
+                  93.9,
+                  20.4
+                ],
+                "confidence": 94,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  156.73359375,
+                  509.79783095000005,
+                  93.9,
+                  20.4
+                ],
+                "confidence": 94,
+                "method": "contrast/PSM6/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": [
+              "상해",
+              "폭행치상"
+            ],
+            "finalValue": [
+              "상해",
+              "폭행치상"
+            ],
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "absentExplicit",
+                  "name": ""
+                },
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  75.984375,
+                  599.79780095,
+                  520.015625,
+                  78
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "finalValue": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "detained",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  75.984375,
+                  568.5978509500001,
+                  520.015625,
+                  43.199949999999944
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "detained",
+            "finalValue": "detained",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 718.6999999880791,
+      "attempts": 4,
+      "wholeOCR": [],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 96,
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 497.19999998807907
+        },
+        {
+          "key": "prosecutor",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 96,
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 28.30000001192093
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 94,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 77.40000000596046
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 94,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 73.90000000596046
+        }
+      ],
+      "quality": [
+        {
+          "useful": 203,
+          "broken": 0,
+          "labelCount": 4,
+          "suspect": false,
+          "reasons": []
+        }
+      ],
+      "limits": [],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 458325,
+      "rendererRSSAfterBytes": 461414400,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 1,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 1
+      }
+    },
+    {
+      "version": "after",
+      "name": "native2",
+      "kind": "native",
+      "expected": {
+        "names": [
+          "김유나",
+          "이영수"
+        ],
+        "prosecutor": "이정현",
+        "charges": [
+          [
+            "공무집행방해"
+          ],
+          [
+            "상해",
+            "절도"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.nsk9do010o",
+            "name": "김유나",
+            "birthDigits": "720324",
+            "statedAge": 54,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "named",
+              "name": "윤상일(국선)"
+            },
+            "charges": [
+              "공무집행방해"
+            ],
+            "chargeNeedsReview": false,
+            "detention": "detained"
+          },
+          {
+            "id": "0.yezc55edx6c",
+            "name": "이영수",
+            "birthDigits": "710305",
+            "statedAge": 55,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentMissing",
+              "name": ""
+            },
+            "charges": [
+              "상해",
+              "절도"
+            ],
+            "chargeNeedsReview": false,
+            "detention": "released"
+          }
+        ],
+        "prosecutor": "이정현",
+        "filingDate": "2026-10-27",
+        "warnings": [],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이정현",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이정현",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": 96,
+                "method": "original/PSM7/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": "이정현",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": 96,
+                "method": "contrast/PSM7/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": "이정현",
+            "finalValue": "이정현",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [
+              {
+                "value": "2026-10-27",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  435.584175,
+                  100.59785095000007,
+                  160.41582499999998,
+                  90
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "2026-10-27",
+            "finalValue": "2026-10-27",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "김유나",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  99.99609375,
+                  381.39787096500004,
+                  496.00390625,
+                  43.19997998499997
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "김유나",
+            "finalValue": "김유나",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "공무집행방해"
+                ],
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  184.70625,
+                  509.79783095000005,
+                  86.4,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "공무집행방해"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  184.70625,
+                  509.79783095000005,
+                  86.4,
+                  20.4
+                ],
+                "confidence": 93,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "공무집행방해"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  184.70625,
+                  509.79783095000005,
+                  86.4,
+                  20.4
+                ],
+                "confidence": 93,
+                "method": "contrast/PSM6/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": [
+              "공무집행방해"
+            ],
+            "finalValue": [
+              "공무집행방해"
+            ],
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "named",
+                  "name": "윤상일(국선)"
+                },
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  103.95703125,
+                  599.79780095,
+                  492.04296875,
+                  43.20007001500005
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": {
+              "status": "named",
+              "name": "윤상일(국선)"
+            },
+            "finalValue": {
+              "status": "named",
+              "name": "윤상일(국선)"
+            },
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "detained",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  103.95703125,
+                  568.5978509500001,
+                  492.04296875,
+                  43.199949999999944
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "detained",
+            "finalValue": "detained",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.1.name",
+            "label": "피고인 (2)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이영수",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  99.99609375,
+                  630.9978709650001,
+                  496.00390625,
+                  43.199959984999964
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "이영수",
+            "finalValue": "이영수",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.1.charges",
+            "label": "죄명 (2)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "상해",
+                  "절도"
+                ],
+                "source": "embedded",
+                "page": 2,
+                "box": [
+                  184.70625,
+                  69.70078094999994,
+                  69.9,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "절도"
+                ],
+                "source": "precision",
+                "page": 2,
+                "box": [
+                  184.70625,
+                  69.70078094999994,
+                  69.9,
+                  20.4
+                ],
+                "confidence": 96,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "절도"
+                ],
+                "source": "precision",
+                "page": 2,
+                "box": [
+                  184.70625,
+                  69.70078094999994,
+                  69.9,
+                  20.4
+                ],
+                "confidence": 96,
+                "method": "contrast/PSM6/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": [
+              "상해",
+              "절도"
+            ],
+            "finalValue": [
+              "상해",
+              "절도"
+            ],
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.1.counsel",
+            "label": "변호인 (2)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "absentMissing",
+                  "name": ""
+                },
+                "source": "embedded",
+                "page": null,
+                "box": null,
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": {
+              "status": "absentMissing",
+              "name": ""
+            },
+            "finalValue": {
+              "status": "absentMissing",
+              "name": ""
+            },
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.1.detention",
+            "label": "구속 (2)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "released",
+                "source": "embedded",
+                "page": 2,
+                "box": [
+                  103.95703125,
+                  128.50074395000001,
+                  492.04296875,
+                  78
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "released",
+            "finalValue": "released",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 747.7000000178814,
+      "attempts": 6,
+      "wholeOCR": [],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [
+            "이정현"
+          ],
+          "confidence": 96,
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 476.30000001192093
+        },
+        {
+          "key": "prosecutor",
+          "values": [
+            "이정현"
+          ],
+          "confidence": 96,
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 27.599999994039536
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "공무집행방해"
+            ]
+          ],
+          "confidence": 93,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 55.5
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "공무집행방해"
+            ]
+          ],
+          "confidence": 93,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 52.80000001192093
+        },
+        {
+          "key": "person.1.charges",
+          "values": [
+            [
+              "상해",
+              "절도"
+            ]
+          ],
+          "confidence": 96,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 54.599999994039536
+        },
+        {
+          "key": "person.1.charges",
+          "values": [
+            [
+              "상해",
+              "절도"
+            ]
+          ],
+          "confidence": 96,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 47.099999994039536
+        }
+      ],
+      "quality": [
+        {
+          "useful": 238,
+          "broken": 0,
+          "labelCount": 4,
+          "suspect": false,
+          "reasons": []
+        },
+        {
+          "useful": 50,
+          "broken": 0,
+          "labelCount": 2,
+          "suspect": false,
+          "reasons": []
+        }
+      ],
+      "limits": [],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 422347,
+      "rendererRSSAfterBytes": 488914944,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 2,
+        "chargeFields": 2,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 2
+      }
+    },
+    {
+      "version": "after",
+      "name": "scan300",
+      "kind": "scan",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.a8o332rrzfj",
+            "name": "",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": "_ 없음"
+            },
+            "charges": [
+              "상해",
+              "폭행치상"
+            ],
+            "chargeNeedsReview": false,
+            "detention": "unknown"
+          }
+        ],
+        "prosecutor": "이승엽",
+        "filingDate": null,
+        "warnings": [],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이승엽",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  346.128,
+                  199.77599999999998,
+                  46.463999999999984,
+                  19.584
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이승엽",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  346.128,
+                  199.77599999999998,
+                  46.463999999999984,
+                  19.584
+                ],
+                "confidence": 96,
+                "method": "original/PSM7/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": "이승엽",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  346.128,
+                  199.77599999999998,
+                  46.463999999999984,
+                  19.584
+                ],
+                "confidence": 96,
+                "method": "contrast/PSM7/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": "이승엽",
+            "finalValue": "이승엽",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false,
+            "autoSelectionReason": "전체 OCR와 서로 다른 전처리의 영역 OCR가 일치 (원문 대조 필요)"
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [
+              {
+                "value": "2025-08-22",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  445.52,
+                  103.8,
+                  150.48000000000002,
+                  75.00000000000001
+                ],
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "2025-08-22",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  445.52,
+                  103.8,
+                  150.48000000000002,
+                  75.00000000000001
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이민주",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  76.8,
+                  383.03999999999996,
+                  519.2,
+                  42.95999999999998
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  156.96,
+                  511.43999999999994,
+                  93.36000000000001,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  156.96,
+                  511.43999999999994,
+                  93.36000000000001,
+                  20.4
+                ],
+                "confidence": 92,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  156.96,
+                  511.43999999999994,
+                  93.36000000000001,
+                  20.4
+                ],
+                "confidence": 90,
+                "method": "contrast/PSM6/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": [
+              "상해",
+              "폭행치상"
+            ],
+            "finalValue": [
+              "상해",
+              "폭행치상"
+            ],
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false,
+            "autoSelectionReason": "전체 OCR와 서로 다른 전처리의 영역 OCR가 일치 (원문 대조 필요)"
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "named",
+                  "name": "_ 없음"
+                },
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.75999999999999,
+                  601.68,
+                  518.24,
+                  74.88
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "unknown",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.03999999999999,
+                  570.36,
+                  518.96,
+                  42.719999999999914
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 8041.899999976158,
+      "attempts": 6,
+      "wholeOCR": [
+        {
+          "page": 1,
+          "method": "original",
+          "confidence": 86,
+          "psm": 3,
+          "elapsedMs": 2890.800000011921
+        },
+        {
+          "page": 1,
+          "method": "adaptive",
+          "confidence": 86,
+          "psm": 6,
+          "elapsedMs": 4682.399999976158
+        }
+      ],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 96,
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 29.599999994039536
+        },
+        {
+          "key": "prosecutor",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 96,
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 28.400000005960464
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 92,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 67.7999999821186
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 90,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 149.59999999403954
+        }
+      ],
+      "quality": [
+        {
+          "useful": 0,
+          "broken": 0,
+          "labelCount": 0,
+          "suspect": true,
+          "reasons": [
+            "유효 문자 부족",
+            "검사 이름 누락/복수 후보"
+          ]
+        }
+      ],
+      "limits": [],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 182917644,
+      "rendererRSSAfterBytes": 795394048,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 1,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 1
+      }
+    },
+    {
+      "version": "after",
+      "name": "scan90",
+      "kind": "scan",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.t5nmz4fkuu",
+            "name": "",
+            "birthDigits": "",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": "ls"
+            },
+            "charges": [],
+            "chargeNeedsReview": false,
+            "detention": "unknown"
+          }
+        ],
+        "prosecutor": "",
+        "filingDate": null,
+        "warnings": [
+          "첫 페이지 기소일을 확정하지 못했습니다.",
+          "죄명 (1): 자동 후보 없음. 수동 영역 지정 또는 직접 입력이 필요합니다."
+        ],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "히스엽",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  345.74399999999997,
+                  199.248,
+                  58.03200000000002,
+                  19.992
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "히승협",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  345.74399999999997,
+                  199.248,
+                  58.03200000000002,
+                  19.992
+                ],
+                "confidence": 70,
+                "method": "original/PSM7/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": true
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [
+              {
+                "value": "2025-08-22",
+                "source": "ocr",
+                "page": null,
+                "box": null,
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이민주",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.03999999999999,
+                  382.55999999999995,
+                  518.96,
+                  43.200000000000045
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "named",
+                  "name": "ls"
+                },
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.03999999999999,
+                  600.9599999999999,
+                  518.96,
+                  78
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "unknown",
+                "source": "ocr",
+                "page": null,
+                "box": null,
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 10515.200000017881,
+      "attempts": 4,
+      "wholeOCR": [
+        {
+          "page": 1,
+          "method": "original",
+          "confidence": 81,
+          "psm": 3,
+          "elapsedMs": 5040.300000011921
+        },
+        {
+          "page": 1,
+          "method": "adaptive",
+          "confidence": 79,
+          "psm": 6,
+          "elapsedMs": 5206.300000011921
+        }
+      ],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [
+            "히승협"
+          ],
+          "confidence": 70,
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 109.7000000178814
+        },
+        {
+          "key": "prosecutor",
+          "values": [],
+          "confidence": 14,
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 105.7999999821186
+        }
+      ],
+      "quality": [
+        {
+          "useful": 0,
+          "broken": 0,
+          "labelCount": 0,
+          "suspect": true,
+          "reasons": [
+            "유효 문자 부족",
+            "검사 이름 누락/복수 후보"
+          ]
+        }
+      ],
+      "limits": [
+        "죄명 (1): 자동 후보 없음. 수동 영역 지정 또는 직접 입력이 필요합니다."
+      ],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 182917644,
+      "rendererRSSAfterBytes": 394608640,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": false,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "after",
+      "name": "skew-noise",
+      "kind": "scan-skew",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [],
+        "prosecutor": "",
+        "filingDate": null,
+        "warnings": [
+          "피고인을 찾지 못했습니다. 직접 입력하세요.",
+          "검사 이름을 확인하세요.",
+          "첫 페이지 기소일을 확정하지 못했습니다.",
+          "검사: 자동 후보 없음. 수동 영역 지정 또는 직접 입력이 필요합니다.",
+          "기소일: 자동 후보 없음. 수동 영역 지정 또는 직접 입력이 필요합니다."
+        ],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 10351.299999982119,
+      "attempts": 4,
+      "wholeOCR": [
+        {
+          "page": 1,
+          "method": "original",
+          "confidence": 77,
+          "psm": 3,
+          "elapsedMs": 2858.2000000178814
+        },
+        {
+          "page": 1,
+          "method": "deskew-denoise",
+          "confidence": 49,
+          "psm": 6,
+          "elapsedMs": 7221.9000000059605
+        }
+      ],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [],
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 94.09999999403954,
+          "error": "OCR에서 텍스트를 읽지 못했습니다."
+        },
+        {
+          "key": "prosecutor",
+          "values": [],
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 83.5,
+          "error": "OCR에서 텍스트를 읽지 못했습니다."
+        }
+      ],
+      "quality": [
+        {
+          "useful": 0,
+          "broken": 0,
+          "labelCount": 0,
+          "suspect": true,
+          "reasons": [
+            "유효 문자 부족",
+            "검사 이름 누락/복수 후보"
+          ]
+        }
+      ],
+      "limits": [
+        "검사: 자동 후보 없음. 수동 영역 지정 또는 직접 입력이 필요합니다.",
+        "기소일: 자동 후보 없음. 수동 영역 지정 또는 직접 입력이 필요합니다."
+      ],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 148076188,
+      "rendererRSSAfterBytes": 670572544,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": false,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "after",
+      "name": "shifted",
+      "kind": "shifted-text",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.2eb6jlmqe8z",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "charges": [
+              "상해",
+              "폭행치상"
+            ],
+            "chargeNeedsReview": false,
+            "detention": "detained"
+          }
+        ],
+        "prosecutor": "이승엽",
+        "filingDate": "2025-08-22",
+        "warnings": [],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이승엽",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  44,
+                  118.5,
+                  552,
+                  38.5
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이승엽",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  45.839999999999996,
+                  120.84,
+                  550.16,
+                  36.119999999999976
+                ],
+                "confidence": 92,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "이승엽",
+            "finalValue": "이승엽",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [
+              {
+                "value": "2025-08-22",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  44,
+                  53.5,
+                  552,
+                  82.5
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "2025-08-22",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  45.67999999999999,
+                  55.55999999999999,
+                  550.32,
+                  75.00000000000001
+                ],
+                "confidence": 92,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "2025-08-22",
+            "finalValue": "2025-08-22",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이민주",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  44,
+                  223.5,
+                  552,
+                  82.5
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이민주",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  44.63999999999999,
+                  225.11999999999998,
+                  551.36,
+                  82.79999999999998
+                ],
+                "confidence": 92,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "이민주",
+            "finalValue": "이민주",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  269,
+                  283.5,
+                  327,
+                  82.5
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  269,
+                  283.5,
+                  327,
+                  82.5
+                ],
+                "confidence": 94,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  269,
+                  283.5,
+                  327,
+                  82.5
+                ],
+                "confidence": 94,
+                "method": "contrast/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  270.24,
+                  285.71999999999997,
+                  325.76,
+                  77.40000000000003
+                ],
+                "confidence": 92,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": [
+              "상해",
+              "폭행치상"
+            ],
+            "finalValue": [
+              "상해",
+              "폭행치상"
+            ],
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "absentExplicit",
+                  "name": ""
+                },
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  44,
+                  443.5,
+                  552,
+                  71.5
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": {
+                  "status": "absentExplicit",
+                  "name": ""
+                },
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  45.839999999999996,
+                  445.79999999999995,
+                  550.16,
+                  67.08000000000004
+                ],
+                "confidence": 92,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "finalValue": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "detained",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  44,
+                  413.5,
+                  552,
+                  41
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "detained",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  45.12,
+                  415.79999999999995,
+                  550.88,
+                  40.31999999999999
+                ],
+                "confidence": 92,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "detained",
+            "finalValue": "detained",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 1925.3999999761581,
+      "attempts": 6,
+      "wholeOCR": [
+        {
+          "page": 1,
+          "method": "critical-fallback",
+          "confidence": 92,
+          "psm": 6,
+          "elapsedMs": 1044.699999988079
+        }
+      ],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [],
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 526.2000000178814,
+          "error": "OCR에서 텍스트를 읽지 못했습니다."
+        },
+        {
+          "key": "prosecutor",
+          "values": [],
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 9.699999988079071,
+          "error": "OCR에서 텍스트를 읽지 못했습니다."
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 94,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 114
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 94,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 104.40000000596046
+        },
+        {
+          "key": "prosecutor",
+          "values": [],
+          "confidence": 10,
+          "method": "ocr-relocated/original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 53.400000005960464
+        }
+      ],
+      "quality": [
+        {
+          "useful": 67,
+          "broken": 0,
+          "labelCount": 4,
+          "suspect": false,
+          "reasons": []
+        }
+      ],
+      "limits": [],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 14139376,
+      "rendererRSSAfterBytes": 601255936,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 1,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 1
+      }
+    },
+    {
+      "version": "after",
+      "name": "small",
+      "kind": "small-scan",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.yvkr5o7v3ps",
+            "name": "",
+            "birthDigits": "",
+            "statedAge": null,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": ""
+            },
+            "charges": [],
+            "chargeNeedsReview": false,
+            "detention": "unknown"
+          }
+        ],
+        "prosecutor": "",
+        "filingDate": null,
+        "warnings": [
+          "첫 페이지 기소일을 확정하지 못했습니다.",
+          "기소일: 자동 후보 없음. 수동 영역 지정 또는 직접 입력이 필요합니다."
+        ],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이승엽",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  45.67999999999999,
+                  120.35999999999999,
+                  550.32,
+                  35
+                ],
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이민",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  45.199999999999996,
+                  225.23999999999998,
+                  550.8,
+                  65.00000000000003
+                ],
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "삼해",
+                  "폭행치삼"
+                ],
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  270.32,
+                  285.23999999999995,
+                  325.68,
+                  65
+                ],
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "삼해",
+                  "폭행치삼"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  270.32,
+                  285.23999999999995,
+                  325.68,
+                  65
+                ],
+                "confidence": 86,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "absentMissing",
+                  "name": ""
+                },
+                "source": "ocr",
+                "page": null,
+                "box": null,
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "unknown",
+                "source": "ocr",
+                "page": null,
+                "box": null,
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 1991.9000000059605,
+      "attempts": 5,
+      "wholeOCR": [
+        {
+          "page": 1,
+          "method": "original",
+          "confidence": 86,
+          "psm": 3,
+          "elapsedMs": 1561.9000000059605
+        }
+      ],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [],
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 19.19999998807907,
+          "error": "OCR에서 텍스트를 읽지 못했습니다."
+        },
+        {
+          "key": "prosecutor",
+          "values": [],
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 20.399999976158142,
+          "error": "OCR에서 텍스트를 읽지 못했습니다."
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "삼해",
+              "폭행치삼"
+            ]
+          ],
+          "confidence": 86,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 182.60000002384186
+        },
+        {
+          "key": "person.0.charges",
+          "values": [],
+          "confidence": 87,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 152
+        }
+      ],
+      "quality": [
+        {
+          "useful": 0,
+          "broken": 0,
+          "labelCount": 0,
+          "suspect": true,
+          "reasons": [
+            "유효 문자 부족",
+            "검사 이름 누락/복수 후보"
+          ]
+        }
+      ],
+      "limits": [
+        "기소일: 자동 후보 없음. 수동 영역 지정 또는 직접 입력이 필요합니다."
+      ],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 148076188,
+      "rendererRSSAfterBytes": 621273088,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "after",
+      "name": "wrong-selectable",
+      "kind": "bad-text-layer",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.nlnxsct88g",
+            "name": "이민주",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": false,
+            "counsel": {
+              "status": "absentExplicit",
+              "name": ""
+            },
+            "charges": [],
+            "chargeNeedsReview": false,
+            "detention": "detained"
+          }
+        ],
+        "prosecutor": "",
+        "filingDate": "2025-08-22",
+        "warnings": [],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "홍길동",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  302.4000000000006,
+                  197.7979,
+                  48.239999999999974,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이승엽",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  346.512,
+                  200.064,
+                  45.93599999999998,
+                  19.176
+                ],
+                "confidence": 88,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": true
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [
+              {
+                "value": "2025-08-22",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  442.7326,
+                  100.59780999999998,
+                  153.2674,
+                  90
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "2025-08-22",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  445.52,
+                  104.03999999999999,
+                  150.48000000000002,
+                  75
+                ],
+                "confidence": 88,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "2025-08-22",
+            "finalValue": "2025-08-22",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이민주",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  73.44,
+                  381.39785,
+                  522.56,
+                  43.19997999999998
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이민주",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.75999999999999,
+                  383.63999999999993,
+                  518.24,
+                  42.72000000000003
+                ],
+                "confidence": 88,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "이민주",
+            "finalValue": "이민주",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "사기"
+                ],
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  144.48000000000008,
+                  509.79779999999994,
+                  36.96,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상",
+                  "적용범조    형법 제257조 제1항",
+                  "제262조",
+                  "제260조 제1항",
+                  "제37조",
+                  "제38조"
+                ],
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  86.30399999999999,
+                  512.016,
+                  421.248,
+                  51.936000000000035
+                ],
+                "confidence": 88,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": true,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "죄 _ 명 _ 상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  86.30399999999999,
+                  512.016,
+                  421.248,
+                  51.936000000000035
+                ],
+                "confidence": 87,
+                "method": "ocr-relocated/original",
+                "trusted": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": true
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "absentExplicit",
+                  "name": ""
+                },
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  73.44,
+                  599.79779,
+                  522.56,
+                  78
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": {
+                  "status": "named",
+                  "name": "_ 없음"
+                },
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.99999999999999,
+                  602.04,
+                  518,
+                  73.31999999999994
+                ],
+                "confidence": 88,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": true
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "detained",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  73.44,
+                  568.59784,
+                  522.56,
+                  43.199949999999944
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "unknown",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.27999999999999,
+                  571.08,
+                  518.72,
+                  42.239999999999895
+                ],
+                "confidence": 88,
+                "method": "critical-fallback",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "detained",
+            "finalValue": "detained",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 5817.299999982119,
+      "attempts": 6,
+      "wholeOCR": [
+        {
+          "page": 1,
+          "method": "critical-fallback",
+          "confidence": 88,
+          "psm": 6,
+          "elapsedMs": 4514.0999999940395
+        }
+      ],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [],
+          "confidence": 93,
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 468
+        },
+        {
+          "key": "prosecutor",
+          "values": [],
+          "confidence": 93,
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 12
+        },
+        {
+          "key": "person.0.charges",
+          "values": [],
+          "confidence": 27,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 35.80000001192093
+        },
+        {
+          "key": "person.0.charges",
+          "values": [],
+          "confidence": 15,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 32.10000002384186
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "죄 _ 명 _ 상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 87,
+          "method": "ocr-relocated/original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 675.7000000178814
+        }
+      ],
+      "quality": [
+        {
+          "useful": 199,
+          "broken": 0,
+          "labelCount": 4,
+          "suspect": false,
+          "reasons": []
+        }
+      ],
+      "limits": [],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 234876,
+      "rendererRSSAfterBytes": 445014016,
+      "score": {
+        "prosecutorCorrect": false,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 0
+      }
+    },
+    {
+      "version": "after",
+      "name": "broken-selectable",
+      "kind": "bad-text-layer",
+      "expected": {
+        "names": [
+          "이민주"
+        ],
+        "prosecutor": "이승엽",
+        "charges": [
+          [
+            "상해",
+            "폭행치상"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.f2z086cr085",
+            "name": "",
+            "birthDigits": "841204",
+            "statedAge": 41,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": "gle"
+            },
+            "charges": [],
+            "chargeNeedsReview": false,
+            "detention": "unknown"
+          }
+        ],
+        "prosecutor": "이승엽",
+        "filingDate": null,
+        "warnings": [],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이승엽",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  346.512,
+                  200.064,
+                  45.93599999999998,
+                  19.176
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이승엽",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  346.512,
+                  200.064,
+                  45.93599999999998,
+                  19.176
+                ],
+                "confidence": 96,
+                "method": "original/PSM7/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": "이승엽",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  346.512,
+                  200.064,
+                  45.93599999999998,
+                  19.176
+                ],
+                "confidence": 97,
+                "method": "contrast/PSM7/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": "이승엽",
+            "finalValue": "이승엽",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false,
+            "autoSelectionReason": "전체 OCR와 서로 다른 전처리의 영역 OCR가 일치 (원문 대조 필요)"
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [
+              {
+                "value": "2025-08-22",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  445.52,
+                  104.03999999999999,
+                  150.48000000000002,
+                  75
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "2025-08-22",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  445.52,
+                  104.03999999999999,
+                  150.48000000000002,
+                  75
+                ],
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "2025-08-22",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  445.52,
+                  104.03999999999999,
+                  150.48000000000002,
+                  75
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이민주",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  76.79999999999998,
+                  383.4,
+                  519.2,
+                  42.71999999999997
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이민주",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  76.79999999999998,
+                  383.4,
+                  519.2,
+                  42.71999999999997
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "사기"
+                ],
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  157.48799999999997,
+                  512.016,
+                  92.784,
+                  19.584
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  157.48799999999997,
+                  512.016,
+                  92.784,
+                  19.584
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  157.48799999999997,
+                  512.016,
+                  92.784,
+                  19.584
+                ],
+                "confidence": 91,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "폭행치상"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  157.48799999999997,
+                  512.016,
+                  92.784,
+                  19.584
+                ],
+                "confidence": 93,
+                "method": "contrast/PSM6/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": true
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "absentExplicit",
+                  "name": ""
+                },
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  77.75999999999999,
+                  602.04,
+                  518.24,
+                  73.31999999999994
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": {
+                  "status": "named",
+                  "name": "gle"
+                },
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.75999999999999,
+                  602.04,
+                  518.24,
+                  73.31999999999994
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": true
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "detained",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  77.27999999999999,
+                  571.08,
+                  518.72,
+                  42.239999999999895
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "unknown",
+                "source": "ocr",
+                "page": 1,
+                "box": [
+                  77.27999999999999,
+                  571.08,
+                  518.72,
+                  42.239999999999895
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 8137.0999999940395,
+      "attempts": 6,
+      "wholeOCR": [
+        {
+          "page": 1,
+          "method": "original",
+          "confidence": 82,
+          "psm": 3,
+          "elapsedMs": 2933.7999999821186
+        },
+        {
+          "page": 1,
+          "method": "adaptive",
+          "confidence": 85,
+          "psm": 6,
+          "elapsedMs": 4888.800000011921
+        }
+      ],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 96,
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 38.900000005960464
+        },
+        {
+          "key": "prosecutor",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 97,
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 27
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 91,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 64.69999998807907
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 93,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 66.80000001192093
+        }
+      ],
+      "quality": [
+        {
+          "useful": 198,
+          "broken": 1,
+          "labelCount": 4,
+          "suspect": true,
+          "reasons": [
+            "깨진 문자/사설 문자",
+            "검사 이름 누락/복수 후보"
+          ]
+        }
+      ],
+      "limits": [],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 182917644,
+      "rendererRSSAfterBytes": 675799040,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 0,
+        "chargeFields": 1,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 1
+      }
+    },
+    {
+      "version": "after",
+      "name": "mixed-two",
+      "kind": "mixed",
+      "expected": {
+        "names": [
+          "김유나",
+          "이영수"
+        ],
+        "prosecutor": "이정현",
+        "charges": [
+          [
+            "공무집행방해"
+          ],
+          [
+            "상해",
+            "절도"
+          ]
+        ]
+      },
+      "draft": {
+        "defendants": [
+          {
+            "id": "0.1cncwjclyjd",
+            "name": "김유나",
+            "birthDigits": "720324",
+            "statedAge": 54,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "named",
+              "name": "윤상일(국선)"
+            },
+            "charges": [
+              "공무집행방해"
+            ],
+            "chargeNeedsReview": false,
+            "detention": "detained"
+          },
+          {
+            "id": "0.c6nyi04rz6k",
+            "name": "이영수",
+            "birthDigits": "710305",
+            "statedAge": 55,
+            "confirmedYear": "",
+            "birthReview": true,
+            "counsel": {
+              "status": "needsReview",
+              "name": ""
+            },
+            "charges": [],
+            "chargeNeedsReview": false,
+            "detention": "unknown"
+          }
+        ],
+        "prosecutor": "이정현",
+        "filingDate": "2026-10-27",
+        "warnings": [],
+        "evidence": [
+          {
+            "key": "prosecutor",
+            "label": "검사",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이정현",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "이정현",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": 96,
+                "method": "original/PSM7/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": "이정현",
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  344.55,
+                  197.79784095,
+                  50.4,
+                  20.4
+                ],
+                "confidence": 96,
+                "method": "contrast/PSM7/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": "이정현",
+            "finalValue": "이정현",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "filingDate",
+            "label": "기소일",
+            "required": true,
+            "candidates": [
+              {
+                "value": "2026-10-27",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  435.584175,
+                  100.59785095000007,
+                  160.41582499999998,
+                  90
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "2026-10-27",
+            "finalValue": "2026-10-27",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.name",
+            "label": "피고인 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "김유나",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  99.99609375,
+                  381.39787096500004,
+                  496.00390625,
+                  43.19997998499997
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "김유나",
+            "finalValue": "김유나",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.charges",
+            "label": "죄명 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "공무집행방해"
+                ],
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  184.70625,
+                  509.79783095000005,
+                  86.4,
+                  20.4
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "공무집행방해"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  184.70625,
+                  509.79783095000005,
+                  86.4,
+                  20.4
+                ],
+                "confidence": 93,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "공무집행방해"
+                ],
+                "source": "precision",
+                "page": 1,
+                "box": [
+                  184.70625,
+                  509.79783095000005,
+                  86.4,
+                  20.4
+                ],
+                "confidence": 93,
+                "method": "contrast/PSM6/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": [
+              "공무집행방해"
+            ],
+            "finalValue": [
+              "공무집행방해"
+            ],
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.counsel",
+            "label": "변호인 (1)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "named",
+                  "name": "윤상일(국선)"
+                },
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  103.95703125,
+                  599.79780095,
+                  492.04296875,
+                  43.20007001500005
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": {
+              "status": "named",
+              "name": "윤상일(국선)"
+            },
+            "finalValue": {
+              "status": "named",
+              "name": "윤상일(국선)"
+            },
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.0.detention",
+            "label": "구속 (1)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "detained",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  103.95703125,
+                  568.5978509500001,
+                  492.04296875,
+                  43.199949999999944
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "detained",
+            "finalValue": "detained",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.1.name",
+            "label": "피고인 (2)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "이영수",
+                "source": "embedded",
+                "page": 1,
+                "box": [
+                  99.99609375,
+                  630.9978709650001,
+                  496.00390625,
+                  43.199959984999964
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": "이영수",
+            "finalValue": "이영수",
+            "manualValue": null,
+            "needsReview": false,
+            "conflict": false
+          },
+          {
+            "key": "person.1.charges",
+            "label": "죄명 (2)",
+            "required": true,
+            "candidates": [
+              {
+                "value": [
+                  "gu",
+                  "d="
+                ],
+                "source": "ocr",
+                "page": 2,
+                "box": [
+                  185.18399999999997,
+                  71.568,
+                  68.832,
+                  19.992
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": [
+                  "상해",
+                  "절도"
+                ],
+                "source": "precision",
+                "page": 2,
+                "box": [
+                  185.18399999999997,
+                  71.568,
+                  68.832,
+                  19.992
+                ],
+                "confidence": 59,
+                "method": "original/PSM6/kor+eng",
+                "trusted": false
+              },
+              {
+                "value": [
+                  "상헤",
+                  "절도"
+                ],
+                "source": "precision",
+                "page": 2,
+                "box": [
+                  185.18399999999997,
+                  71.568,
+                  68.832,
+                  19.992
+                ],
+                "confidence": 84,
+                "method": "contrast/PSM6/kor+eng",
+                "trusted": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": true
+          },
+          {
+            "key": "person.1.counsel",
+            "label": "변호인 (2)",
+            "required": false,
+            "candidates": [
+              {
+                "value": {
+                  "status": "absentMissing",
+                  "name": ""
+                },
+                "source": "embedded",
+                "page": null,
+                "box": null,
+                "confidence": null,
+                "method": "",
+                "trusted": true,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": {
+                  "status": "absentMissing",
+                  "name": ""
+                },
+                "source": "ocr",
+                "page": null,
+                "box": null,
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": {
+                  "status": "absentMissing",
+                  "name": ""
+                },
+                "source": "ocr",
+                "page": null,
+                "box": null,
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          },
+          {
+            "key": "person.1.detention",
+            "label": "구속 (2)",
+            "required": true,
+            "candidates": [
+              {
+                "value": "unknown",
+                "source": "embedded",
+                "page": 2,
+                "box": [
+                  105.11999999999999,
+                  130.79999999999998,
+                  490.88,
+                  74.88
+                ],
+                "confidence": null,
+                "method": "",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "unknown",
+                "source": "ocr",
+                "page": 2,
+                "box": [
+                  105.11999999999999,
+                  130.79999999999998,
+                  490.88,
+                  74.88
+                ],
+                "confidence": null,
+                "method": "whole-0",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              },
+              {
+                "value": "unknown",
+                "source": "ocr",
+                "page": 2,
+                "box": [
+                  105.11999999999999,
+                  130.79999999999998,
+                  490.88,
+                  74.88
+                ],
+                "confidence": null,
+                "method": "whole-1",
+                "trusted": false,
+                "ambiguous": false,
+                "alignmentUncertain": false
+              }
+            ],
+            "selectedValue": null,
+            "finalValue": null,
+            "manualValue": null,
+            "needsReview": true,
+            "conflict": false
+          }
+        ]
+      },
+      "elapsedMs": 3533.5,
+      "attempts": 8,
+      "wholeOCR": [
+        {
+          "page": 2,
+          "method": "original",
+          "confidence": 91,
+          "psm": 3,
+          "elapsedMs": 1575.0999999940395
+        },
+        {
+          "page": 2,
+          "method": "adaptive",
+          "confidence": 84,
+          "psm": 6,
+          "elapsedMs": 1474.0999999940395
+        }
+      ],
+      "precision": [
+        {
+          "key": "prosecutor",
+          "values": [
+            "이정현"
+          ],
+          "confidence": 96,
+          "method": "original",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 36.099999994039536
+        },
+        {
+          "key": "prosecutor",
+          "values": [
+            "이정현"
+          ],
+          "confidence": 96,
+          "method": "contrast",
+          "psm": 7,
+          "language": "kor+eng",
+          "elapsedMs": 26.899999976158142
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "공무집행방해"
+            ]
+          ],
+          "confidence": 93,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 51.400000005960464
+        },
+        {
+          "key": "person.0.charges",
+          "values": [
+            [
+              "공무집행방해"
+            ]
+          ],
+          "confidence": 93,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 52.599999994039536
+        },
+        {
+          "key": "person.1.charges",
+          "values": [
+            [
+              "상해",
+              "절도"
+            ]
+          ],
+          "confidence": 59,
+          "method": "original",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 105.90000000596046
+        },
+        {
+          "key": "person.1.charges",
+          "values": [
+            [
+              "상헤",
+              "절도"
+            ]
+          ],
+          "confidence": 84,
+          "method": "contrast",
+          "psm": 6,
+          "language": "kor+eng",
+          "elapsedMs": 104.5
+        }
+      ],
+      "quality": [
+        {
+          "useful": 238,
+          "broken": 0,
+          "labelCount": 4,
+          "suspect": false,
+          "reasons": []
+        },
+        {
+          "useful": 0,
+          "broken": 0,
+          "labelCount": 0,
+          "suspect": true,
+          "reasons": [
+            "유효 문자 부족"
+          ]
+        }
+      ],
+      "limits": [],
+      "heapBefore": 86400000,
+      "heapAfter": 86400000,
+      "imageMemoryEstimate": 182917644,
+      "rendererRSSAfterBytes": 562065408,
+      "score": {
+        "prosecutorCorrect": true,
+        "prosecutorWrong": false,
+        "chargesCorrect": 1,
+        "chargeFields": 2,
+        "chargesWrong": 0,
+        "prosecutorCandidateCorrect": true,
+        "chargeCandidateCorrect": 2
+      }
+    }
+  ],
+  "preprocessing": [
+    {
+      "field": "prosecutor",
+      "method": "original",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 97,
+      "elapsedMs": 492.09999999403954,
+      "angle": 0,
+      "effectiveDPI": 214.75409836065575,
+      "estimatedPeakBytes": 208813,
+      "case": "native1"
+    },
+    {
+      "field": "prosecutor",
+      "method": "grayscale",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 97,
+      "elapsedMs": 28.099999994039536,
+      "angle": 0,
+      "effectiveDPI": 214.75409836065575,
+      "estimatedPeakBytes": 208813,
+      "case": "native1"
+    },
+    {
+      "field": "prosecutor",
+      "method": "contrast",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 97,
+      "elapsedMs": 31.5,
+      "angle": 0,
+      "effectiveDPI": 214.75409836065575,
+      "estimatedPeakBytes": 208813,
+      "case": "native1"
+    },
+    {
+      "field": "prosecutor",
+      "method": "adaptive",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 96,
+      "elapsedMs": 33.900000005960464,
+      "angle": 0,
+      "effectiveDPI": 214.75409836065575,
+      "estimatedPeakBytes": 239729,
+      "case": "native1"
+    },
+    {
+      "field": "prosecutor",
+      "method": "deskew-denoise",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 97,
+      "elapsedMs": 29.599999994039536,
+      "angle": 0,
+      "effectiveDPI": 214.75409836065575,
+      "estimatedPeakBytes": 208813,
+      "case": "native1"
+    },
+    {
+      "field": "prosecutor",
+      "method": "original",
+      "psm": 3,
+      "language": "kor+eng",
+      "values": [],
+      "confidence": 49,
+      "elapsedMs": 35,
+      "angle": 0,
+      "effectiveDPI": 214.75409836065575,
+      "estimatedPeakBytes": 208813,
+      "case": "native1"
+    },
+    {
+      "field": "prosecutor",
+      "method": "original",
+      "psm": 11,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 96,
+      "elapsedMs": 35.599999994039536,
+      "angle": 0,
+      "effectiveDPI": 214.75409836065575,
+      "estimatedPeakBytes": 208813,
+      "case": "native1"
+    },
+    {
+      "field": "prosecutor",
+      "method": "original",
+      "psm": 7,
+      "language": "kor",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 97,
+      "elapsedMs": 36.900000005960464,
+      "angle": 0,
+      "effectiveDPI": 214.75409836065575,
+      "estimatedPeakBytes": 208813,
+      "case": "native1"
+    },
+    {
+      "field": "charges",
+      "method": "original",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 91,
+      "elapsedMs": 91.69999998807907,
+      "angle": 0,
+      "effectiveDPI": 215.6378600823045,
+      "estimatedPeakBytes": 416738,
+      "case": "native1"
+    },
+    {
+      "field": "charges",
+      "method": "grayscale",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 91,
+      "elapsedMs": 69.40000000596046,
+      "angle": 0,
+      "effectiveDPI": 215.6378600823045,
+      "estimatedPeakBytes": 416738,
+      "case": "native1"
+    },
+    {
+      "field": "charges",
+      "method": "contrast",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 92,
+      "elapsedMs": 72.80000001192093,
+      "angle": 0,
+      "effectiveDPI": 215.6378600823045,
+      "estimatedPeakBytes": 416738,
+      "case": "native1"
+    },
+    {
+      "field": "charges",
+      "method": "adaptive",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 89,
+      "elapsedMs": 169.09999999403954,
+      "angle": 0,
+      "effectiveDPI": 215.6378600823045,
+      "estimatedPeakBytes": 478570,
+      "case": "native1"
+    },
+    {
+      "field": "charges",
+      "method": "deskew-denoise",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 91,
+      "elapsedMs": 71.90000000596046,
+      "angle": 0,
+      "effectiveDPI": 215.6378600823045,
+      "estimatedPeakBytes": 416738,
+      "case": "native1"
+    },
+    {
+      "field": "charges",
+      "method": "original",
+      "psm": 3,
+      "language": "kor+eng",
+      "values": [],
+      "elapsedMs": 7.799999982118607,
+      "error": "OCR에서 텍스트를 읽지 못했습니다.",
+      "case": "native1"
+    },
+    {
+      "field": "charges",
+      "method": "original",
+      "psm": 11,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 91,
+      "elapsedMs": 69.40000000596046,
+      "angle": 0,
+      "effectiveDPI": 215.6378600823045,
+      "estimatedPeakBytes": 416738,
+      "case": "native1"
+    },
+    {
+      "field": "charges",
+      "method": "original",
+      "psm": 6,
+      "language": "kor",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 91,
+      "elapsedMs": 77.09999999403954,
+      "angle": 0,
+      "effectiveDPI": 215.6378600823045,
+      "estimatedPeakBytes": 416738,
+      "case": "native1"
+    },
+    {
+      "field": "prosecutor",
+      "method": "original",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 42,
+      "elapsedMs": 529.4000000059605,
+      "angle": 0,
+      "effectiveDPI": 215.01501501501502,
+      "estimatedPeakBytes": 517716,
+      "case": "skew-noise"
+    },
+    {
+      "field": "prosecutor",
+      "method": "grayscale",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 42,
+      "elapsedMs": 59.30000001192093,
+      "angle": 0,
+      "effectiveDPI": 215.01501501501502,
+      "estimatedPeakBytes": 517716,
+      "case": "skew-noise"
+    },
+    {
+      "field": "prosecutor",
+      "method": "contrast",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 79,
+      "elapsedMs": 69.2000000178814,
+      "angle": 0,
+      "effectiveDPI": 215.01501501501502,
+      "estimatedPeakBytes": 517716,
+      "case": "skew-noise"
+    },
+    {
+      "field": "prosecutor",
+      "method": "adaptive",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [],
+      "confidence": 53,
+      "elapsedMs": 64,
+      "angle": 0,
+      "effectiveDPI": 215.01501501501502,
+      "estimatedPeakBytes": 595044,
+      "case": "skew-noise"
+    },
+    {
+      "field": "prosecutor",
+      "method": "deskew-denoise",
+      "psm": 7,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 42,
+      "elapsedMs": 64,
+      "angle": 0,
+      "effectiveDPI": 215.01501501501502,
+      "estimatedPeakBytes": 517716,
+      "case": "skew-noise"
+    },
+    {
+      "field": "prosecutor",
+      "method": "original",
+      "psm": 3,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 84,
+      "elapsedMs": 84.60000002384186,
+      "angle": 0,
+      "effectiveDPI": 215.01501501501502,
+      "estimatedPeakBytes": 517716,
+      "case": "skew-noise"
+    },
+    {
+      "field": "prosecutor",
+      "method": "original",
+      "psm": 11,
+      "language": "kor+eng",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 42,
+      "elapsedMs": 57.400000005960464,
+      "angle": 0,
+      "effectiveDPI": 215.01501501501502,
+      "estimatedPeakBytes": 517716,
+      "case": "skew-noise"
+    },
+    {
+      "field": "prosecutor",
+      "method": "original",
+      "psm": 7,
+      "language": "kor",
+      "values": [
+        "이승엽"
+      ],
+      "confidence": 42,
+      "elapsedMs": 39.30000001192093,
+      "angle": 0,
+      "effectiveDPI": 215.01501501501502,
+      "estimatedPeakBytes": 517716,
+      "case": "skew-noise"
+    },
+    {
+      "field": "charges",
+      "method": "original",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 93,
+      "elapsedMs": 72.80000001192093,
+      "angle": 0,
+      "effectiveDPI": 215.65217391304347,
+      "estimatedPeakBytes": 895240,
+      "case": "skew-noise"
+    },
+    {
+      "field": "charges",
+      "method": "grayscale",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 93,
+      "elapsedMs": 60.5,
+      "angle": 0,
+      "effectiveDPI": 215.65217391304347,
+      "estimatedPeakBytes": 895240,
+      "case": "skew-noise"
+    },
+    {
+      "field": "charges",
+      "method": "contrast",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 93,
+      "elapsedMs": 63.099999994039536,
+      "angle": 0,
+      "effectiveDPI": 215.65217391304347,
+      "estimatedPeakBytes": 895240,
+      "case": "skew-noise"
+    },
+    {
+      "field": "charges",
+      "method": "adaptive",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 71,
+      "elapsedMs": 103.2000000178814,
+      "angle": 0,
+      "effectiveDPI": 215.65217391304347,
+      "estimatedPeakBytes": 1029160,
+      "case": "skew-noise"
+    },
+    {
+      "field": "charges",
+      "method": "deskew-denoise",
+      "psm": 6,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 90,
+      "elapsedMs": 72.2999999821186,
+      "angle": 0,
+      "effectiveDPI": 215.65217391304347,
+      "estimatedPeakBytes": 895240,
+      "case": "skew-noise"
+    },
+    {
+      "field": "charges",
+      "method": "original",
+      "psm": 3,
+      "language": "kor+eng",
+      "values": [],
+      "elapsedMs": 8.800000011920929,
+      "error": "OCR에서 텍스트를 읽지 못했습니다.",
+      "case": "skew-noise"
+    },
+    {
+      "field": "charges",
+      "method": "original",
+      "psm": 11,
+      "language": "kor+eng",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 92,
+      "elapsedMs": 51.900000005960464,
+      "angle": 0,
+      "effectiveDPI": 215.65217391304347,
+      "estimatedPeakBytes": 895240,
+      "case": "skew-noise"
+    },
+    {
+      "field": "charges",
+      "method": "original",
+      "psm": 6,
+      "language": "kor",
+      "values": [
+        [
+          "상해",
+          "폭행치상"
+        ]
+      ],
+      "confidence": 93,
+      "elapsedMs": 66.30000001192093,
+      "angle": 0,
+      "effectiveDPI": 215.65217391304347,
+      "estimatedPeakBytes": 895240,
+      "case": "skew-noise"
+    }
+  ],
+  "limitations": [
+    "Synthetic public-repository fixtures, not independent production documents",
+    "Heap API is approximate; renderer RSS is an after-completion Linux snapshot (OCR workers already terminated), not peak total memory; image memory is an allocation estimate",
+    "Timing includes OCR worker initialization per document; no statistical claim from single runs"
+  ],
+  "htmlSHA256": "25092868017180e38177f0b4d0fb8ac7a242640655fea55966454a874bfb75ad",
+  "summary": {
+    "before": {
+      "documents": 10,
+      "prosecutorCorrect": 4,
+      "prosecutorWrong": 2,
+      "prosecutorCandidateCorrect": 4,
+      "chargeFields": 12,
+      "chargesCorrect": 4,
+      "chargesWrong": 4,
+      "chargeCandidateCorrect": 4,
+      "elapsedMs": 19338.30000001192,
+      "attempts": 5
+    },
+    "after": {
+      "documents": 10,
+      "prosecutorCorrect": 6,
+      "prosecutorWrong": 0,
+      "prosecutorCandidateCorrect": 8,
+      "chargeFields": 12,
+      "chargesCorrect": 6,
+      "chargesWrong": 0,
+      "chargeCandidateCorrect": 8,
+      "elapsedMs": 51779.999999940395,
+      "attempts": 55
+    }
+  }
+}

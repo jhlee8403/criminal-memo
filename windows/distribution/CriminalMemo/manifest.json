@@ -1,9 +1,9 @@
 {
-  "builtAt": "2026-11-08T12:38:46.599Z",
+  "builtAt": "2026-11-08T16:39:45.378Z",
   "templateSHA256": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9",
   "files": {
-    "CriminalMemo.html": "9d29dd1588b2354e84eb98e95485def29d24646a1ea67ce35f0b6cbd7f58906e",
-    "README.txt": "ac417e259f4ae1e9ccaf7561cf2501d85ea496d9ffd62fbabcd4b452acb3c76e",
+    "CriminalMemo.html": "25092868017180e38177f0b4d0fb8ac7a242640655fea55966454a874bfb75ad",
+    "README.txt": "1387d0c62e4b7b164b32090c7d78a0b68026966fc265b807c1c8ebfe50741a3e",
     "assets/NanumGothic-OFL.txt": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f",
     "assets/THIRD_PARTY_LICENSES.txt": "fe8f0e9f2076d484476234292eb107fe03a2e9fada441f4ff1c4a24957486815",
     "assets/tessdata-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",

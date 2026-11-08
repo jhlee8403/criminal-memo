@@ -1,6 +1,12 @@
-# Criminal Memo — Windows/Edge 오프라인 전환
+# Criminal Memo — Windows/Edge 오프라인 v2.1
 
 **대상 Windows Edge의 `file://` 검증은 미완료입니다.** 실행 구조는 서버·EXE 없이 HTML 더블클릭을 목표로 유지했습니다. 현재 환경의 관리자 정책이 `file://` 탐색을 차단하여, 동일한 배포 HTML을 메모리에 올린 진단으로만 엔진·업무 흐름을 실행 검증했습니다. 이 결과를 HTML 더블클릭 성공으로 해석하지 않습니다.
+
+## v2.1 OCR 개선
+
+내장 텍스트·전체 OCR·영역 OCR·항목별 최종/수동 값을 따로 기록합니다. 검사/죄명은 기본으로 영역 대조를 수행하며, 후보 충돌은 확인 전 출력을 차단합니다. 마우스 영역 재인식, 항목별 PSM·언어, 5가지 전처리 비교를 제공합니다. 신뢰도만으로 확정하지 않습니다.
+
+[OCR v2.1 비교 보고서](docs/OCR_V21.md) · [사용 안내](USER_GUIDE.txt)
 
 ## 배포 후보
 
@@ -13,6 +19,9 @@
 ## 개발 구조
 
 - `src/core.js`: 독립 피고인·죄명·검사·변호인·기소일·구속 파서, 생년월일 해석, AgeRuleEngine 함수와 독립 표시 설정.
+- `src/diagnostics.js`: 품질 검사·라벨/단어 위치 기반 영역 탐색·출처/후보·충돌 관리.
+- `src/hybrid.js`: 페이지/항목별 혼합 추출과 유한 재시도.
+- `src/image-processing.js`: DPI·화소 예산, 그레이·대비·적응형 이진화·기울기/노이즈 처리.
 - `src/services.js`: PDFInputService, PDFTextExtractor, OCRService, MemoPDFRenderer, PDFExportService.
 - `src/app.js`: 검토·수정, 원문/결과 미리보기, 다운로드. DOM에 문서 내용을 넣을 때 textContent/value만 사용합니다.
 - `src/CriminalMemo.html`, `styles.css`: UI 원본.
@@ -35,6 +44,8 @@ python -m pip install -r scripts/requirements-test.txt
 python scripts/prepare_fixtures.py
 npm run test:browser
 python scripts/verify_outputs.py
+npm run test:ocr
+npm run test:ocr-ui
 ```
 
 브라우저 실행 파일은 기본 `/usr/bin/chromium`, 필요하면 `CM_CHROMIUM` 환경 변수로 지정합니다. 일반 Chromium의 기본 보안 설정을 사용하며 `--disable-web-security`, `--allow-file-access-from-files` 등을 사용하지 않습니다. 컨테이너에서는 Playwright의 기본 프로세스 샌드박스 옵션을 사용하지만 관리 URL 정책을 수정하지 않습니다.
@@ -42,3 +53,5 @@ python scripts/verify_outputs.py
 브라우저 테스트는 **먼저 실제 file URL로 탐색**합니다. 관리자 차단(`ERR_BLOCKED_BY_ADMINISTRATOR`)일 때만 명확히 표시한 메모리 진단을 추가 수행합니다. 일반적인 file 실행 오류를 임의로 숨기지 않습니다. 대상 PC의 Edge 직접 테스트는 별도입니다.
 
 결과: [검증 보고서](docs/VALIDATION.md), [file:// 기술 검토](docs/FILE_MODE.md), [라이브러리·라이선스](docs/DEPENDENCIES.md).
+
+`test:ocr`는 Git의 f8e4c27 배포본을 비교 기준으로 읽습니다. 합성 자료·결과는 artifacts에만 생성하며 원본 PDF를 수정하지 않습니다. 기존 37개 규칙 테스트를 포함한 단위 테스트와 별도 PDF 출력 검증을 유지합니다.

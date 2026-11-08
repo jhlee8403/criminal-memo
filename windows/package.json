@@ -1,12 +1,14 @@
 {
   "name": "criminal-memo-windows",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --test tests/core.test.mjs",
-    "test:browser": "node tests/browser.mjs"
+    "test": "node --test tests/core.test.mjs tests/hybrid.test.mjs",
+    "test:browser": "node tests/browser.mjs",
+    "test:ocr": "python scripts/prepare_ocr_benchmark.py && node tests/ocr-benchmark.mjs",
+    "test:ocr-ui": "node tests/ocr-ui.mjs"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "1.1.1",

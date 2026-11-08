@@ -127,20 +127,66 @@ export const labelValue = (label, line) =>
     new RegExp(
       "^\\s*(?:\\d+[.)]\\s*)?" +
         labelPattern(label) +
-        "\\s*[:：]?\\s+(.+?)\\s*$",
+        "(?:\\s*[:：]\\s*|\\s+)(.*?)\\s*$",
     ),
   )?.[1];
-const hasLabel = (label, line) =>
+export const hasLabel = (label, line) =>
   new RegExp(
     "^\\s*(?:\\d+[.)]\\s*)?" + labelPattern(label) + "(?:\\s|[:：]|$)",
   ).test(line);
+export const FIELD_LABELS = [
+  "피고인",
+  "죄명",
+  "적용법조",
+  "구속여부",
+  "변호인",
+  "기소일",
+  "공소제기일",
+  "직업",
+  "주거",
+  "등록기준지",
+  "검사",
+  "공소사실",
+];
+export function splitFieldLines(lines) {
+  const labels = new RegExp(
+    FIELD_LABELS.map(labelPattern).join("|") + "(?=\\s|[:：]|$)",
+    "g",
+  );
+  return lines.flatMap((raw) => {
+    const line = clean(raw),
+      starts = [0];
+    for (const m of line.matchAll(labels))
+      if (m.index > 0 && /[\s,;|]/.test(line[m.index - 1]))
+        starts.push(m.index);
+    return [...new Set(starts)]
+      .map((start, i, array) => line.slice(start, array[i + 1]).trim())
+      .filter(Boolean);
+  });
+}
+export function fieldBlock(label, lines) {
+  const blocks = [];
+  let active = null;
+  for (const line of splitFieldLines(lines)) {
+    if (hasLabel(label, line)) {
+      active = [];
+      blocks.push(active);
+      const value = labelValue(label, line);
+      if (value?.trim()) active.push(value);
+    } else if (
+      FIELD_LABELS.some((l) => hasLabel(l, line)) ||
+      /^(?:[IVX]+[.)]\s*)?공\s*소\s*사\s*실/.test(line)
+    ) {
+      active = null;
+    } else if (active && line.trim()) active.push(line);
+  }
+  return blocks;
+}
 export class DefendantParser {
   static split(text) {
     const sections = [];
     let names = false;
-    for (const line of clean(text)
-      .split("\n")
-      .map((s) => s.trim())) {
+    for (const line of splitFieldLines(clean(text).split("\n"))) {
       if (/^(?:[IVX]+[.)]\s*)?공\s*소\s*사\s*실/.test(line)) break;
       const value = labelValue("피고인", line);
       if (value && !/관\s*련\s*사\s*항/.test(value)) {
@@ -174,6 +220,7 @@ export class DefendantParser {
       birthReview: ocr,
       counsel: CounselParser.parse(section.lines, ocr),
       charges: ChargeParser.parse(section.lines),
+      chargeNeedsReview: ChargeParser.ambiguous(section.lines),
       detention: DetentionParser.parse(section.lines),
     };
   }
@@ -181,30 +228,26 @@ export class DefendantParser {
 const values = (label, lines) =>
   lines.map((l) => labelValue(label, l)).filter((v) => v !== undefined);
 export class ChargeParser {
+  static ambiguous(lines) {
+    return fieldBlock("죄명", lines).some(
+      (block) =>
+        block.length > 1 &&
+        block
+          .slice(0, -1)
+          .some(
+            (v, i) =>
+              !/[，,、;]\s*$/.test(v) &&
+              !/^\s*\d+[.)]/.test(v) &&
+              !/^\s*\d+[.)]/.test(block[i + 1]),
+          ),
+    );
+  }
   static parse(lines) {
-    const output = [];
-    let active = false;
-    for (const line of lines) {
-      const value = labelValue("죄명", line);
-      if (value) {
-        output.push(value);
-        active = true;
-      } else if (hasLabel("죄명", line)) {
-        active = true;
-      } else if (
-        active &&
-        /^\d+[.)]\s*/.test(line) &&
-        !["피고인", "적용법조", "구속여부", "변호인"].some((l) =>
-          hasLabel(l, line),
-        )
-      ) {
-        output.push(line);
-      } else if (line.trim()) active = false;
-    }
-    return output
+    return fieldBlock("죄명", lines)
+      .flat()
       .flatMap((v) => v.split(/[,，、;]/))
-      .map((v) => v.replace(/^\d+[.)]\s*/, "").trim())
-      .filter(Boolean);
+      .map((v) => v.replace(/^\s*(?:[_、:：]+|\d+[.)])\s*/, "").trim())
+      .filter((v) => v && !FIELD_LABELS.some((l) => hasLabel(l, v)));
   }
 }
 export class CounselParser {
@@ -255,10 +298,31 @@ export class DetentionParser {
   }
 }
 export class ProsecutorParser {
-  static parse(lines) {
-    const names = [
-      ...new Set(values("검사", lines).map((s) => s.replace(/[_\s]+$/, ""))),
+  static candidates(lines) {
+    return [
+      ...new Set(
+        fieldBlock("검사", lines).flatMap((block) => {
+          const names = [];
+          for (const raw of block) {
+            const value = raw
+              .replace(/[_—─]+/g, "")
+              .replace(/^[\p{P}\p{S}\s]+|[\p{P}\p{S}\s]+$/gu, "")
+              .trim();
+            const compact = value.replace(/\s/g, "");
+            if (
+              /^[가-힣]{2,8}$/.test(compact) &&
+              !/공소장|피고인|관련사항|발신자|수신자/.test(compact)
+            )
+              names.push(compact);
+            else if (value) break;
+          }
+          return names;
+        }),
+      ),
     ];
+  }
+  static parse(lines) {
+    const names = this.candidates(lines);
     return names.length === 1 ? names[0] : "";
   }
 }
@@ -289,7 +353,13 @@ export class IndictmentParser {
       defendants: sections.map((s) =>
         DefendantParser.parse(s, document.usedOCR),
       ),
-      prosecutor: ProsecutorParser.parse(lines),
+      prosecutor: ProsecutorParser.parse(
+        document.pages[0].lines?.length
+          ? document.pages[0].lines
+              .filter((l) => l.y <= document.pages[0].height * 0.4)
+              .map((l) => l.text)
+          : document.pages[0].text.split(/피\s*고\s*인/)[0].split("\n"),
+      ),
       filingDate: FilingDateParser.parse(document.pages[0]),
       warnings: [],
     };
@@ -303,10 +373,22 @@ export class IndictmentParser {
 }
 export function validateDraft(draft) {
   const errors = [];
+  if (
+    draft.incompleteAnalysis?.pages.length &&
+    !draft.incompleteAnalysis.confirmed
+  )
+    errors.push("OCR 미처리 페이지의 원문을 확인하고 수동 보완해야 합니다.");
+  for (const field of draft.evidence ?? [])
+    if (field.required && field.needsReview && field.finalValue === null)
+      errors.push(field.label + ": 후보를 확인하거나 직접 입력하세요.");
+  if (!draft.prosecutor?.trim()) errors.push("검사 이름을 확인하세요.");
   if (!draft.defendants.length) errors.push("피고인이 없습니다.");
   if (!parseDate(draft.filingDate)) errors.push("기소일을 확인하세요.");
   draft.defendants.forEach((p, i) => {
     const prefix = `${i + 1}. ${p.name}: `;
+    if (!p.charges?.length) errors.push(prefix + "죄명을 확인하세요.");
+    if (p.chargeNeedsReview)
+      errors.push(prefix + "죄명 줄바꿈이 별도 죄명인지 원문을 확인하세요.");
     if (!p.name.trim()) errors.push(prefix + "이름을 입력하세요.");
     if (p.detention === "unknown")
       errors.push(prefix + "구속 여부를 확인하세요.");

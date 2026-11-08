@@ -1,3 +1,7 @@
+export { recognizeRegion } from "./hybrid.js";
+export { preprocess, renderOCR } from "./image-processing.js";
+import { analyzeHybrid } from "./hybrid.js";
+import { OCR_LIMITS } from "./diagnostics.js";
 import { PDFDocument, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import Tesseract from "tesseract.js";
@@ -86,6 +90,12 @@ export class PDFTextExtractor {
     const lines = rows
       .sort((a, b) => a.y - b.y)
       .map((r) => ({
+        items: r.items.map((i) => ({ ...i })),
+        x: Math.min(...r.items.map((i) => i.x)),
+        w:
+          Math.max(...r.items.map((i) => i.x + i.w)) -
+          Math.min(...r.items.map((i) => i.x)),
+        h: Math.max(...r.items.map((i) => i.h)),
         y: r.y,
         text: r.items
           .sort((a, b) => a.x - b.x)
@@ -95,6 +105,7 @@ export class PDFTextExtractor {
     return {
       text: lines.map((l) => l.text).join("\n"),
       lines,
+      items,
       width: view.width,
       height: view.height,
     };
@@ -138,51 +149,57 @@ export class OCRService {
       logger: (m) => this.progress(m.status, m.progress),
       errorHandler: (e) => this.progress(String(e), 0),
     });
+    this.language = "kor+eng";
   }
-  async recognize(canvas) {
-    await this.init();
-    const { data } = await this.worker.recognize(canvas);
-    if (!data.text.trim()) throw Error("OCR에서 텍스트를 읽지 못했습니다.");
-    return data;
+  async recognize(
+    canvas,
+    { psm = 3, language = "kor+eng", timeout = OCR_LIMITS.jobTimeout } = {},
+  ) {
+    let timer;
+    const work = (async () => {
+      await this.init();
+      if (this.language && this.language !== language)
+        await this.worker.reinitialize(language);
+      this.language = language;
+      await this.worker.setParameters({
+        tessedit_pageseg_mode: String(psm),
+        preserve_interword_spaces: "1",
+      });
+      const { data } = await this.worker.recognize(canvas);
+      if (!data.text.trim()) throw Error("OCR에서 텍스트를 읽지 못했습니다.");
+      return data;
+    })();
+    try {
+      return await Promise.race([
+        work,
+        new Promise((_, reject) => {
+          timer = setTimeout(
+            () => reject(Error("OCR 작업 시간 한도 초과")),
+            timeout,
+          );
+        }),
+      ]);
+    } catch (error) {
+      if (error.message.includes("시간 한도")) await this.close();
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
   }
   async close() {
     if (this.worker) await this.worker.terminate();
     if (this.url) URL.revokeObjectURL(this.url);
     this.worker = null;
     this.url = null;
+    this.language = null;
   }
 }
-export async function analyze(
-  pdf,
-  { forceOCR = false, progress = () => {} } = {},
-) {
-  const pages = [],
-    ocr = new OCRService(progress);
-  let usedOCR = false;
-  try {
-    for (let n = 1; n <= pdf.numPages; n++) {
-      progress(`페이지 ${n}/${pdf.numPages}`, 0);
-      const page = await pdf.getPage(n);
-      let result = await PDFTextExtractor.page(page);
-      if (forceOCR || result.text.replace(/[^\p{L}\p{N}]/gu, "").length < 20) {
-        const data = await ocr.recognize(
-          await PDFTextExtractor.render(page, 3),
-        );
-        result = {
-          ...result,
-          text: data.text,
-          lines: data.text.split("\n").map((text, i) => ({ text, y: i * 12 })),
-          ocr: true,
-          confidence: data.confidence,
-        };
-        usedOCR = true;
-      }
-      pages.push(result);
-    }
-  } finally {
-    await ocr.close();
-  }
-  return { pages, usedOCR, text: pages.map((p) => p.text).join("\n") };
+export async function analyze(pdf, options = {}) {
+  return analyzeHybrid(pdf, {
+    ...options,
+    extractPage: PDFTextExtractor.page,
+    createOCR: (progress) => new OCRService(progress),
+  });
 }
 export class MemoPDFRenderer {
   static async render(draft, { templateBytes } = {}) {
