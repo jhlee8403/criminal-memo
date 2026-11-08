@@ -1,0 +1,57 @@
+{
+  "templateSHA256": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9",
+  "pageIndex": 0,
+  "width": 595.0001220703125,
+  "height": 841.0001220703125,
+  "coordinateSystem": "top-left, PDF points (1/72 inch), media box, rotation 0",
+  "fields": {
+    "defendants": [
+      33,
+      128,
+      140,
+      111
+    ],
+    "charges": [
+      180,
+      78,
+      151,
+      161
+    ],
+    "prosecutor": [
+      385,
+      48,
+      112,
+      22
+    ],
+    "counsel": [
+      385,
+      78,
+      112,
+      20
+    ],
+    "indictmentDate": [
+      231,
+      247,
+      174,
+      20
+    ],
+    "detention": [
+      537,
+      48,
+      25,
+      22
+    ],
+    "juvenile": [
+      174,
+      730,
+      26,
+      15
+    ],
+    "mandatoryCounsel": [
+      109,
+      746,
+      56,
+      15
+    ]
+  }
+}

@@ -1,0 +1,2 @@
+# Preserve exact pdftotext/PyMuPDF source whitespace in document fixtures.
+Tests/MemoCoreTests/Fixtures/*.txt whitespace=-blank-at-eol

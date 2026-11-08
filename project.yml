@@ -1,0 +1,52 @@
+name: CriminalMemo
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: '17.0'
+packages:
+  MemoCore:
+    path: .
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    TARGETED_DEVICE_FAMILY: '2'
+    IPHONEOS_DEPLOYMENT_TARGET: '17.0'
+    CODE_SIGN_STYLE: Automatic
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_CFBundleDisplayName: Criminal Memo
+    INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: 'UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight'
+    INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: YES
+    INFOPLIST_KEY_UIFileSharingEnabled: NO
+    INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+targets:
+  CriminalMemo:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+    dependencies:
+      - package: MemoCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.CriminalMemo
+  CriminalMemoAppleTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: AppTests
+      - path: "공소장1.pdf"
+        buildPhase: resources
+      - path: "공소장2.pdf"
+        buildPhase: resources
+    dependencies:
+      - target: CriminalMemo
+      - package: MemoCore
+schemes:
+  CriminalMemo:
+    build:
+      targets:
+        CriminalMemo: all
+    test:
+      targets: [CriminalMemoAppleTests]
