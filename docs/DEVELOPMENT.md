@@ -50,7 +50,7 @@ open CriminalMemo.xcodeproj
 swift test --jobs 2
 ```
 
-Linux Swift 6.0.3의 Swift 5 모드로 **44개 XCTest, 실패 0개**. 최신 공소장 2개, 복수 피고인 구간 및 2페이지 연결, 변호인 없음/미기재/OCR 구별, 앞 6자리·세기 해석·기재 나이 불일치, 뒷자리 무시, 수동 연도 확인, 윤년, 만 19세·70세 경계, 확장 모듈, 좌표 로딩을 확인했습니다. 마지막 Swift Testing의 “0 tests”는 별도 러너이며 XCTest와 구별합니다.
+Linux Swift 6.0.3의 Swift 5 모드로 **48개 XCTest, 실패 0개**. 최신 공소장 2개, 복수 피고인 구간 및 2페이지 연결, 변호인 없음/미기재/OCR 구별, 앞 6자리·세기 해석·기재 나이 불일치, 뒷자리 무시, 수동 연도 확인, 윤년, 만 19세·70세 경계, 확장 모듈, 좌표 로딩을 확인했습니다. 마지막 Swift Testing의 “0 tests”는 별도 러너이며 XCTest와 구별합니다.
 
 이 클라우드에서는 기본 캐시 경로가 읽기 전용이라 다음 방식으로 실행했습니다. 도구체인은 공식 Swift 6.0.3 Ubuntu 24.04 배포 파일과 detached signature를 다운로드하고, 공식 swift-org-website의 공개키로 GPG 서명을 확인한 뒤 `/tmp/criminal-memo-swift`에 풀었습니다. 해당 도구체인은 저장소나 앱에 포함하지 않습니다.
 
@@ -72,7 +72,7 @@ python3 -m venv /tmp/criminal-memo-pdf-venv
 /tmp/criminal-memo-pdf-venv/bin/python scripts/verify_pdfs.py
 ```
 
-38개 검사 통과. 산출물은 `artifacts/pdf-validation/`에 생성됩니다. 리뷰용 이미지와 JSON 사본은 `docs/`에 있습니다. 자세한 범위는 [PDF 분석](PDF_ANALYSIS.md)을 확인하세요.
+42개 검사 통과. 산출물은 `artifacts/pdf-validation/`에 생성됩니다. 리뷰용 이미지와 JSON 사본은 `docs/`에 있습니다. 자세한 범위는 [PDF 분석](PDF_ANALYSIS.md)을 확인하세요.
 
 ### Apple 통합 테스트 (작성했지만 미실행)
 
@@ -87,7 +87,7 @@ xcodebuild test -project CriminalMemo.xcodeproj -scheme CriminalMemo \
   -resultBundlePath artifacts/AppleTests.xcresult CODE_SIGNING_ALLOWED=NO
 ```
 
-`ApplePDFTests`의 7개 테스트:
+`ApplePDFTests` 7개와 `FinalOutputTests` 3개, 총 10개 테스트:
 
 - PDFKit으로 실제 샘플 두 개를 읽고 대상 항목 추출
 - 실제 샘플을 이미지로만 된 PDF로 만들어 Vision OCR 후 이름·검사·죄명 확인
@@ -95,13 +95,16 @@ xcodebuild test -project CriminalMemo.xcodeproj -scheme CriminalMemo \
 - 지나치게 긴 텍스트를 잘라내지 않고 거부
 - 다른 템플릿 해시 거부
 - 미확인 변호인 상태의 PDF 생성 차단
-- 실제 공소장2의 피고인별 변호인·구속 표시가 칸 안에 들어가는지 검증
+- 실제 공소장2의 변호인 이름·피고인 이름 기입 확인
+- O/X attributed string의 순서·문자별 색상·한 줄 크기 측정 및 공간 초과 거부
+- 실제 iOS 출력 PDF의 변호인 칸과 구속 칸을 PDFKit으로 읽어 빈칸/이름·O/OX·문자별 색상·한 줄 여부·칸 경계 검증
+- 구속 미확정 시 생성 차단
 
-**이 Linux 환경에는 Xcode·Apple SDK·iPad가 없습니다.** 앱 전체의 타입 검사·빌드, XcodeGen 생성, 위 7개 Apple 테스트, OCR 품질, UI 동작, 저장·공유, iPad 설치는 아직 확인되지 않았습니다. Swift 구문 파싱만 통과했으며 이는 SDK 타입 검사나 앱 빌드 성공을 의미하지 않습니다. CI 설정은 추가했지만 원격 실행 결과는 별도로 확인해야 합니다.
+**이 Linux 환경에는 Xcode·Apple SDK·iPad가 없습니다.** 앱 전체의 타입 검사·빌드, XcodeGen 생성, 위 10개 Apple 테스트, OCR 품질, UI 동작, 저장·공유, iPad 설치는 아직 확인되지 않았습니다. Swift 구문 파싱만 통과했으며 이는 SDK 타입 검사나 앱 빌드 성공을 의미하지 않습니다. CI 설정은 추가했지만 원격 실행 결과는 별도로 확인해야 합니다.
 
 ### 실기기 인수 확인 목록
 
-- 원본 공소장 2개: `1. 이민주`, 죄명 두 줄, 검사, X, 날짜, 구속 빨간 O. 기재 나이 41세와 계산 40세 불일치 경고 및 출생 연도 확인 전 나이 원 미표시. 공소장2는 김유나·이영수의 죄명·구속·변호인이 구분되어야 함.
+- 원본 공소장 2개: `1. 이민주`, 죄명 두 줄, 검사, 변호인 빈칸, 날짜, 구속 빨간 O. 기재 나이 41세와 계산 40세 불일치 경고 및 출생 연도 확인 전 나이 원 미표시. 공소장2는 변호인 `윤상일(국선)`만, 구속은 빨간 O와 검은 X의 `OX` 한 줄이어야 함.
 - 스캔 공소장과 텍스트/이미지 혼합 문서에서 필요시 강제 OCR을 사용하고 원문과 대조.
 - 단일/복수 피고인·죄명이 1.부터 표시되는지, 수정 후 기존 출력이 무효화되는지.
 - 유효한 합성 테스트 번호에서 18/19세·70/71세 및 기소일 변경 판정.

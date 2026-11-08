@@ -16,13 +16,16 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "artifacts" / "pdf-validation"
 OUT.mkdir(parents=True, exist_ok=True)
 LAYOUT = json.loads((ROOT / "Sources/MemoCore/Resources/template-layout.json").read_text())
+CHECK_COUNT = 0
 PDFS = {unicodedata.normalize("NFC", p.name): p for p in ROOT.glob("*.pdf")}
 TEMPLATE = PDFS["형사메모.pdf"]
 
 
 def check(condition, message):
+    global CHECK_COUNT
     if not condition:
         raise AssertionError(message)
+    CHECK_COUNT += 1
     print("PASS:", message)
 
 
@@ -64,12 +67,30 @@ def main():
     mapping[0].get_pixmap(matrix=fitz.Matrix(1.8, 1.8)).save(OUT / "coordinate-map.png")
 
     simulation = fitz.open(TEMPLATE)
-    fields = {"defendants": "1. 가상피고인\n2. 시험피고인", "charges": "1. 가상죄명\n2. 시험죄명", "prosecutor": "가상검사", "counsel": "X", "indictmentDate": "2025.08.22"}
+    fields = {"defendants": "1. 가상피고인\n2. 시험피고인", "charges": "1. 가상죄명\n2. 시험죄명", "prosecutor": "가상검사", "counsel": "윤상일(국선)", "indictmentDate": "2025.08.22"}
     for name, text in fields.items():
         remaining = simulation[0].insert_textbox(box(name), text, fontname="korea", fontsize=11)
         check(remaining >= 0, f"simulation {name}: complete text fits in mapped field")
     detention = box("detention")
-    simulation[0].draw_oval(fitz.Rect(detention.x0 + 5.5, detention.y0 + 4, detention.x0 + 19.5, detention.y0 + 18), color=(1, 0, 0), width=1.8)
+    # Coordinate simulation only: Courier approximates the app's monospaced font.
+    # Draw contiguous glyph advances on one baseline, preserving individual colors.
+    font = fitz.Font("cour")
+    font_size = 12
+    advance = font.text_length("O", fontsize=font_size)
+    start_x = (detention.x0 + detention.x1) / 2 - advance
+    line_height = (font.ascender - font.descender) * font_size
+    baseline = detention.y0 + (detention.height - line_height) / 2 + font.ascender * font_size
+    for index, (character, color) in enumerate([("O", (1,0,0)), ("X", (0,0,0))]):
+        simulation[0].insert_text((start_x + index * advance, baseline), character,
+                                  fontname="cour", fontsize=font_size, color=color)
+    lines = [line for block in simulation[0].get_text("dict", clip=detention)["blocks"]
+             for line in block.get("lines", [])]
+    spans = [span for line in lines for span in line["spans"]]
+    check("".join(span["text"] for span in spans) == "OX", "simulation detention is exactly OX without separators")
+    check(len(lines) == 1 and all(detention.contains(fitz.Rect(span["bbox"])) for span in spans), "simulation detention fits on one line inside original cell")
+    check([(span["text"], span["color"]) for span in spans] == [("O",0xFF0000),("X",0)], "simulation O is red and X is black")
+    counsel_text = simulation[0].get_text(clip=box("counsel")).strip()
+    check("".join(counsel_text.split()) == "윤상일(국선)", "simulation counsel contains name only, no number or X")
     for name in circles:
         simulation[0].draw_oval(box(name), color=(1, 0, 0), width=1.3)
     simulation.save(OUT / "sample-output-simulation.pdf")
@@ -94,7 +115,7 @@ def main():
         check(len(doc) == (1 if number == 1 else 2) and len(text.strip()) > 100, f"sample {number}: text extraction succeeds")
         samples.append({"file": f"공소장{number}.pdf", "pages":len(doc), "textCharacters":len(text.strip())})
     check(all(hashlib.sha256(p.read_bytes()).hexdigest() == digest for p, digest in original_hashes.items()), "all three original PDFs remain unchanged")
-    report = {"templateSHA256":digest,"templatePages":len(source),"fields":LAYOUT["fields"],"samples":samples,"outsideFieldChangedPixels":int(np.count_nonzero(changed & ~allowed)),"renderer":"PyMuPDF coordinate simulation; NOT the iOS renderer", "iOSBuildTested":False}
+    report = {"templateSHA256":digest,"templatePages":len(source),"fields":LAYOUT["fields"],"samples":samples,"outsideFieldChangedPixels":int(np.count_nonzero(changed & ~allowed)),"renderer":"PyMuPDF coordinate simulation; NOT the iOS renderer", "iOSBuildTested":False,"checksPassed":CHECK_COUNT}
     (OUT / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n")
     print("Artifacts:", OUT)
 

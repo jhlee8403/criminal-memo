@@ -28,7 +28,7 @@ struct DefendantEditor: View {
             if person.counsel.status == .named || person.counsel.status == .needsReview {
                 TextField("변호인 이름 (원문 확인)", text: $person.counsel.name, axis: .vertical)
             }
-            Text(person.counsel.status == .needsReview ? person.counsel.reason : "메모 표시: \(person.counsel.text)").font(.caption)
+            Text(person.counsel.status == .needsReview ? person.counsel.reason : "메모 표시: \(person.counsel.text.isEmpty ? "빈칸" : person.counsel.text)").font(.caption)
             Text("죄명 (한 줄에 하나)").font(.caption)
             TextEditor(text: Binding(get: { person.charges.joined(separator: "\n") }, set: { person.charges = $0.components(separatedBy: .newlines).filter { !$0.isEmpty } }))
                 .frame(minHeight: 60)

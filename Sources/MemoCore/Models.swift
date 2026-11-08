@@ -13,8 +13,8 @@ public enum CounselStatus: String, CaseIterable, Codable, Sendable {
     public var label: String {
         switch self {
         case .named: return "변호인 기재"
-        case .absentExplicit: return "없음 명시 (X)"
-        case .absentMissing: return "항목 미기재 (X)"
+        case .absentExplicit: return "없음 명시 (빈칸)"
+        case .absentMissing: return "항목 미기재 (빈칸)"
         case .needsReview: return "판독 불확실 · 확인 필요"
         }
     }
@@ -30,8 +30,8 @@ public struct CounselInfo: Equatable, Codable, Sendable {
     public var needsConfirmation: Bool { status == .needsReview || (status == .named && name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) }
     public var text: String {
         switch status {
-        case .named: return name
-        case .absentExplicit, .absentMissing: return "X"
+        case .named: return name.trimmingCharacters(in: .whitespacesAndNewlines)
+        case .absentExplicit, .absentMissing: return ""
         case .needsReview: return ""
         }
     }
@@ -85,8 +85,11 @@ public struct CaseDraft: Equatable, Codable, Sendable {
         return Self.numbered(defendants.first?.charges ?? charges)
     }
     public var counselText: String {
-        if defendants.count == 1 { return defendants[0].counsel.text }
-        return Self.numbered(defendants.map { $0.counsel.text })
+        defendants.map { $0.counsel.text }.filter { !$0.isEmpty }.joined(separator: "\n")
+    }
+    public var hasUnconfirmedDetention: Bool { defendants.contains { $0.detention == .unknown } }
+    public func detentionGlyphs() throws -> [DetentionGlyph] {
+        try DetentionOutput.glyphs(for: defendants.map(\.detention))
     }
     public static func numbered(_ values: [String]) -> String {
         values.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
@@ -98,6 +101,7 @@ public struct CaseDraft: Equatable, Codable, Sendable {
     public var validationWarnings: [String] {
         defendants.flatMap { person in
             var values = person.birthAssessment(on: indictmentDate).warnings.map { "\(person.name): \($0)" }
+            if person.detention == .unknown { values.append("\(person.name): 구속 여부를 확인하세요. O/X를 임의로 출력하지 않습니다.") }
             if person.counsel.needsConfirmation { values.append("\(person.name): 변호인 판독 결과를 확인하세요. \(person.counsel.reason)") }
             return values
         }

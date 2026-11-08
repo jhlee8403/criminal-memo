@@ -16,7 +16,7 @@ final class MemoCoreTests: XCTestCase {
         XCTAssertEqual(d.indictmentDate, CivilDate(2025,8,22))
         XCTAssertEqual(d.detention, .detained)
         XCTAssertEqual(d.defendants[0].counsel.status, .absentExplicit)
-        XCTAssertEqual(d.counselText, "X")
+        XCTAssertEqual(d.counselText, "")
         let birth = d.birthAssessments[0]
         XCTAssertEqual(birth.birthDate, CivilDate(1984,12,4))
         XCTAssertEqual(birth.age, 40)
@@ -38,8 +38,8 @@ final class MemoCoreTests: XCTestCase {
         XCTAssertEqual(d.detention, .unknown)
         XCTAssertEqual(d.defendants[0].counsel.text, "윤상일(국선)")
         XCTAssertEqual(d.defendants[1].counsel.status, .absentMissing)
-        XCTAssertEqual(d.defendants[1].counsel.text, "X")
-        XCTAssertEqual(d.counselText, "1. 윤상일(국선)\n2. X")
+        XCTAssertEqual(d.defendants[1].counsel.text, "")
+        XCTAssertEqual(d.counselText, "윤상일(국선)")
         XCTAssertFalse(d.hasUnconfirmedCounsel)
         XCTAssertEqual(d.birthAssessments.map(\.birthDate), [CivilDate(1972,3,24), CivilDate(1971,3,5)])
         XCTAssertEqual(d.birthAssessments.map(\.age), [54,55])
@@ -141,10 +141,10 @@ final class MemoCoreTests: XCTestCase {
         XCTAssertEqual(CivilDate(2004,2,29)!.age(on: CivilDate(2025,2,28)!),20)
         XCTAssertEqual(CivilDate(2004,2,29)!.age(on: CivilDate(2025,3,1)!),21)
     }
-    func testMissingAndExplicitAbsentCounselBothProduceX() {
+    func testMissingAndExplicitAbsentCounselBothProduceBlank() {
         for text in ["피고인 김가상\n변호인 없음", "피고인 김가상\n죄명 절도"] {
             let d = ExtractionPipeline().extract(text: text)
-            XCTAssertEqual(d.counselText, "X"); XCTAssertFalse(d.hasUnconfirmedCounsel)
+            XCTAssertEqual(d.counselText, ""); XCTAssertFalse(d.hasUnconfirmedCounsel)
         }
     }
     func testNamedCounselPreserved() {
@@ -153,13 +153,13 @@ final class MemoCoreTests: XCTestCase {
     }
     func testCounselIsNotCarriedIntoNextDefendant() {
         let d = ExtractionPipeline().extract(text: "피고인 김가상\n변호인 윤상일\n피고인 이가상\n죄명 절도")
-        XCTAssertEqual(d.defendants.map { $0.counsel.text }, ["윤상일","X"])
+        XCTAssertEqual(d.defendants.map { $0.counsel.text }, ["윤상일",""])
     }
     func testExplicitAbsenceDistinguishedFromMissing() {
         let d = ExtractionPipeline().extract(text: "피고인 김가상\n변호인 없음\n피고인 이가상\n죄명 절도")
         XCTAssertEqual(d.defendants.map { $0.counsel.status }, [.absentExplicit,.absentMissing])
     }
-    func testOCRMissingDoesNotAutomaticallyBecomeX() {
+    func testOCRMissingRequiresReviewAndStaysBlank() {
         let d = ExtractionPipeline().extract(text: "피고인 김가상\n죄명 절도", readability: .needsReview)
         XCTAssertEqual(d.defendants[0].counsel.status,.needsReview)
         XCTAssertEqual(d.counselText,""); XCTAssertTrue(d.hasUnconfirmedCounsel)
@@ -178,7 +178,7 @@ final class MemoCoreTests: XCTestCase {
     func testUserCanConfirmOCRAbsence() {
         var d = ExtractionPipeline().extract(text: "피고인 김가상", readability: .needsReview)
         d.defendants[0].counsel.status = .absentMissing
-        XCTAssertEqual(d.counselText,"X"); XCTAssertFalse(d.hasUnconfirmedCounsel)
+        XCTAssertEqual(d.counselText,""); XCTAssertFalse(d.hasUnconfirmedCounsel)
     }
     func testBlankNamedCounselRemainsUnconfirmed() {
         XCTAssertTrue(CounselInfo(status: .named, name: "  ").needsConfirmation)
@@ -206,6 +206,51 @@ final class MemoCoreTests: XCTestCase {
         XCTAssertEqual(d.charges, ["공무집행방해", "변경죄명"])
         XCTAssertEqual(d.numberedCharges, "1. 공무집행방해 (김유나)\n2. 변경죄명 (이영수)")
     }
+    func testDetentionOrderColorsAndUnbrokenLine() throws {
+        let examples: [([Detention], String)] = [
+            ([.detained], "O"), ([.released], "X"),
+            ([.detained,.released], "OX"), ([.released,.detained], "XO"),
+            ([.detained,.detained], "OO"), ([.released,.released], "XX"),
+            ([.detained,.released,.detained], "OXO")
+        ]
+        for (statuses, expected) in examples {
+            let glyphs = try DetentionOutput.glyphs(for: statuses)
+            let text = glyphs.map(\.character).joined()
+            XCTAssertEqual(text, expected)
+            XCTAssertEqual(text.count, statuses.count)
+            XCTAssertTrue(text.allSatisfy { $0 == "O" || $0 == "X" })
+            XCTAssertEqual(glyphs.map(\.ink), statuses.map { $0 == .detained ? .red : .black })
+        }
+    }
+    func testUnknownDetentionBlocksEntireOutput() {
+        XCTAssertThrowsError(try DetentionOutput.glyphs(for: [.detained,.unknown,.released])) { error in
+            XCTAssertEqual(error as? DetentionOutputError, .confirmationRequired([2]))
+        }
+        var d = CaseDraft(); d.defendants = [Defendant(detention: .unknown)]
+        XCTAssertTrue(d.hasUnconfirmedDetention)
+        XCTAssertTrue(d.validationWarnings.contains { $0.contains("구속 여부") })
+    }
+    func testLatestSampleDetentionOutput() throws {
+        let one = ExtractionPipeline().extract(text: try sample(1))
+        let two = ExtractionPipeline().extract(text: try sample(2))
+        XCTAssertEqual(try one.detentionGlyphs().map(\.character).joined(), "O")
+        XCTAssertEqual(try two.detentionGlyphs().map(\.character).joined(), "OX")
+        XCTAssertEqual(try two.detentionGlyphs().map(\.ink), [.red,.black])
+        XCTAssertFalse(two.hasUnconfirmedDetention) // Mixed known states are not unknown.
+        XCTAssertFalse(two.warnings.contains { $0.contains("구속") })
+    }
+    func testCounselOutputContainsOnlyNamesAndNoPlaceholders() {
+        var d = CaseDraft()
+        d.defendants = [
+            Defendant(counsel: CounselInfo(status: .absentExplicit, name: "남은이름")),
+            Defendant(counsel: CounselInfo(status: .named, name: "윤상일(국선)")),
+            Defendant(counsel: CounselInfo(status: .absentMissing)),
+            Defendant(counsel: CounselInfo(status: .named, name: "다른변호인")),
+            Defendant(counsel: CounselInfo(status: .needsReview, name: "미확정이름"))
+        ]
+        XCTAssertEqual(d.counselText, "윤상일(국선)\n다른변호인")
+        XCTAssertTrue(d.hasUnconfirmedCounsel)
+    }
     func testSingleNumbering() {
         XCTAssertEqual(CaseDraft.numbered(["절도"]),"1. 절도")
         XCTAssertEqual(CaseDraft.numbered(["", "甲", "乙"]),"1. 甲\n2. 乙")
@@ -213,7 +258,7 @@ final class MemoCoreTests: XCTestCase {
     func testNumberedNamesAndZeroWidthCharacters() {
         let d = ExtractionPipeline().extract(text: "1.\u{200B} 피 고 인 김가상 (720324-0000000), 54세\n변호인 없음\n2.\u{200B} 피 고 인 이가상 (710305-9999999), 55세\n죄명 절도")
         XCTAssertEqual(d.defendants.map(\.name),["김가상","이가상"])
-        XCTAssertEqual(d.defendants[0].counsel.text,"X")
+        XCTAssertEqual(d.defendants[0].counsel.text,"")
         XCTAssertFalse(d.counselText.contains("피 고 인"))
     }
     func testLabelOnlyNumberedNames() {

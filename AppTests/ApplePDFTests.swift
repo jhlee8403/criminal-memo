@@ -25,7 +25,7 @@ final class ApplePDFTests: XCTestCase {
                 XCTAssertFalse(draft.birthAssessments[0].canApplyAgeMarks)
             } else {
                 XCTAssertEqual(draft.defendants.map(\.name), ["김유나", "이영수"])
-                XCTAssertEqual(draft.defendants.map { $0.counsel.text }, ["윤상일(국선)", "X"])
+                XCTAssertEqual(draft.defendants.map { $0.counsel.text }, ["윤상일(국선)", ""])
                 XCTAssertEqual(draft.defendants.map(\.detention), [.detained, .released])
                 XCTAssertEqual(draft.birthAssessments.map(\.age), [54,55])
             }

@@ -120,7 +120,7 @@ public struct ProsecutionExtractor: CaseExtractionModule {
             let statuses = Set(values.compactMap(parse))
             draft.defendants[index].detention = statuses.count == 1 && values.allSatisfy({ parse($0) != nil }) ? statuses.first! : .unknown
         }
-        if draft.detention == .unknown { draft.warnings.append("구속 여부가 불명확하거나 피고인별로 다릅니다. 피고인별 정보를 확인하세요.") }
+        if draft.hasUnconfirmedDetention { draft.warnings.append("구속 여부를 알 수 없는 피고인이 있습니다. 피고인별 정보를 확인하세요.") }
     }
 }
 

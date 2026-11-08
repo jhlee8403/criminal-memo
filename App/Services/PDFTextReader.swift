@@ -11,7 +11,7 @@ struct ExtractedDocument: Sendable {
 
 enum MemoError: LocalizedError {
     case invalidPDF, lockedPDF, tooLarge, unreadablePage(Int), emptyText
-    case missingTemplate, changedTemplate, overflow(String), invalidDate, unconfirmedCounsel
+    case missingTemplate, changedTemplate, overflow(String), invalidDate, unconfirmedCounsel, unconfirmedDetention
     var errorDescription: String? {
         switch self {
         case .invalidPDF: return "읽을 수 없는 PDF입니다."
@@ -22,6 +22,7 @@ enum MemoError: LocalizedError {
         case .missingTemplate: return "번들에서 원본 형사메모 양식을 찾지 못했습니다."
         case .changedTemplate: return "분석된 원본 양식과 다른 PDF입니다. 좌표를 재검증해야 합니다."
         case .overflow(let field): return "\(field) 내용이 지정된 칸에 들어가지 않습니다. 내용을 줄인 뒤 다시 생성하세요."
+        case .unconfirmedDetention: return "구속 여부를 알 수 없는 피고인이 있습니다. 원문과 대조해 확인하세요."
         case .unconfirmedCounsel: return "판독이 불확실한 피고인의 변호인 기재 여부를 먼저 확인하세요."
         case .invalidDate: return "기소일을 YYYY.MM.DD 형식으로 입력하세요."
         }

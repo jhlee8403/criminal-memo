@@ -44,6 +44,7 @@ final class MemoViewModel: ObservableObject {
             errorMessage = "피고인 이름을 확인하세요."; return
         }
         guard !draft.hasUnconfirmedCounsel else { errorMessage = "피고인별 변호인 기재 여부를 먼저 확인하세요."; return }
+        guard !draft.hasUnconfirmedDetention else { errorMessage = "피고인별 구속 여부를 먼저 확인하세요."; return }
         let snapshot = draft
         busy = true; errorMessage = nil; outputData = nil
         Task {
