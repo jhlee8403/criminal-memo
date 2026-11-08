@@ -1,0 +1,8 @@
+{
+  "checksPassed": 31,
+  "actualTemplatePages": 1,
+  "syntheticTwoPageVerified": true,
+  "actualUserTwoPageTemplateVerified": false,
+  "templateSHA256": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9",
+  "outputSource": "browser Blob downloads from in-memory diagnostic; not Windows Edge file://"
+}

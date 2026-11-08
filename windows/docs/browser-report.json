@@ -1,0 +1,88 @@
+{
+  "htmlSHA256": "9d29dd1588b2354e84eb98e95485def29d24646a1ea67ce35f0b6cbd7f58906e",
+  "browser": "156.0.8078.79",
+  "platform": "linux",
+  "windowsEdgeVerified": false,
+  "offlineContext": true,
+  "fileMode": {
+    "passed": false,
+    "error": "page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///workspace/criminal-memo/windows/distribution/CriminalMemo/CriminalMemo.html\nCall log:\n\u001b[2m  - navigating to \"file:///workspace/criminal-memo/windows/distribution/CriminalMemo/CriminalMemo.html\", waiting until \"load\"\u001b[22m\n"
+  },
+  "checks": [
+    {
+      "sample": 1,
+      "names": [
+        "이민주"
+      ],
+      "counsel": "",
+      "detention": [
+        {
+          "text": "O",
+          "color": "red"
+        }
+      ],
+      "birth": [
+        {
+          "birth": "1984-12-04",
+          "age": 40,
+          "resolved": false,
+          "warnings": [
+            "계산한 만 40세와 기재 41세가 다릅니다. 출생 연도를 확인하세요."
+          ]
+        }
+      ],
+      "download": true
+    },
+    {
+      "sample": 2,
+      "names": [
+        "김유나",
+        "이영수"
+      ],
+      "counsel": "윤상일(국선)",
+      "detention": [
+        {
+          "text": "O",
+          "color": "red"
+        },
+        {
+          "text": "X",
+          "color": "black"
+        }
+      ],
+      "birth": [
+        {
+          "birth": "1972-03-24",
+          "age": 54,
+          "resolved": true,
+          "warnings": []
+        },
+        {
+          "birth": "1971-03-05",
+          "age": 55,
+          "resolved": true,
+          "warnings": []
+        }
+      ],
+      "download": true
+    }
+  ],
+  "externalRequests": [],
+  "errors": [],
+  "mode": "in-memory HTML diagnostic (NOT file://)",
+  "syntheticTwoPageTest": true,
+  "longTextRejected": true,
+  "ocr": {
+    "passed": true,
+    "KoreanName": true,
+    "KoreanCharge": true,
+    "requiresReview": true
+  },
+  "mixedPDF": {
+    "passed": true,
+    "defendants": 2,
+    "crossPageCharges": true
+  },
+  "runtimeDiagnosticPassed": true,
+  "targetWindowsReady": false
+}

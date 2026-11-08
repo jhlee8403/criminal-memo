@@ -1,0 +1,7 @@
+# Keep exact PDF extraction fixtures and upstream license whitespace.
+tests/fixtures/*.txt whitespace=-blank-at-eol
+vendor/*.txt whitespace=-blank-at-eol
+distribution/CriminalMemo/assets/*.txt whitespace=-blank-at-eol
+# Review src/ and lockfiles; this 18MB HTML is the reproducible generated payload.
+distribution/** linguist-generated=true
+distribution/CriminalMemo/CriminalMemo.html -diff
