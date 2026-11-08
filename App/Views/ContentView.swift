@@ -52,7 +52,10 @@ struct ContentView: View {
                         if !model.draft.noCounsel { TextField("변호인", text: $model.draft.counsel, axis: .vertical) }
                         TextField("기소일 YYYY.MM.DD", text: $dateText)
                             .autocorrectionDisabled()
-                            .onChange(of: dateText) { _, value in model.draft.indictmentDate = CivilDate.parse(value) }
+                            .onChange(of: dateText) { _, value in
+                                model.draft.indictmentDate = CivilDate.parse(value)
+                                model.reviewed = false; model.outputData = nil
+                            }
                         Picker("구속 여부", selection: $model.draft.detention) {
                             ForEach(Detention.allCases, id: \.self) { Text($0.label).tag($0) }
                         }
