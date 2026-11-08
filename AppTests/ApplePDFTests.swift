@@ -17,9 +17,18 @@ final class ApplePDFTests: XCTestCase {
             let extracted = try PDFTextReader().read(url: sample(number))
             XCTAssertTrue(extracted.ocrPages.isEmpty)
             let draft = ExtractionPipeline().extract(text: extracted.text)
-            XCTAssertEqual(draft.numberedDefendants, "1. 이민주")
-            XCTAssertEqual(draft.numberedCharges, "1. 상해\n2. 폭행치상")
-            XCTAssertEqual(draft.prosecutor, "이승엽")
+            if number == 1 {
+                XCTAssertEqual(draft.numberedDefendants, "1. 이민주")
+                XCTAssertEqual(draft.numberedCharges, "1. 상해\n2. 폭행치상")
+                XCTAssertEqual(draft.prosecutor, "이승엽")
+                XCTAssertEqual(draft.birthAssessments[0].age, 40)
+                XCTAssertFalse(draft.birthAssessments[0].canApplyAgeMarks)
+            } else {
+                XCTAssertEqual(draft.defendants.map(\.name), ["김유나", "이영수"])
+                XCTAssertEqual(draft.defendants.map { $0.counsel.text }, ["윤상일(국선)", "X"])
+                XCTAssertEqual(draft.defendants.map(\.detention), [.detained, .released])
+                XCTAssertEqual(draft.birthAssessments.map(\.age), [54,55])
+            }
         }
     }
     func testVisionReadsRasterizedScan() throws {
@@ -36,17 +45,18 @@ final class ApplePDFTests: XCTestCase {
         XCTAssertEqual(extracted.ocrPages, [1])
         XCTAssertTrue(extracted.text.contains("공소"))
         // OCR quality varies by OS. This asserts the actual required fields, rather than only nonempty output.
-        let draft = ExtractionPipeline().extract(text: extracted.text)
+        let draft = ExtractionPipeline().extract(text: extracted.text, readability: .needsReview)
+        XCTAssertTrue(draft.hasUnconfirmedCounsel)
+        XCTAssertFalse(draft.birthAssessments[0].canApplyAgeMarks)
         XCTAssertEqual(draft.defendants.first?.name, "이민주")
         XCTAssertEqual(draft.prosecutor, "이승엽")
         XCTAssertEqual(draft.charges, ["상해", "폭행치상"])
     }
     func testGeneratedPDFPreservesTemplateAndAddsText() throws {
         var draft = CaseDraft()
-        draft.defendants = [Defendant(name: "가상피고인")]
-        draft.charges = ["가상죄명", "시험죄명"]
-        draft.prosecutor = "가상검사"; draft.noCounsel = true
-        draft.indictmentDate = CivilDate(2025,8,22); draft.detention = .detained
+        draft.defendants = [Defendant(name: "가상피고인", counsel: CounselInfo(status: .absentExplicit), charges: ["가상죄명", "시험죄명"], detention: .detained)]
+        draft.prosecutor = "가상검사"
+        draft.indictmentDate = CivilDate(2025,8,22)
         let data = try MemoPDFRenderer().render(draft)
         let output = try XCTUnwrap(PDFDocument(data: data))
         let source = try XCTUnwrap(PDFDocument(url: template()))
@@ -78,6 +88,23 @@ final class ApplePDFTests: XCTestCase {
         attachment.name = "실제 iOS 렌더러 출력 좌표 검토용"; attachment.lifetime = .keepAlways
         add(attachment)
         try FileManager.default.removeItem(at: outputURL)
+    }
+    func testUnconfirmedCounselBlocksRendering() {
+        var draft = CaseDraft(); draft.defendants = [Defendant(name: "미확인")]
+        XCTAssertThrowsError(try MemoPDFRenderer().render(draft)) { error in
+            guard case MemoError.unconfirmedCounsel = error else { return XCTFail("wrong error: \(error)") }
+        }
+    }
+    func testActualMultiDefendantRenderingFitsCounselAndDetention() throws {
+        let extracted = try PDFTextReader().read(url: sample(2))
+        let draft = ExtractionPipeline().extract(text: extracted.text)
+        let data = try MemoPDFRenderer().render(draft)
+        let pdf = try XCTUnwrap(PDFDocument(data: data))
+        XCTAssertTrue((pdf.string ?? "").contains("윤상일"))
+        XCTAssertTrue((pdf.string ?? "").contains("김유나"))
+        XCTAssertTrue((pdf.string ?? "").contains("이영수"))
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "com.adobe.pdf")
+        attachment.name = "피고인별 변호인·구속 표시"; attachment.lifetime = .keepAlways; add(attachment)
     }
     func testOversizedTextFailsInsteadOfTruncating() {
         var draft = CaseDraft(); draft.prosecutor = String(repeating: "검사이름", count: 500)

@@ -24,45 +24,28 @@ struct ContentView: View {
                     if model.busy { ProgressView("문서 처리 중…") }
                 }
                 if model.sourceData != nil {
-                    Section("피고인 · 주민등록번호") {
+                    Section("피고인별 정보") {
                         ForEach($model.draft.defendants) { $person in
-                            VStack(alignment: .leading) {
-                                TextField("피고인 이름", text: $person.name)
-                                SecureField("주민등록번호 (나이 계산용)", text: $person.residentNumber)
-                                    .textContentType(.none).autocorrectionDisabled()
-                                Text(ResidentNumber.age(person.residentNumber, on: model.draft.indictmentDate).message)
-                                    .font(.caption).foregroundStyle(.secondary)
-                                Button("이 피고인 삭제", role: .destructive) {
-                                    model.draft.defendants.removeAll { $0.id == person.id }
-                                }
+                            DefendantEditor(person: $person, indictmentDate: model.draft.indictmentDate) {
+                                model.draft.defendants.removeAll { $0.id == person.id }
                             }
                         }
                         Button("피고인 추가") { model.draft.defendants.append(Defendant()) }
-                        Text("유효한 주민번호와 기소일이 있는 경우만 소년·필요적국선에 원을 표시합니다. 여러 피고인 중 한 명이라도 해당하면 표시됩니다.")
+                        Text("번호는 피고인 목록 순서와 같습니다. 확인된 만 나이가 19세 미만이면 소년, 70세 초과이면 필요적국선에 원을 표시합니다.")
                             .font(.caption)
-                    }
-                    Section("죄명 (한 줄에 하나)") {
-                        TextEditor(text: Binding(get: { model.draft.charges.joined(separator: "\n") }, set: { model.draft.charges = $0.components(separatedBy: .newlines) }))
-                            .frame(minHeight: 80)
-                        Text("피고인과 죄명은 PDF에서 항상 1.부터 번호가 붙습니다.").font(.caption)
                     }
                     Section("기소 정보") {
                         TextField("검사 이름", text: $model.draft.prosecutor)
-                        Toggle("변호인 없음 (X)", isOn: $model.draft.noCounsel)
-                        if !model.draft.noCounsel { TextField("변호인", text: $model.draft.counsel, axis: .vertical) }
                         TextField("기소일 YYYY.MM.DD", text: $dateText)
                             .autocorrectionDisabled()
                             .onChange(of: dateText) { _, value in
                                 model.draft.indictmentDate = CivilDate.parse(value)
                                 model.reviewed = false; model.outputData = nil
                             }
-                        Picker("구속 여부", selection: $model.draft.detention) {
-                            ForEach(Detention.allCases, id: \.self) { Text($0.label).tag($0) }
-                        }
-                        Text("주민번호는 출력 PDF에 기재하지 않습니다. 유효성 확인 실패 시 원문에 적힌 나이로 대체하지 않습니다.").font(.caption)
+                        Text("나이 계산에는 앞 6자리, 기재 나이, 기소일 또는 직접 확인한 출생 연도만 사용하며 주민번호 뒷자리는 사용하지 않습니다.").font(.caption)
                     }
                     Section("검토 후 생성") {
-                        ForEach(Array(model.draft.warnings.enumerated()), id: \.offset) { _, warning in Text(warning).font(.caption).foregroundStyle(.orange) }
+                        ForEach(Array((model.draft.warnings + model.draft.validationWarnings).enumerated()), id: \.offset) { _, warning in Text(warning).font(.caption).foregroundStyle(.orange) }
                         if !dateText.isEmpty && CivilDate.parse(dateText) == nil { Text("기소일 형식을 확인하세요.").foregroundStyle(.red) }
                         Toggle("원문과 대조하여 결과를 확인했습니다", isOn: $model.reviewed)
                         Button("메모 PDF 생성") { model.generate(dateText: dateText); selectedPreview = 1 }

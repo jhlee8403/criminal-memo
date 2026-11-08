@@ -6,6 +6,7 @@ import MemoCore
 
 struct MemoPDFRenderer {
     func render(_ draft: CaseDraft, templateURL: URL? = Bundle.main.url(forResource: "memo-template", withExtension: "pdf")) throws -> Data {
+        guard !draft.hasUnconfirmedCounsel else { throw MemoError.unconfirmedCounsel }
         guard let url = templateURL else { throw MemoError.missingTemplate }
         let data = try Data(contentsOf: url)
         let layout = try TemplateLayout.bundled()
@@ -53,11 +54,20 @@ struct MemoPDFRenderer {
             ("indictmentDate", draft.indictmentDate?.text ?? "", "기소일")
         ] { try drawText(text, in: rect(key, layout), label: label) }
         let detention = rect("detention", layout)
-        if draft.detention == .detained {
-            context.setStrokeColor(UIColor.red.cgColor); context.setLineWidth(1.8)
-            context.strokeEllipse(in: CGRect(x: detention.midX - 7, y: detention.midY - 7, width: 14, height: 14))
-        } else if draft.detention == .released {
-            try drawText("X", in: detention, label: "구속", alignment: .center)
+        let count = max(1, draft.defendants.count)
+        let rowHeight = detention.height / CGFloat(count)
+        guard rowHeight >= 9 else { throw MemoError.overflow("피고인별 구속") }
+        for (index, person) in draft.defendants.enumerated() {
+            let row = CGRect(x: detention.minX, y: detention.minY + CGFloat(index) * rowHeight, width: detention.width, height: rowHeight)
+            if count > 1 { try drawText("\(index + 1).", in: CGRect(x: row.minX, y: row.minY, width: 9, height: rowHeight), label: "구속 번호") }
+            let centerX = count > 1 ? row.midX + 4 : row.midX
+            let diameter = min(14, rowHeight - 3)
+            if person.detention == .detained {
+                context.setStrokeColor(UIColor.red.cgColor); context.setLineWidth(count > 1 ? 1.5 : 1.8)
+                context.strokeEllipse(in: CGRect(x: centerX - diameter / 2, y: row.midY - diameter / 2, width: diameter, height: diameter))
+            } else if person.detention == .released {
+                try drawText("X", in: CGRect(x: centerX - 5, y: row.minY, width: 10, height: row.height), label: "구속", alignment: .center)
+            }
         }
         context.setStrokeColor(UIColor.red.cgColor); context.setLineWidth(1.3)
         if draft.marksJuvenile { context.strokeEllipse(in: rect("juvenile", layout)) }

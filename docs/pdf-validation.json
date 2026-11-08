@@ -55,12 +55,12 @@
     {
       "file": "공소장1.pdf",
       "pages": 1,
-      "textCharacters": 632
+      "textCharacters": 609
     },
     {
       "file": "공소장2.pdf",
-      "pages": 1,
-      "textCharacters": 625
+      "pages": 2,
+      "textCharacters": 968
     }
   ],
   "outsideFieldChangedPixels": 0,

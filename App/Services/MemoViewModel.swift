@@ -26,7 +26,7 @@ final class MemoViewModel: ObservableObject {
                 }.value
                 sourceData = loaded.1
                 sourceText = loaded.0.text
-                draft = ExtractionPipeline().extract(text: loaded.0.text)
+                draft = ExtractionPipeline().extract(text: loaded.0.text, readability: loaded.0.ocrPages.isEmpty ? .reliableText : .needsReview)
                 extractionNote = loaded.0.ocrPages.isEmpty ? "PDF 텍스트 직접 추출" : "OCR 사용 페이지: \(loaded.0.ocrPages.map(String.init).joined(separator: ", "))"
                 if !loaded.0.lowConfidencePages.isEmpty {
                     draft.warnings.append("OCR 신뢰도가 낮은 페이지: \(loaded.0.lowConfidencePages.map(String.init).joined(separator: ", ")). 원문 대조가 필요합니다.")
@@ -40,6 +40,10 @@ final class MemoViewModel: ObservableObject {
         guard dateText.isEmpty || CivilDate.parse(dateText) != nil else { errorMessage = MemoError.invalidDate.localizedDescription; return }
         draft.indictmentDate = CivilDate.parse(dateText)
         guard reviewed else { errorMessage = "원문과 추출 결과를 먼저 검토하세요."; return }
+        guard !draft.defendants.isEmpty, draft.defendants.allSatisfy({ !$0.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) else {
+            errorMessage = "피고인 이름을 확인하세요."; return
+        }
+        guard !draft.hasUnconfirmedCounsel else { errorMessage = "피고인별 변호인 기재 여부를 먼저 확인하세요."; return }
         let snapshot = draft
         busy = true; errorMessage = nil; outputData = nil
         Task {

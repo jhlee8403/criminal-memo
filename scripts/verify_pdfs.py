@@ -91,7 +91,7 @@ def main():
         text = "\n".join(p.get_text() for p in doc)
         fixture = (ROOT / f"Tests/MemoCoreTests/Fixtures/sample{number}.txt").read_text()
         check(text == fixture, f"sample {number}: Swift fixture is extracted from actual PDF")
-        check(len(doc) == 1 and len(text.strip()) > 100, f"sample {number}: text extraction succeeds")
+        check(len(doc) == (1 if number == 1 else 2) and len(text.strip()) > 100, f"sample {number}: text extraction succeeds")
         samples.append({"file": f"공소장{number}.pdf", "pages":len(doc), "textCharacters":len(text.strip())})
     check(all(hashlib.sha256(p.read_bytes()).hexdigest() == digest for p, digest in original_hashes.items()), "all three original PDFs remain unchanged")
     report = {"templateSHA256":digest,"templatePages":len(source),"fields":LAYOUT["fields"],"samples":samples,"outsideFieldChangedPixels":int(np.count_nonzero(changed & ~allowed)),"renderer":"PyMuPDF coordinate simulation; NOT the iOS renderer", "iOSBuildTested":False}
