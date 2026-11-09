@@ -1,19 +1,24 @@
 {
   "name": "criminal-memo-windows",
-  "version": "2.1.0",
+  "version": "2.2.0-experimental",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --test tests/core.test.mjs tests/hybrid.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/hybrid.test.mjs tests/paddle.test.mjs",
     "test:browser": "node tests/browser.mjs",
     "test:ocr": "python scripts/prepare_ocr_benchmark.py && node tests/ocr-benchmark.mjs",
-    "test:ocr-ui": "node tests/ocr-ui.mjs"
+    "test:ocr-ui": "node tests/ocr-ui.mjs",
+    "test:paddle": "node tests/paddle-browser.mjs",
+    "test:paddle-benchmark": "python scripts/prepare_ocr_benchmark.py && node tests/paddle-benchmark.mjs",
+    "test:paddle-hybrid": "node tests/paddle-hybrid.mjs",
+    "test:paddle-integration": "node tests/paddle-integration.mjs"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "1.1.1",
     "@tesseract.js-data/eng": "1.0.0",
     "@tesseract.js-data/kor": "1.0.0",
+    "onnxruntime-web": "1.23.2",
     "pdf-lib": "1.17.1",
     "pdfjs-dist": "4.8.69",
     "tesseract.js": "5.1.1",

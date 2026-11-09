@@ -1,0 +1,11 @@
+{
+  "htmlSHA256": "bedbbde89af028ddc86a48f91081c4b77cacb99a495414954829d3b909bfce3b",
+  "mode": "offline in-memory, NOT Windows Edge file://",
+  "checks": [
+    "Paddle scan analysis, actual candidate buttons, manual full DOB and counsel confirmation, PDF download",
+    "Paddle two-page input, per-person charges and counsel, OX, one-page memo download",
+    "Explicit two-engine sequential comparison retains source conflicts and requires a selection"
+  ],
+  "externalRequests": [],
+  "passed": true
+}

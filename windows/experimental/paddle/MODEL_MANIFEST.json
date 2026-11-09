@@ -1,0 +1,30 @@
+{
+  "onnxConversionRunLocally": false,
+  "recognizerUpstreamParityVerified": false,
+  "files": {
+    "det.onnx": {
+      "sha256": "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
+      "bytes": 4819576,
+      "onnxChecker": "passed (onnx 1.19.1)",
+      "opsets": {
+        "ai.onnx": 14
+      },
+      "input": "tensor_type {\n  elem_type: 1\n  shape {\n    dim {\n      dim_param: \"DynamicDimension.0\"\n    }\n    dim {\n      dim_value: 3\n    }\n    dim {\n      dim_param: \"DynamicDimension.1\"\n    }\n    dim {\n      dim_param: \"DynamicDimension.2\"\n    }\n  }\n}\n",
+      "output": "tensor_type {\n  elem_type: 1\n  shape {\n    dim {\n      dim_param: \"ConvTranspose_497_o0__d0\"\n    }\n    dim {\n      dim_param: \"ConvTranspose_497_o0__d1\"\n    }\n    dim {\n      dim_param: \"ConvTranspose_497_o0__d2\"\n    }\n    dim {\n      dim_param: \"ConvTranspose_497_o0__d3\"\n    }\n  }\n}\n"
+    },
+    "ppocrv5_korean_dict.txt": {
+      "sha256": "a88071c68c01707489baa79ebe0405b7beb5cca229f4fc94cc3ef992328802d7",
+      "bytes": 47451
+    },
+    "rec.onnx": {
+      "sha256": "322f140154c820fcb83c3d24cfe42c9ec70dd1a1834163306a7338136e4f1eaa",
+      "bytes": 13401252,
+      "onnxChecker": "passed (onnx 1.19.1)",
+      "opsets": {
+        "ai.onnx": 14
+      },
+      "input": "tensor_type {\n  elem_type: 1\n  shape {\n    dim {\n      dim_param: \"DynamicDimension.0\"\n    }\n    dim {\n      dim_value: 3\n    }\n    dim {\n      dim_value: 48\n    }\n    dim {\n      dim_param: \"DynamicDimension.1\"\n    }\n  }\n}\n",
+      "output": "tensor_type {\n  elem_type: 1\n  shape {\n    dim {\n      dim_param: \"DynamicDimension.2\"\n    }\n    dim {\n      dim_param: \"DynamicDimension.3\"\n    }\n    dim {\n      dim_value: 11947\n    }\n  }\n}\n"
+    }
+  }
+}

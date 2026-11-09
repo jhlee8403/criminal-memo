@@ -170,18 +170,28 @@ function renderPeople() {
         (v) => (p.name = v),
         `person.${index}.name`,
       ),
-      input("생년월일 앞 6자리 YYMMDD", p.birthDigits, "text", (v) => {
-        p.birthDigits = v;
-        refresh();
-      }),
-      input("공소장 기재 나이", p.statedAge, "number", (v) => {
-        p.statedAge = v === "" ? null : Number(v);
-        refresh();
-      }),
-      input("직접 확인한 출생 연도 YYYY", p.confirmedYear, "text", (v) => {
-        p.confirmedYear = v;
-        refresh();
-      }),
+      input(
+        "생년월일 앞 6자리 YYMMDD",
+        p.birthDigits,
+        "text",
+        (v) => {
+          p.birthDigits = v;
+          p.confirmedBirthDate = "";
+          const dateInput = card.querySelector('input[type="date"]');
+          if (dateInput) dateInput.value = "";
+          refresh();
+        },
+        `person.${index}.birthDigits`,
+      ),
+      input(
+        "직접 확인한 전체 생년월일 YYYY-MM-DD",
+        p.confirmedBirthDate,
+        "date",
+        (v) => {
+          p.confirmedBirthDate = v;
+          refresh();
+        },
+      ),
       note,
       input(
         "죄명 (한 줄에 하나)",
@@ -271,6 +281,7 @@ $("analyze").onclick = async () => {
   invalidate();
   try {
     const extracted = await services.analyze(state.source, {
+      engine: $("ocrEngine").value,
       forceOCR: $("forceOCR").checked,
       verifyCritical: $("verifyCritical").checked,
       fieldSettings: {
@@ -410,7 +421,7 @@ window.CM = {
 services.PDFInputService.fromBytes(services.bytes(window.CM_DOCUMENTS.template))
   .then(async (pdf) => {
     $("templateInfo").textContent =
-      `내장 원본 양식: ${pdf.numPages}페이지. 출력 시 모든 원본 페이지를 보존합니다.`;
+      `내장 원본 양식: ${pdf.numPages}페이지. 첫 페이지를 사용하여 1페이지로 출력합니다.`;
     await pdf.destroy();
   })
   .catch((e) => status(e.message, true));
@@ -450,6 +461,14 @@ function renderDiagnostics() {
               heapBefore: diag.heapBefore,
               heapAfter: diag.heapAfter,
               limits: diag.limitReasons,
+              comparison: diag.comparison
+                ? {
+                    engine: diag.comparison.engine,
+                    elapsedMs: diag.comparison.elapsedMs,
+                    unmatched: diag.comparison.unmatched,
+                    defendants: diag.comparison.defendants,
+                  }
+                : null,
             };
   $("diagnosticText").textContent =
     typeof output === "string" ? output : JSON.stringify(output, null, 2);
@@ -472,7 +491,7 @@ function renderDiagnostics() {
     for (const c of field.candidates) {
       const row = document.createElement("div");
       const text = document.createElement("span");
-      text.textContent = `${c.source} · ${c.page ?? "?"}쪽 · ${c.method ?? ""} · 신뢰도 ${c.confidence ?? "없음"}: ${JSON.stringify(c.value)}`;
+      text.textContent = `${c.engine ?? ""} ${c.source} · ${c.page ?? "?"}쪽 · ${c.method ?? ""} · 신뢰도 ${c.confidence ?? "없음"}: ${JSON.stringify(c.value)}`;
       const button = document.createElement("button");
       button.className = "secondary";
       button.textContent = "이 후보 적용";
@@ -585,7 +604,7 @@ $("rerunRegion").onclick = async () => {
         elapsedMs: 0,
       },
     };
-  const ocr = new services.OCRService((s, p) =>
+  const ocr = services.createOCREngine($("regionEngine").value, (s, p) =>
     status(`${s} ${Math.round((p ?? 0) * 100)}%`),
   );
   try {
@@ -624,6 +643,7 @@ $("rerunRegion").onclick = async () => {
         target.candidates.push({
           value,
           source: "precision",
+          engine: $("regionEngine").value,
           page: region.page,
           box: region.box,
           confidence: r.confidence,

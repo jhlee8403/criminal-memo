@@ -1,0 +1,92 @@
+{
+  "htmlSHA256": "bedbbde89af028ddc86a48f91081c4b77cacb99a495414954829d3b909bfce3b",
+  "browser": "156.0.8078.79",
+  "platform": "linux",
+  "windowsEdgeVerified": false,
+  "offlineContext": true,
+  "fileMode": {
+    "passed": false,
+    "error": "page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///workspace/criminal-memo/windows/distribution-candidates/CriminalMemo-v2.2/CriminalMemo.html\nCall log:\n\u001b[2m  - navigating to \"file:///workspace/criminal-memo/windows/distribution-candidates/CriminalMemo-v2.2/CriminalMemo.html\", waiting until \"load\"\u001b[22m\n"
+  },
+  "checks": [
+    {
+      "sample": 1,
+      "names": [
+        "이민주"
+      ],
+      "counsel": "",
+      "detention": [
+        {
+          "text": "O",
+          "color": "red"
+        }
+      ],
+      "birth": [
+        {
+          "resolved": false,
+          "birth": null,
+          "age": null,
+          "warnings": [
+            "앞 6자리만으로 출생 세기를 확정하지 않습니다. 전체 생년월일을 직접 확인하세요."
+          ]
+        }
+      ],
+      "download": true
+    },
+    {
+      "sample": 2,
+      "names": [
+        "김유나",
+        "이영수"
+      ],
+      "counsel": "윤상일(국선)",
+      "detention": [
+        {
+          "text": "O",
+          "color": "red"
+        },
+        {
+          "text": "X",
+          "color": "black"
+        }
+      ],
+      "birth": [
+        {
+          "resolved": false,
+          "birth": null,
+          "age": null,
+          "warnings": [
+            "앞 6자리만으로 출생 세기를 확정하지 않습니다. 전체 생년월일을 직접 확인하세요."
+          ]
+        },
+        {
+          "resolved": false,
+          "birth": null,
+          "age": null,
+          "warnings": [
+            "앞 6자리만으로 출생 세기를 확정하지 않습니다. 전체 생년월일을 직접 확인하세요."
+          ]
+        }
+      ],
+      "download": true
+    }
+  ],
+  "externalRequests": [],
+  "errors": [],
+  "mode": "in-memory HTML diagnostic (NOT file://)",
+  "syntheticTwoPageTest": true,
+  "longTextRejected": true,
+  "ocr": {
+    "passed": true,
+    "KoreanName": true,
+    "KoreanCharge": true,
+    "requiresReview": true
+  },
+  "mixedPDF": {
+    "passed": true,
+    "defendants": 2,
+    "crossPageCharges": true
+  },
+  "runtimeDiagnosticPassed": true,
+  "targetWindowsReady": false
+}

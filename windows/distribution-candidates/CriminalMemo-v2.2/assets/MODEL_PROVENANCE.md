@@ -1,0 +1,15 @@
+# v2.2 experimental assets — not an adopted production engine
+
+- Model family: PaddleOCR PP-OCRv5, Apache-2.0. Official documentation/dictionary pinned to PaddlePaddle/PaddleOCR commit `dab3fe35379033fdcb2d0e9572fac0b36c9a9ebf`.
+- Detector: `PP-OCRv5_mobile_det`, ONNX opset 14. Downloaded from BobLd/RapidOcrNet commit `9d1f9f1f6c3ec6f0da123a420842390de9b97268`, path `RapidOcrNet/models/v5/ch_PP-OCRv5_mobile_det.onnx`. SHA256 `4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae`, independently matches RapidAI/RapidOCR's versioned model registry (v3.4.0 and current registry).
+- Recognizer: `korean_PP-OCRv5_mobile_rec`, ONNX opset 14, input N×3×48×W, output N×T×11947. Downloaded from `123456789qwaszx/game-text-extractor` commit `674b76b04b57e923c5be1eb5ad39076236e90e4d`, `models/korean_PP-OCRv5_mobile_rec.onnx`. SHA256 `322f140154c820fcb83c3d24cfe42c9ec70dd1a1834163306a7338136e4f1eaa`. Its `THIRD_PARTY_NOTICES.txt` attributes the conversion to `monkt/paddleocr-onnx` (Apache-2.0), derived from official PaddleOCR. This hash differs from RapidOCR's export (`cd6e…c9b`): these are NOT claimed byte-identical exports. Conversion lineage/equivalence to official weights has NOT been independently verified. The mirror's pinned bytes, ONNX structure and dictionary cardinality are verified; that is a weaker integrity check than matching the upstream recognizer hash. Experimental comparisons only; do not adopt based solely on this mirror.
+- Dictionary: official `ppocr/utils/dict/ppocrv5_korean_dict.txt`, 11945 entries, plus CTC blank and terminal space. Keep dictionary/model pairing; shape mismatch fails closed. The mirror dictionary is byte-identical to the official pinned dictionary (SHA256 `a88071c68c01707489baa79ebe0405b7beb5cca229f4fc94cc3ef992328802d7`).
+- ONNX Runtime Web 1.23.2, MIT; official npm package pinned by package-lock integrity. WASM CPU (embedded WASM bytes are loaded via a Blob URL; direct `wasmBinary` hit an Emscripten relative-URL issue in the Blob worker and is not used), one thread, no WebGPU, no proxy worker or remote imports.
+
+Official download domains `paddle-model-ecology.bj.bcebos.com`, `huggingface.co`, and `www.modelscope.cn` were denied (HTTP proxy CONNECT 403). A configuration draft requesting model host access was saved, but was not applied during the initial tests. GitHub mirror access uses ordinary permitted HTTPS, not a proxy bypass. A fresh official download and cross-runtime parity check remain release prerequisites.
+
+Sources:
+- https://github.com/PaddlePaddle/PaddleOCR/blob/dab3fe35379033fdcb2d0e9572fac0b36c9a9ebf/docs/version3.x/module_usage/text_recognition.en.md
+- https://github.com/RapidAI/RapidOCR/blob/bb071364a4eaed904dc09c5e50fbcbcfc28bd7a3/python/rapidocr/default_models.yaml
+- https://github.com/BobLd/RapidOcrNet/blob/9d1f9f1f6c3ec6f0da123a420842390de9b97268/RapidOcrNet/models/v5/ch_PP-OCRv5_mobile_det.onnx
+- https://github.com/123456789qwaszx/game-text-extractor/blob/674b76b04b57e923c5be1eb5ad39076236e90e4d/THIRD_PARTY_NOTICES.txt

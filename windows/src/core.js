@@ -40,6 +40,7 @@ export function parseDate(s) {
   if (!m || !validDate(+m[1], +m[2], +m[3])) return null;
   return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
 }
+// v2.2: written age and resident-number suffix never participate in DOB resolution.
 export function birthAssessment(person, filingDate) {
   const fail = (message) => ({
     resolved: false,
@@ -47,64 +48,39 @@ export function birthAssessment(person, filingDate) {
     age: null,
     warnings: [message],
   });
+  const manual = String(person.confirmedBirthDate ?? "").trim();
   const front = person.birthDigits ?? "";
-  if (!/^\d{6}$/.test(front))
-    return fail("생년월일 앞 6자리 YYMMDD를 확인하세요.");
-  const yy = +front.slice(0, 2),
-    month = +front.slice(2, 4),
-    day = +front.slice(4);
-  let calendarPossible = false;
-  for (let y = yy || 100; y <= 9999; y += 100)
-    if (validDate(y, month, day)) {
-      calendarPossible = true;
-      break;
-    }
-  if (!calendarPossible)
-    return fail("앞 6자리의 월·일이 실제 달력에 없습니다.");
-  const filing = parseDate(filingDate);
-  const manual = String(person.confirmedYear ?? "").trim();
-  let year;
+  let birth;
   if (manual) {
-    if (
-      !/^\d{4}$/.test(manual) ||
-      +manual % 100 !== yy ||
-      !validDate(+manual, month, day)
-    )
-      return fail("확인한 출생 연도가 YY와 다르거나 날짜가 유효하지 않습니다.");
-    year = +manual;
+    birth = parseDate(manual);
+    if (!birth) return fail("직접 확인한 전체 생년월일이 유효하지 않습니다.");
   } else {
-    if (!filing || !Number.isInteger(person.statedAge) || person.statedAge < 0)
-      return fail("기소일·기재 나이 또는 직접 확인한 출생 연도가 필요합니다.");
-    const fy = +filing.slice(0, 4);
-    const candidates = [
-      fy - person.statedAge - 1,
-      fy - person.statedAge,
-    ].filter((y) => y > 0 && y % 100 === yy && validDate(y, month, day));
-    if (candidates.length !== 1)
-      return fail("출생 세기를 확정할 수 없습니다. 출생 연도를 확인하세요.");
-    year = candidates[0];
+    if (!/^\d{6}$/.test(front))
+      return fail("생년월일 앞 6자리 YYMMDD를 확인하세요.");
+    const yy = +front.slice(0, 2),
+      month = +front.slice(2, 4),
+      day = +front.slice(4);
+    let possible = false;
+    for (let year = yy || 100; year <= 9999; year += 100)
+      if (validDate(year, month, day)) {
+        possible = true;
+        break;
+      }
+    if (!possible) return fail("앞 6자리의 월·일이 실제 달력에 없습니다.");
+    return fail(
+      "앞 6자리만으로 출생 세기를 확정하지 않습니다. 전체 생년월일을 직접 확인하세요.",
+    );
   }
-  const birth = `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  const filing = parseDate(filingDate);
   if (!filing) return { ...fail("기소일을 확인하세요."), birth };
   if (birth > filing) return fail("생년월일이 기소일보다 늦습니다.");
-  const [fy, fm, fd] = filing.split("-").map(Number);
-  const age = fy - year - (fm < month || (fm === month && fd < day) ? 1 : 0);
-  const warnings = [];
-  const mismatch =
-    Number.isInteger(person.statedAge) && person.statedAge !== age;
-  if (mismatch)
-    warnings.push(
-      `계산한 만 ${age}세와 기재 ${person.statedAge}세가 다릅니다. 출생 연도를 확인하세요.`,
-    );
-  if (person.birthReview && !manual)
-    warnings.push(
-      "OCR 생년월일과 기재 나이를 원문과 대조하고 출생 연도를 확인하세요.",
-    );
+  const [by, bm, bd] = birth.split("-").map(Number),
+    [fy, fm, fd] = filing.split("-").map(Number);
   return {
     birth,
-    age,
-    resolved: !!manual || (!mismatch && !person.birthReview),
-    warnings,
+    age: fy - by - (fm < bm || (fm === bm && fd < bd) ? 1 : 0),
+    resolved: true,
+    warnings: [],
   };
 }
 export function ageMarks(draft, rules = AGE_RULES) {
@@ -205,7 +181,6 @@ export class DefendantParser {
   }
   static parse(section, ocr) {
     const front = section.identity.match(/(?<!\d)(\d{6})(?!\d)/)?.[1] ?? "";
-    const age = section.identity.match(/(?<!\d)(\d{1,3})\s*세/)?.[1];
     return {
       id: crypto.randomUUID?.() ?? Math.random().toString(36),
       name: section.identity
@@ -215,8 +190,7 @@ export class DefendantParser {
         .replace(/^[_、:：\s]+/, "")
         .trim(),
       birthDigits: front,
-      statedAge: age === undefined ? null : +age,
-      confirmedYear: "",
+      confirmedBirthDate: "",
       birthReview: ocr,
       counsel: CounselParser.parse(section.lines, ocr),
       charges: ChargeParser.parse(section.lines),
@@ -404,8 +378,7 @@ export function emptyDefendant() {
     id: crypto.randomUUID?.() ?? Math.random().toString(36),
     name: "",
     birthDigits: "",
-    statedAge: null,
-    confirmedYear: "",
+    confirmedBirthDate: "",
     birthReview: false,
     charges: [],
     counsel: { status: "needsReview", name: "" },

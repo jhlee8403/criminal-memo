@@ -332,7 +332,7 @@ export function buildEvidence(draft, sources, regions = []) {
     "prosecutor",
     "filingDate",
     ...draft.defendants.flatMap((p, i) =>
-      ["name", "charges", "counsel", "detention"].map(
+      ["name", "charges", "counsel", "detention", "birthDigits"].map(
         (f) => `person.${i}.${f}`,
       ),
     ),
@@ -345,6 +345,7 @@ export function buildEvidence(draft, sources, regions = []) {
         prosecutor: "검사",
         filingDate: "기소일",
         name: "피고인",
+        birthDigits: "생년월일 앞 6자리",
         charges: "죄명",
         counsel: "변호인",
         detention: "구속",
@@ -480,6 +481,10 @@ export function applyEvidence(draft, evidence) {
 export function chooseField(draft, key, value, manual = false) {
   const f = draft.evidence?.find((f) => f.key === key);
   setField(draft, key, value);
+  if (key.endsWith(".birthDigits")) {
+    const person = draft.defendants[+key.split(".")[1]];
+    if (person) person.confirmedBirthDate = "";
+  }
   if (key.endsWith(".charges")) {
     const index = +key.split(".")[1];
     if (draft.defendants[index])
@@ -543,6 +548,8 @@ export function precisionValues(field, text, { allowBare = false } = {}) {
       ? [{ status: "named", name }]
       : [];
   }
+  if (field === "birthDigits")
+    return [...new Set(text.match(/(?<!\d)\d{6}(?!\d)/g) ?? [])];
   if (field === "name") {
     const raw = lines.map((l) => labelValue("피고인", l)).find(Boolean) ?? text;
     const name = raw

@@ -3,8 +3,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { build } from "esbuild";
+import { packPaddle } from "./build-paddle.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const out = path.join(root, "distribution/CriminalMemo");
+const out = path.join(root, "distribution-candidates/CriminalMemo-v2.2");
 const read = (p) => fs.readFile(path.join(root, p));
 await fs.mkdir(path.join(out, "assets"), { recursive: true });
 await fs.mkdir(path.join(out, "templates"), { recursive: true });
@@ -41,6 +42,11 @@ for (const [key, dir] of [
 await fs.writeFile(
   path.join(out, "assets/documents.js"),
   "window.CM_DOCUMENTS=" + JSON.stringify(resources) + ";\n",
+);
+const paddle = await packPaddle();
+await fs.writeFile(
+  path.join(out, "assets/paddle.js"),
+  "window.CM_PADDLE=" + JSON.stringify(paddle) + ";\n",
 );
 const lang = {};
 for (const code of ["kor", "eng"])
@@ -83,7 +89,14 @@ await build({
   legalComments: "eof",
 });
 let html = await fs.readFile(path.join(root, "src/CriminalMemo.html"), "utf8");
-for (const script of ["documents", "ocr", "pdf.worker", "pdf", "app"]) {
+for (const script of [
+  "documents",
+  "ocr",
+  "paddle",
+  "pdf.worker",
+  "pdf",
+  "app",
+]) {
   const name = `assets/${script}.js`,
     code = await fs.readFile(path.join(out, name), "utf8");
   html = html.replace(
@@ -113,6 +126,7 @@ await fs.copyFile(
 );
 const licenses = [];
 for (const name of [
+  "onnxruntime-web",
   "pdfjs-dist",
   "pdf-lib",
   "@pdf-lib/fontkit",
@@ -148,8 +162,20 @@ await fs.writeFile(
   path.join(out, "assets/THIRD_PARTY_LICENSES.txt"),
   licenses.join("\n\n----------------\n\n"),
 );
+for (const file of [
+  "PaddleOCR-LICENSE.txt",
+  "RapidOCR-LICENSE.txt",
+  "MODEL_PROVENANCE.md",
+  "MODEL_MANIFEST.json",
+])
+  await fs.copyFile(
+    path.join(root, "experimental/paddle", file),
+    path.join(out, "assets", file),
+  );
 const manifest = {
   builtAt: new Date().toISOString(),
+  candidate: "v2.2-experimental",
+  windowsEdgeFileVerified: false,
   templateSHA256: resources.templateSHA256,
   files: {},
 };

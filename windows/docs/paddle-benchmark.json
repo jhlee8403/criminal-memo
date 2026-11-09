@@ -1,0 +1,2127 @@
+{
+  "version": "2.2",
+  "htmlSHA256": "fabb44306552bfd6035d02adeffc0d9b3b7284752a7a9504df28180a322e7bb8",
+  "mode": "offline in-memory Linux Chromium, NOT file:// or Windows Edge",
+  "models": {
+    "det": "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
+    "rec": "322f140154c820fcb83c3d24cfe42c9ec70dd1a1834163306a7338136e4f1eaa"
+  },
+  "cases": [
+    {
+      "engine": "tesseract",
+      "name": "native1",
+      "kind": "native",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 6748.100000000093,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1507397632,
+      "memorySamples": 69,
+      "heapAfter": 386000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "native2",
+      "kind": "native",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이정현",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2026-10-27",
+          "actual": "2026-10-27",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "김유나",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "공무집행방해"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "윤상일(국선)",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "720324",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 1,
+          "expected": "이영수",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 1,
+          "expected": [
+            "상해",
+            "절도"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 1,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 1,
+          "expected": "710305",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 1,
+          "expected": "released",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 6956.299999999814,
+      "attempts": 2,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1508622336,
+      "memorySamples": 71,
+      "heapAfter": 386000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "scan300",
+      "kind": "scan",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 5563.399999999907,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2237988864,
+      "memorySamples": 91,
+      "heapAfter": 1000000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "scan90",
+      "kind": "scan",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 9411.5,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1581137920,
+      "memorySamples": 98,
+      "heapAfter": 435000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "skew-noise",
+      "kind": "scan-skew",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 5672.100000000093,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1784381440,
+      "memorySamples": 68,
+      "heapAfter": 624000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "shifted",
+      "kind": "shifted-text",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 2815.899999999907,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1597419520,
+      "memorySamples": 32,
+      "heapAfter": 462000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "small",
+      "kind": "small-scan",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": "이민",
+          "classification": "autoWrong",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": [
+            "삼해",
+            "폭행치삼"
+          ],
+          "classification": "autoWrong",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "unknown",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 3102.899999999907,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1764691968,
+      "memorySamples": 40,
+      "heapAfter": 588000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "wrong-selectable",
+      "kind": "bad-text-layer",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 6277.700000000186,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1997049856,
+      "memorySamples": 86,
+      "heapAfter": 747000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "broken-selectable",
+      "kind": "bad-text-layer",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 5662,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1992957952,
+      "memorySamples": 78,
+      "heapAfter": 747000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "tesseract",
+      "name": "mixed-two",
+      "kind": "mixed",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이정현",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2026-10-27",
+          "actual": "2026-10-27",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "김유나",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "공무집행방해"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "윤상일(국선)",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "720324",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 1,
+          "expected": "이영수",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 1,
+          "expected": [
+            "상해",
+            "절도"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 1,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 1,
+          "expected": "710305",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 1,
+          "expected": "released",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 7299,
+      "attempts": 2,
+      "errors": [],
+      "sampledPeakBrowserRSS": 1914368000,
+      "memorySamples": 91,
+      "heapAfter": 304000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "native1",
+      "kind": "native",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": "이민주",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": [
+            "상해",
+            "폭행치상"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": "841204",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "detained",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 7059.0999999996275,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2092675072,
+      "memorySamples": 72,
+      "heapAfter": 254000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "native2",
+      "kind": "native",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이정현",
+          "actual": "이정현",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2026-10-27",
+          "actual": "2026-10-27",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "김유나",
+          "actual": "김유나",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "공무집행방해"
+          ],
+          "actual": [
+            "공무집행방해"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "윤상일(국선)",
+          "actual": "윤상일(국선)",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "720324",
+          "actual": "720324",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "detained",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 1,
+          "expected": "이영수",
+          "actual": "이영수",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 1,
+          "expected": [
+            "상해",
+            "절도"
+          ],
+          "actual": [
+            "상해",
+            "절도"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 1,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 1,
+          "expected": "710305",
+          "actual": "710305",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 1,
+          "expected": "released",
+          "actual": "released",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 9600,
+      "attempts": 2,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2087841792,
+      "memorySamples": 98,
+      "heapAfter": 254000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "scan300",
+      "kind": "scan",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": "이민주",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": [
+            "상해",
+            "폭행치상"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": "841204",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "detained",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 6655.100000000093,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2123481088,
+      "memorySamples": 99,
+      "heapAfter": 553000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "scan90",
+      "kind": "scan",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": "이민주",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": [
+            "상해",
+            "폭행치상"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": "841204",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "detained",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 6614.699999999721,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2119200768,
+      "memorySamples": 71,
+      "heapAfter": 894000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "skew-noise",
+      "kind": "scan-skew",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": null,
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 5668,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2245234688,
+      "memorySamples": 67,
+      "heapAfter": 1000000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "shifted",
+      "kind": "shifted-text",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": "이민주",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": [
+            "상해",
+            "폭행치상"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": "841204",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "detained",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 4670.799999999814,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2120531968,
+      "memorySamples": 51,
+      "heapAfter": 894000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "small",
+      "kind": "small-scan",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": "이민주",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": [
+            "상해",
+            "폭행치상",
+            "적용법조형법제257조제1항",
+            "구속여부구속",
+            "변호인없음"
+          ],
+          "classification": "autoWrong",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": "841204",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "unknown",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 5192.899999999907,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2228609024,
+      "memorySamples": 61,
+      "heapAfter": 1000000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "wrong-selectable",
+      "kind": "bad-text-layer",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": "이민주",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": [
+            "상해",
+            "폭행치상"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": "841204",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "detained",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 6990.699999999721,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2048983040,
+      "memorySamples": 90,
+      "heapAfter": 435000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "broken-selectable",
+      "kind": "bad-text-layer",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이승엽",
+          "actual": "이승엽",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2025-08-22",
+          "actual": "2025-08-22",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "이민주",
+          "actual": "이민주",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "상해",
+            "폭행치상"
+          ],
+          "actual": [
+            "상해",
+            "폭행치상"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "841204",
+          "actual": "841204",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "detained",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 7642.699999999721,
+      "attempts": 1,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2046504960,
+      "memorySamples": 99,
+      "heapAfter": 435000000,
+      "unmatchedDefendants": 0
+    },
+    {
+      "engine": "paddle",
+      "name": "mixed-two",
+      "kind": "mixed",
+      "fields": [
+        {
+          "field": "prosecutor",
+          "expected": "이정현",
+          "actual": "이정현",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "filingDate",
+          "expected": "2026-10-27",
+          "actual": "2026-10-27",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 0,
+          "expected": "김유나",
+          "actual": "김유나",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 0,
+          "expected": [
+            "공무집행방해"
+          ],
+          "actual": [
+            "공무집행방해"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 0,
+          "expected": "윤상일(국선)",
+          "actual": "윤상일(국선)",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 0,
+          "expected": "720324",
+          "actual": "720324",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 0,
+          "expected": "detained",
+          "actual": "detained",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "name",
+          "index": 1,
+          "expected": "이영수",
+          "actual": "이영수",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "charges",
+          "index": 1,
+          "expected": [
+            "상해",
+            "절도"
+          ],
+          "actual": [
+            "상해",
+            "절도"
+          ],
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "counsel",
+          "index": 1,
+          "expected": "",
+          "actual": "",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "birthDigits",
+          "index": 1,
+          "expected": "710305",
+          "actual": "710305",
+          "classification": "autoCorrect",
+          "requiresUserReview": true
+        },
+        {
+          "field": "detention",
+          "index": 1,
+          "expected": "released",
+          "actual": "unknown",
+          "classification": "unrecognized",
+          "requiresUserReview": true
+        }
+      ],
+      "elapsedMs": 9237.600000000093,
+      "attempts": 2,
+      "errors": [],
+      "sampledPeakBrowserRSS": 2347737088,
+      "memorySamples": 110,
+      "heapAfter": 342000000,
+      "unmatchedDefendants": 0
+    }
+  ],
+  "preprocessing": [
+    {
+      "name": "native1",
+      "engine": "tesseract",
+      "results": [
+        {
+          "field": "prosecutor",
+          "method": "original",
+          "text": "이승엽\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 97,
+          "elapsedMs": 842.5
+        },
+        {
+          "field": "prosecutor",
+          "method": "grayscale",
+          "text": "이승엽\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 97,
+          "elapsedMs": 56.799999999813735
+        },
+        {
+          "field": "prosecutor",
+          "method": "contrast",
+          "text": "이승엽\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 97,
+          "elapsedMs": 54.3000000002794
+        },
+        {
+          "field": "prosecutor",
+          "method": "adaptive",
+          "text": "이승엽\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 96,
+          "elapsedMs": 62.10000000009313
+        },
+        {
+          "field": "prosecutor",
+          "method": "deskew-denoise",
+          "text": "이승엽\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 97,
+          "elapsedMs": 59.700000000186265
+        },
+        {
+          "field": "charges",
+          "method": "original",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 91,
+          "elapsedMs": 128.60000000009313
+        },
+        {
+          "field": "charges",
+          "method": "grayscale",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 91,
+          "elapsedMs": 120
+        },
+        {
+          "field": "charges",
+          "method": "contrast",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 92,
+          "elapsedMs": 156.10000000009313
+        },
+        {
+          "field": "charges",
+          "method": "adaptive",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 89,
+          "elapsedMs": 348
+        },
+        {
+          "field": "charges",
+          "method": "deskew-denoise",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 91,
+          "elapsedMs": 155.10000000009313
+        }
+      ]
+    },
+    {
+      "name": "native1",
+      "engine": "paddle",
+      "results": [
+        {
+          "field": "prosecutor",
+          "method": "original",
+          "text": "이승엽",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 99.88006750742595,
+          "elapsedMs": 2796.200000000652
+        },
+        {
+          "field": "prosecutor",
+          "method": "grayscale",
+          "text": "이승엽",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 99.88006750742595,
+          "elapsedMs": 76.60000000009313
+        },
+        {
+          "field": "prosecutor",
+          "method": "contrast",
+          "text": "이승엽",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 99.87899859746297,
+          "elapsedMs": 74.39999999990687
+        },
+        {
+          "field": "prosecutor",
+          "method": "adaptive",
+          "text": "이승엽",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 99.91371432940166,
+          "elapsedMs": 76.60000000009313
+        },
+        {
+          "field": "prosecutor",
+          "method": "deskew-denoise",
+          "text": "이승엽",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 99.88006750742595,
+          "elapsedMs": 73.3000000002794
+        },
+        {
+          "field": "charges",
+          "method": "original",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 95.19302589552743,
+          "elapsedMs": 70.70000000018626
+        },
+        {
+          "field": "charges",
+          "method": "grayscale",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 95.19302589552743,
+          "elapsedMs": 76.10000000009313
+        },
+        {
+          "field": "charges",
+          "method": "contrast",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 95.29895186424255,
+          "elapsedMs": 83.20000000018626
+        },
+        {
+          "field": "charges",
+          "method": "adaptive",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 96.56044500214713,
+          "elapsedMs": 81.89999999990687
+        },
+        {
+          "field": "charges",
+          "method": "deskew-denoise",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 95.19302589552743,
+          "elapsedMs": 73.60000000009313
+        }
+      ]
+    },
+    {
+      "name": "skew-noise",
+      "engine": "tesseract",
+      "results": [
+        {
+          "field": "prosecutor",
+          "method": "original",
+          "text": "이승엽  _\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 42,
+          "elapsedMs": 848.2000000001863
+        },
+        {
+          "field": "prosecutor",
+          "method": "grayscale",
+          "text": "이승엽  _\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 42,
+          "elapsedMs": 103.40000000037253
+        },
+        {
+          "field": "prosecutor",
+          "method": "contrast",
+          "text": "이승엽 _\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 79,
+          "elapsedMs": 167.5
+        },
+        {
+          "field": "prosecutor",
+          "method": "adaptive",
+          "text": "이승엽. _\n",
+          "values": [],
+          "confidence": 53,
+          "elapsedMs": 126.10000000009313
+        },
+        {
+          "field": "prosecutor",
+          "method": "deskew-denoise",
+          "text": "이승엽  _\n",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 42,
+          "elapsedMs": 101.3000000002794
+        },
+        {
+          "field": "charges",
+          "method": "original",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 89,
+          "elapsedMs": 110.90000000037253
+        },
+        {
+          "field": "charges",
+          "method": "grayscale",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 89,
+          "elapsedMs": 115.60000000009313
+        },
+        {
+          "field": "charges",
+          "method": "contrast",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 76,
+          "elapsedMs": 170.5
+        },
+        {
+          "field": "charges",
+          "method": "adaptive",
+          "text": "",
+          "values": [],
+          "elapsedMs": 6.599999999627471,
+          "error": "OCR에서 텍스트를 읽지 못했습니다."
+        },
+        {
+          "field": "charges",
+          "method": "deskew-denoise",
+          "text": "상해, 폭행치상\n",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 90,
+          "elapsedMs": 140.20000000018626
+        }
+      ]
+    },
+    {
+      "name": "skew-noise",
+      "engine": "paddle",
+      "results": [
+        {
+          "field": "prosecutor",
+          "method": "original",
+          "text": "이승엽",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 85.54495771725972,
+          "elapsedMs": 2815.2000000001863
+        },
+        {
+          "field": "prosecutor",
+          "method": "grayscale",
+          "text": "이승엽",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 85.54495771725972,
+          "elapsedMs": 90.8000000002794
+        },
+        {
+          "field": "prosecutor",
+          "method": "contrast",
+          "text": "이승업",
+          "values": [
+            "이승업"
+          ],
+          "confidence": 89.39380844434102,
+          "elapsedMs": 75.1999999997206
+        },
+        {
+          "field": "prosecutor",
+          "method": "adaptive",
+          "text": "이승업",
+          "values": [
+            "이승업"
+          ],
+          "confidence": 78.34774255752563,
+          "elapsedMs": 72.1999999997206
+        },
+        {
+          "field": "prosecutor",
+          "method": "deskew-denoise",
+          "text": "이승엽",
+          "values": [
+            "이승엽"
+          ],
+          "confidence": 85.54495771725972,
+          "elapsedMs": 70.39999999990687
+        },
+        {
+          "field": "charges",
+          "method": "original",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 79.05230820178986,
+          "elapsedMs": 69.39999999990687
+        },
+        {
+          "field": "charges",
+          "method": "grayscale",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 79.05230820178986,
+          "elapsedMs": 70.49999999953434
+        },
+        {
+          "field": "charges",
+          "method": "contrast",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 77.47147849627903,
+          "elapsedMs": 76.89999999990687
+        },
+        {
+          "field": "charges",
+          "method": "adaptive",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 82.97497970717293,
+          "elapsedMs": 96.3000000002794
+        },
+        {
+          "field": "charges",
+          "method": "deskew-denoise",
+          "text": "상해,폭행치상",
+          "values": [
+            [
+              "상해",
+              "폭행치상"
+            ]
+          ],
+          "confidence": 78.94718817302159,
+          "elapsedMs": 79.1000000005588
+        }
+      ]
+    }
+  ],
+  "externalRequests": [],
+  "limitations": [
+    "Two repository examples plus synthetic derivatives; NOT production accuracy.",
+    "Same 300DPI bounded source render, original preprocessing, one full-page pass per engine; same parser. Model detector internally resizes to max1280. One run, initialization included, engines sequential.",
+    "autoCorrect/autoWrong refer to unreviewed OCR+parser proposals in this controlled track, NOT confirmed application values. Missing values count independently of confidence.",
+    "Peak RSS is sampled every100ms over CDP-listed browser processes; shared pages are counted repeatedly, true instantaneous/private peak is not measured."
+  ],
+  "browser": "156.0.8078.79",
+  "completed": true,
+  "scoringNotes": [
+    "Missing whole defendant is unrecognized for all person fields, including blank counsel."
+  ]
+}

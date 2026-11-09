@@ -1,0 +1,24 @@
+{
+  "htmlSHA256": "bedbbde89af028ddc86a48f91081c4b77cacb99a495414954829d3b909bfce3b",
+  "originalPDFs": {
+    "공소장1.pdf": {
+      "unchanged": true,
+      "sha256": "ea5c872ba74f94cec5a6ad4ac3738d0448679ec05dc29b91a77f1147e5c44a5e"
+    },
+    "공소장2.pdf": {
+      "unchanged": true,
+      "sha256": "d34814ef6ecf78e3cdc210e8143caa15056be125da5b3049a8ef6d2a284b04fa"
+    },
+    "형사메모.pdf": {
+      "unchanged": true,
+      "sha256": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9"
+    }
+  },
+  "v21DistributionUnchanged": true,
+  "zipBytes": 28357296,
+  "zipSHA256": "804412359dbf423cee5b9e52598f738f7b8d66ec9a8d13c6fc50a8b041cd5267",
+  "manifestEntriesVerified": 10,
+  "nodeTestsPassed": 84,
+  "pdfChecksPassed": 55,
+  "windowsEdgeFileVerified": false
+}

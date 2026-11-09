@@ -1,0 +1,2 @@
+# Optional developer-only ONNX structure check; not needed by the HTML user.
+onnx==1.19.1

@@ -25,7 +25,10 @@ const report = {
 try {
   await page.setContent(
     await fs.readFile(
-      path.join(root, "distribution/CriminalMemo/CriminalMemo.html"),
+      path.join(
+        root,
+        "distribution-candidates/CriminalMemo-v2.2/CriminalMemo.html",
+      ),
       "utf8",
     ),
   );
@@ -82,6 +85,10 @@ try {
     document.querySelector("#diagnosticText").textContent.includes("이승엽"),
   );
   report.checks.push("whole OCR and embedded text independently inspectable");
+  if (process.env.CM_REGION_ENGINE)
+    await page
+      .locator("#regionEngine")
+      .selectOption(process.env.CM_REGION_ENGINE);
   await page.locator("#regionMode").check();
   await page.evaluate(() => {
     window.scrollTo(0, 0);
@@ -177,7 +184,10 @@ try {
   throw e;
 } finally {
   await fs.writeFile(
-    path.join(root, "artifacts/ocr-ui-report.json"),
+    path.join(
+      root,
+      `artifacts/ocr-${process.env.CM_REGION_ENGINE ?? "tesseract"}-ui-report.json`,
+    ),
     JSON.stringify(report, null, 2),
   );
   await browser.close();

@@ -62,6 +62,7 @@ export async function recognizeRegion(
         records.push({
           ...region,
           text: result.text,
+          engine: ocr.engine ?? "tesseract",
           values: precisionValues(region.field, result.text, {
             allowBare: region.valueOnly || region.method === "manual",
           }),
@@ -114,7 +115,7 @@ export async function analyzeHybrid(
     start = clock(),
     ocr = createOCR(progress),
     diagnostic = {
-      version: "2.1",
+      version: "2.2-experimental",
       pages: [],
       fields: [],
       attempts: 0,
@@ -399,6 +400,7 @@ export async function analyzeHybrid(
           const lines = normalizeOCRLines(result, rendered.plan.scale);
           record.wholeOCR.push({
             text: result.text,
+            engine: ocr.engine ?? "tesseract",
             lines,
             confidence: result.confidence,
             method: "critical-fallback",

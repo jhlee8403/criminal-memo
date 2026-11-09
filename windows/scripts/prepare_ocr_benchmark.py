@@ -4,8 +4,8 @@ import fitz,unicodedata,json,random
 from PIL import Image
 root=Path(__file__).resolve().parents[1];out=root/'artifacts/ocr-fixtures';out.mkdir(parents=True,exist_ok=True)
 files={unicodedata.normalize('NFC',p.name):p for p in root.parent.glob('*.pdf')}
-expected1={'names':['이민주'],'prosecutor':'이승엽','charges':[['상해','폭행치상']]}
-expected2={'names':['김유나','이영수'],'prosecutor':'이정현','charges':[['공무집행방해'],['상해','절도']]}
+expected1={'names':['이민주'],'prosecutor':'이승엽','charges':[['상해','폭행치상']],'filingDate':'2025-08-22','counsel':[''],'birthDigits':['841204'],'detention':['detained']}
+expected2={'names':['김유나','이영수'],'prosecutor':'이정현','charges':[['공무집행방해'],['상해','절도']],'filingDate':'2026-10-27','counsel':['윤상일(국선)',''],'birthDigits':['720324','710305'],'detention':['detained','released']}
 cases=[]
 def add(name,path,expected,kind):cases.append({'name':name,'path':str(path.resolve()),'expected':expected,'kind':kind})
 def scan(source,target,dpi=300,skew=0):

@@ -1,0 +1,21 @@
+{
+  "mode": "in-memory diagnostic, NOT file://",
+  "browser": "156.0.8078.79",
+  "windowsEdgeVerified": false,
+  "fileMode": {
+    "passed": false,
+    "error": "page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///workspace/criminal-memo/windows/distribution-candidates/CriminalMemo-v2.2/CriminalMemo.html\nCall log:\n\u001b[2m  - navigating to \"file:///workspace/criminal-memo/windows/distribution-candidates/CriminalMemo-v2.2/CriminalMemo.html\", waiting until \"load\"\u001b[22m\n"
+  },
+  "externalRequests": [],
+  "htmlSHA256": "bedbbde89af028ddc86a48f91081c4b77cacb99a495414954829d3b909bfce3b",
+  "passed": true,
+  "tests": [
+    {
+      "name": "actual detector+Korean recognizer in offline browser worker",
+      "wallMs": 7094.800000000279,
+      "elapsedMs": 4141.5,
+      "detectedRegions": 30,
+      "confidence": 98.78702601597841
+    }
+  ]
+}

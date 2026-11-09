@@ -1,5 +1,13 @@
 export { recognizeRegion } from "./hybrid.js";
 export { preprocess, renderOCR } from "./image-processing.js";
+import { PaddleOCRService } from "./ocr/paddle.js";
+import { mergeEngineResults } from "./ocr/comparison.js";
+export { PaddleOCRService };
+export function createOCREngine(engine = "tesseract", progress) {
+  if (engine === "paddle") return new PaddleOCRService(progress);
+  if (engine !== "tesseract") throw Error("Unknown OCR engine: " + engine);
+  return new OCRService(progress);
+}
 import { analyzeHybrid } from "./hybrid.js";
 import { OCR_LIMITS } from "./diagnostics.js";
 import { PDFDocument, rgb } from "pdf-lib";
@@ -131,6 +139,7 @@ export class PDFTextExtractor {
 export class OCRService {
   constructor(progress = () => {}) {
     this.progress = progress;
+    this.engine = "tesseract";
     this.worker = null;
     this.url = null;
   }
@@ -195,11 +204,25 @@ export class OCRService {
   }
 }
 export async function analyze(pdf, options = {}) {
-  return analyzeHybrid(pdf, {
-    ...options,
-    extractPage: PDFTextExtractor.page,
-    createOCR: (progress) => new OCRService(progress),
-  });
+  const engine = options.engine ?? "tesseract";
+  const run = async (name) => {
+    const result = await analyzeHybrid(pdf, {
+      ...options,
+      extractPage: PDFTextExtractor.page,
+      createOCR: (progress) => createOCREngine(name, progress),
+    });
+    result.engine = name;
+    for (const p of result.diagnostics.pages)
+      for (const records of [p.wholeOCR, p.precision])
+        for (const r of records) r.engine = name;
+    for (const f of result.draft.evidence ?? [])
+      for (const c of f.candidates)
+        c.engine = c.source === "embedded" ? "pdf-text" : name;
+    return result;
+  };
+  if (engine === "compare")
+    return mergeEngineResults(await run("tesseract"), await run("paddle"));
+  return run(engine);
 }
 export class MemoPDFRenderer {
   static async render(draft, { templateBytes } = {}) {
@@ -209,6 +232,8 @@ export class MemoPDFRenderer {
     const doc = await PDFDocument.load(
       templateBytes ?? bytes(window.CM_DOCUMENTS.template),
     );
+    // Output contract: use only the first template page; source PDF bytes remain untouched.
+    while (doc.getPageCount() > 1) doc.removePage(doc.getPageCount() - 1);
     const fontData = bytes(window.CM_DOCUMENTS.font);
     doc.registerFontkit(fontkit);
     const font = await doc.embedFont(fontData, { subset: false });

@@ -31,9 +31,11 @@ const person = (digits, age, year = "") => ({
   name: "가상",
   birthDigits: digits,
   statedAge: age,
-  confirmedYear: year,
+  confirmedBirthDate: year
+    ? `${year}-${digits.slice(2, 4)}-${digits.slice(4)}`
+    : "",
 });
-test("actual sample1 fields, blank counsel and age mismatch", async () => {
+test("actual sample1 fields, blank counsel and unconfirmed DOB", async () => {
   const d = IndictmentParser.parse(doc(await text(1)));
   assert.deepEqual(
     d.defendants.map((p) => p.name),
@@ -48,10 +50,11 @@ test("actual sample1 fields, blank counsel and age mismatch", async () => {
     { text: "O", color: "red" },
   ]);
   const a = birthAssessment(d.defendants[0], d.filingDate);
-  assert.equal(a.birth, "1984-12-04");
-  assert.equal(a.age, 40);
+  assert.equal(a.birth, null);
+  assert.equal(a.age, null);
   assert.equal(a.resolved, false);
-  assert.match(a.warnings[0], /41세/);
+  assert.match(a.warnings[0], /전체 생년월일/);
+  assert.equal("statedAge" in d.defendants[0], false);
 });
 test("actual sample2 cross-page defendant relationships", async () => {
   const d = IndictmentParser.parse(doc(await text(2)));
@@ -77,10 +80,10 @@ test("actual sample2 cross-page defendant relationships", async () => {
   ]);
   assert.deepEqual(
     d.defendants.map((p) => birthAssessment(p, d.filingDate).age),
-    [54, 55],
+    [null, null],
   );
   assert.ok(
-    d.defendants.every((p) => birthAssessment(p, d.filingDate).resolved),
+    d.defendants.every((p) => !birthAssessment(p, d.filingDate).resolved),
   );
 });
 for (const [digits, year, age, date] of [
@@ -88,10 +91,10 @@ for (const [digits, year, age, date] of [
   ["710305", "1971", 55, "2026-10-27"],
   ["000101", "2000", 26, "2026-10-27"],
 ])
-  test("stated age resolves century " + year, () => {
+  test("stated age is ignored for century " + year, () => {
     const a = birthAssessment(person(digits, age), date);
-    assert.equal(a.birth.slice(0, 4), year);
-    assert.equal(a.resolved, true);
+    assert.equal(a.birth, null);
+    assert.equal(a.resolved, false);
   });
 test("suffix changes do not affect extraction or age", async () => {
   const original = await text(2);
@@ -162,7 +165,7 @@ test("invalid manual edit never falls back", () => {
   );
   assert.equal(
     birthAssessment(person("720324", 54, "1984"), "2026-10-27").birth,
-    null,
+    "1984-03-24",
   );
 });
 test("future birth rejected", () => {
@@ -171,13 +174,13 @@ test("future birth rejected", () => {
     null,
   );
 });
-test("manual confirmation keeps mismatch warning but enables marks", () => {
+test("manual full DOB enables marks without stated-age warning", () => {
   const p = person("101204", 15);
   const d = { defendants: [p], filingDate: "2025-08-22" };
   assert.equal(ageMarks(d).juvenile, false);
-  p.confirmedYear = "2010";
+  p.confirmedBirthDate = "2010-12-04";
   assert.equal(ageMarks(d).juvenile, true);
-  assert.ok(birthAssessment(p, d.filingDate).warnings.length);
+  assert.equal(birthAssessment(p, d.filingDate).warnings.length, 0);
 });
 test("age rules are independently configurable", () => {
   const d = {

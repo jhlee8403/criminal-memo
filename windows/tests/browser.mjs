@@ -33,7 +33,10 @@ await context.route(/^https?:/, (route) => {
 const artifactHash = createHash("sha256")
   .update(
     await fs.readFile(
-      resolve(root, "distribution/CriminalMemo/CriminalMemo.html"),
+      resolve(
+        root,
+        "distribution-candidates/CriminalMemo-v2.2/CriminalMemo.html",
+      ),
     ),
   )
   .digest("hex");
@@ -53,7 +56,10 @@ try {
   try {
     await page.goto(
       pathToFileURL(
-        resolve(root, "distribution/CriminalMemo/CriminalMemo.html"),
+        resolve(
+          root,
+          "distribution-candidates/CriminalMemo-v2.2/CriminalMemo.html",
+        ),
       ).href,
     );
     report.fileMode = { passed: true };
@@ -65,7 +71,10 @@ try {
     page = await context.newPage();
     await page.setContent(
       await fs.readFile(
-        resolve(root, "distribution/CriminalMemo/CriminalMemo.html"),
+        resolve(
+          root,
+          "distribution-candidates/CriminalMemo-v2.2/CriminalMemo.html",
+        ),
         "utf8",
       ),
     );
@@ -108,9 +117,54 @@ try {
     );
     assert.deepEqual(
       expectations.birth.map((a) => a.age),
-      i === 0 ? [40] : [54, 55],
+      i === 0 ? [null] : [null, null],
     );
-    assert.equal(expectations.birth[0].resolved, i !== 0);
+    assert.equal(expectations.birth[0].resolved, false);
+    assert.equal(
+      await page.getByText("공소장 기재 나이", { exact: true }).count(),
+      0,
+    );
+    if (i === 0) {
+      const dob = page.getByLabel("직접 확인한 전체 생년월일 YYYY-MM-DD");
+      await dob.fill("1984-12-04");
+      assert.equal(
+        await page.evaluate(
+          () =>
+            CM.birthAssessment(
+              CM.getDraft().defendants[0],
+              CM.getDraft().filingDate,
+            ).age,
+        ),
+        40,
+      );
+      assert.deepEqual(
+        await page.evaluate(
+          () =>
+            CM.birthAssessment(
+              CM.getDraft().defendants[0],
+              CM.getDraft().filingDate,
+            ).warnings,
+        ),
+        [],
+      );
+      await page
+        .getByLabel("생년월일 앞 6자리 YYMMDD", { exact: true })
+        .fill("841205");
+      assert.equal(await dob.inputValue(), "");
+      assert.equal(
+        await page.evaluate(
+          () =>
+            CM.birthAssessment(
+              CM.getDraft().defendants[0],
+              CM.getDraft().filingDate,
+            ).resolved,
+        ),
+        false,
+      );
+      await page
+        .getByLabel("생년월일 앞 6자리 YYMMDD", { exact: true })
+        .fill("841204");
+    }
     await page.locator("#reviewed").check();
     await page.locator("#generate").click();
     await page.locator("#export").waitFor({ state: "visible", timeout: 60000 });
@@ -124,7 +178,7 @@ try {
       download: true,
     });
   }
-  // A synthetic two-page template proves all pages survive; it is not a replacement for the actual one-page original.
+  // A synthetic two-page template verifies first-page-only output without modifying source bytes.
   const templateName = names.find((f) => f.normalize("NFC") === "형사메모.pdf");
   const template = await fs.readFile(resolve(root, "..", templateName));
   const original = await PDFDocument.load(template),
@@ -152,12 +206,12 @@ try {
     Object.assign(d.defendants[0], {
       birthDigits: "100101",
       statedAge: 15,
-      confirmedYear: "2010",
+      confirmedBirthDate: "2010-01-01",
     });
     Object.assign(d.defendants[1], {
       birthDigits: "500101",
       statedAge: 75,
-      confirmedYear: "1950",
+      confirmedBirthDate: "1950-01-01",
     });
     return Array.from(await CM.MemoPDFRenderer.render(d));
   });

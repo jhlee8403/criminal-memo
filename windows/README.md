@@ -1,3 +1,31 @@
+# Criminal Memo — Windows/Edge v2.2 실험 후보
+
+v2.1 안정 배포물 `distribution/CriminalMemo`는 변경하지 않았습니다. `npm run build`는 **별도** `distribution-candidates/CriminalMemo-v2.2`만 생성합니다. 신규 Paddle 엔진은 아직 채택하지 않았고 기본값은 Tesseract.js입니다.
+
+- [v2.2 실험 보고서](docs/OCR_V22.md)
+- [모델 출처·라이선스·무결성 한계](experimental/paddle/MODEL_PROVENANCE.md)
+- [실험 후보 사용 안내](USER_GUIDE.txt)
+
+v2.2는 기재 나이를 추출·판정하지 않으며 사용자가 확인한 전체 생년월일로만 나이를 확정합니다. 출력은 원본 양식 첫 페이지만 사용하여 1페이지입니다. 원본 PDF와 기존 배포 HTML은 보존합니다.
+
+새 모듈: `src/ocr/paddle-core.js` (DB·전처리·CTC·순서), `paddle-worker.js` (ONNX WASM), `paddle.js` (기한·Worker 종료), `comparison.js` (순차 비교·충돌 검토). 실험 검출기는 수평 문서용 축 평행 DB 연결 요소를 사용하며 Paddle의 회전 다각형 후처리와 동등하다고 주장하지 않습니다.
+
+```bash
+npm ci --cache /tmp/criminal-memo-npm
+npm run build
+npm test
+python scripts/prepare_fixtures.py
+npm run test:browser
+python scripts/verify_outputs.py
+npm run test:paddle
+npm run test:paddle-benchmark
+npm run test:ocr-ui
+```
+
+아래는 변경 이력 설명을 위한 v2.1 문서입니다. v2.2 사용법과 출력 규칙은 위 문서가 우선합니다.
+
+---
+
 # Criminal Memo — Windows/Edge 오프라인 v2.1
 
 **대상 Windows Edge의 `file://` 검증은 미완료입니다.** 실행 구조는 서버·EXE 없이 HTML 더블클릭을 목표로 유지했습니다. 현재 환경의 관리자 정책이 `file://` 탐색을 차단하여, 동일한 배포 HTML을 메모리에 올린 진단으로만 엔진·업무 흐름을 실행 검증했습니다. 이 결과를 HTML 더블클릭 성공으로 해석하지 않습니다.

@@ -1,0 +1,18 @@
+{
+  "builtAt": "2026-11-09T14:51:12.823Z",
+  "candidate": "v2.2-experimental",
+  "windowsEdgeFileVerified": false,
+  "templateSHA256": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9",
+  "files": {
+    "CriminalMemo.html": "bedbbde89af028ddc86a48f91081c4b77cacb99a495414954829d3b909bfce3b",
+    "README.txt": "19e3a801bac1e40aad45ce1642baa7b39282225caa06091e143f18d421aee680",
+    "assets/MODEL_MANIFEST.json": "c479537f7d92b14e294d8e643b456c7d3d7de0cd014f7654c0953993324762b1",
+    "assets/MODEL_PROVENANCE.md": "fa07293ae6f3e95d6515cef04c4320b2378cc74b816fc2405be6d8341aaa3f2e",
+    "assets/NanumGothic-OFL.txt": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f",
+    "assets/PaddleOCR-LICENSE.txt": "3840c5c0c61c294264d2dd77b8777be6ddd90121ef4e0e64abcd22edea581d6e",
+    "assets/RapidOCR-LICENSE.txt": "3e0af25fdd06aa9586ae97adb00ea927ebe5a3805ac77d2d3a81ce5f55693333",
+    "assets/THIRD_PARTY_LICENSES.txt": "136d42871ff748938bc411c8288fc4bbf6f9bc5b87e1f0e73a75644c158425e3",
+    "assets/tessdata-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "templates/형사메모.pdf": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9"
+  }
+}

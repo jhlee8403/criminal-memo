@@ -1,0 +1,15 @@
+{
+  "mode": "memory diagnostic; NOT file://",
+  "checks": [
+    "bad selectable text triggers OCR even with 20+ chars; conflict retained",
+    "unresolved conflict blocks PDF",
+    "user selects actual candidate via review button",
+    "manual correction recorded separately",
+    "whole OCR and embedded text independently inspectable",
+    "mouse-drag ROI recognition runs independently",
+    "synthetic skew correction chooses compensating angle",
+    "retry budget exhaustion stops jobs and preserves review requirements"
+  ],
+  "externalRequests": [],
+  "passed": true
+}
