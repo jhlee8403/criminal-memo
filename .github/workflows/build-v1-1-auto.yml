@@ -1,0 +1,38 @@
+name: Build Criminal Memo v1.1 automatic parser
+on:
+  push:
+    branches: [experiment/v1-1-auto-parser]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - name: Install locked build dependencies
+        working-directory: windows
+        run: npm ci
+      - name: Test defendant, prosecutor, counsel parsing
+        working-directory: windows
+        run: node --test tests/auto-parser.test.mjs
+      - name: Build offline HTML
+        working-directory: windows
+        run: npm run build
+      - name: Check distribution
+        run: |
+          test -s windows/distribution/CriminalMemo/CriminalMemo.html
+          grep -q 'v1 자동 추출 시험판' windows/distribution/CriminalMemo/CriminalMemo.html
+          ! grep -q 'id="addPerson"' windows/distribution/CriminalMemo/CriminalMemo.html
+      - name: Upload downloadable experimental distribution
+        uses: actions/upload-artifact@v4
+        with:
+          name: CriminalMemo-v1-1-auto-parser
+          path: windows/distribution/CriminalMemo/
+          if-no-files-found: error
+          retention-days: 14
