@@ -40,71 +40,25 @@ export function parseDate(s) {
   if (!m || !validDate(+m[1], +m[2], +m[3])) return null;
   return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
 }
+// The auto-only experiment must never infer a century from an indictment's stated age.
+// YYMMDD cannot uniquely identify a full birth year; leave age-based marks unconfirmed.
 export function birthAssessment(person, filingDate) {
-  const fail = (message) => ({
+  const front = String(person.birthDigits ?? "").trim();
+  const filing = parseDate(filingDate);
+  if (!/^\d{6}$/.test(front))
+    return { resolved: false, birth: null, age: null, warnings: ["주민등록번호 앞 6자리 추출 실패"] };
+  const yy = Number(front.slice(0, 2));
+  const month = Number(front.slice(2, 4));
+  const day = Number(front.slice(4, 6));
+  if (!validDate(2000 + yy, month, day) && !validDate(1900 + yy, month, day))
+    return { resolved: false, birth: null, age: null, warnings: ["유효하지 않은 생년월일 앞 6자리"] };
+  if (!filing)
+    return { resolved: false, birth: null, age: null, warnings: ["기소일을 자동 추출하지 못했습니다"] };
+  return {
     resolved: false,
     birth: null,
     age: null,
-    warnings: [message],
-  });
-  const front = person.birthDigits ?? "";
-  if (!/^\d{6}$/.test(front))
-    return fail("생년월일 앞 6자리 YYMMDD를 확인하세요.");
-  const yy = +front.slice(0, 2),
-    month = +front.slice(2, 4),
-    day = +front.slice(4);
-  let calendarPossible = false;
-  for (let y = yy || 100; y <= 9999; y += 100)
-    if (validDate(y, month, day)) {
-      calendarPossible = true;
-      break;
-    }
-  if (!calendarPossible)
-    return fail("앞 6자리의 월·일이 실제 달력에 없습니다.");
-  const filing = parseDate(filingDate);
-  const manual = String(person.confirmedYear ?? "").trim();
-  let year;
-  if (manual) {
-    if (
-      !/^\d{4}$/.test(manual) ||
-      +manual % 100 !== yy ||
-      !validDate(+manual, month, day)
-    )
-      return fail("확인한 출생 연도가 YY와 다르거나 날짜가 유효하지 않습니다.");
-    year = +manual;
-  } else {
-    if (!filing || !Number.isInteger(person.statedAge) || person.statedAge < 0)
-      return fail("기소일·기재 나이 또는 직접 확인한 출생 연도가 필요합니다.");
-    const fy = +filing.slice(0, 4);
-    const candidates = [
-      fy - person.statedAge - 1,
-      fy - person.statedAge,
-    ].filter((y) => y > 0 && y % 100 === yy && validDate(y, month, day));
-    if (candidates.length !== 1)
-      return fail("출생 세기를 확정할 수 없습니다. 출생 연도를 확인하세요.");
-    year = candidates[0];
-  }
-  const birth = `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-  if (!filing) return { ...fail("기소일을 확인하세요."), birth };
-  if (birth > filing) return fail("생년월일이 기소일보다 늦습니다.");
-  const [fy, fm, fd] = filing.split("-").map(Number);
-  const age = fy - year - (fm < month || (fm === month && fd < day) ? 1 : 0);
-  const warnings = [];
-  const mismatch =
-    Number.isInteger(person.statedAge) && person.statedAge !== age;
-  if (mismatch)
-    warnings.push(
-      `계산한 만 ${age}세와 기재 ${person.statedAge}세가 다릅니다. 출생 연도를 확인하세요.`,
-    );
-  if (person.birthReview && !manual)
-    warnings.push(
-      "OCR 생년월일과 기재 나이를 원문과 대조하고 출생 연도를 확인하세요.",
-    );
-  return {
-    birth,
-    age,
-    resolved: !!manual || (!mismatch && !person.birthReview),
-    warnings,
+    warnings: ["YYMMDD만으로 출생 세기를 확정할 수 없어 소년·필요적국선 자동 원 표시를 보류합니다."],
   };
 }
 export function ageMarks(draft, rules = AGE_RULES) {
@@ -159,7 +113,6 @@ export class DefendantParser {
   }
   static parse(section, ocr) {
     const front = section.identity.match(/(?<!\d)(\d{6})(?!\d)/)?.[1] ?? "";
-    const age = section.identity.match(/(?<!\d)(\d{1,3})\s*세/)?.[1];
     return {
       id: crypto.randomUUID?.() ?? Math.random().toString(36),
       name: section.identity
@@ -169,8 +122,6 @@ export class DefendantParser {
         .replace(/^[_、:：\s]+/, "")
         .trim(),
       birthDigits: front,
-      statedAge: age === undefined ? null : +age,
-      confirmedYear: "",
       birthReview: ocr,
       counsel: CounselParser.parse(section.lines, ocr),
       charges: ChargeParser.parse(section.lines),
@@ -303,17 +254,19 @@ export class IndictmentParser {
 }
 export function validateDraft(draft) {
   const errors = [];
-  if (!draft.defendants.length) errors.push("피고인이 없습니다.");
-  if (!parseDate(draft.filingDate)) errors.push("기소일을 확인하세요.");
+  if (!draft.prosecutor?.trim()) errors.push("검사 이름 자동 추출 실패");
+  if (!parseDate(draft.filingDate)) errors.push("기소일 자동 추출 실패");
+  if (!draft.defendants.length) errors.push("피고인 자동 추출 실패");
   draft.defendants.forEach((p, i) => {
-    const prefix = `${i + 1}. ${p.name}: `;
-    if (!p.name.trim()) errors.push(prefix + "이름을 입력하세요.");
-    if (p.detention === "unknown")
-      errors.push(prefix + "구속 여부를 확인하세요.");
-    if (p.counsel.status === "needsReview")
-      errors.push(prefix + "변호인 기재 여부를 원문과 대조해 선택하세요.");
-    if (p.counsel.status === "named" && !p.counsel.name.trim())
-      errors.push(prefix + "변호인 이름을 입력하세요.");
+    const prefix = `피고인 ${i + 1}: `;
+    if (!p.name?.trim()) errors.push(prefix + "이름 자동 추출 실패");
+    if (!p.birthDigits || !/^\\d{6}$/.test(p.birthDigits))
+      errors.push(prefix + "생년월일 앞 6자리 자동 추출 실패");
+    if (!p.charges?.length) errors.push(prefix + "죄명 자동 추출 실패");
+    if (p.detention === "unknown") errors.push(prefix + "구속 여부 자동 추출 실패");
+    if (p.counsel.status === "needsReview") errors.push(prefix + "변호인 기재 상태 자동 추출 실패");
+    if (p.counsel.status === "named" && !p.counsel.name?.trim())
+      errors.push(prefix + "변호인 이름 자동 추출 실패");
   });
   return errors;
 }
@@ -323,7 +276,6 @@ export function emptyDefendant() {
     name: "",
     birthDigits: "",
     statedAge: null,
-    confirmedYear: "",
     birthReview: false,
     charges: [],
     counsel: { status: "needsReview", name: "" },
