@@ -260,7 +260,7 @@ export function validateDraft(draft) {
   draft.defendants.forEach((p, i) => {
     const prefix = `피고인 ${i + 1}: `;
     if (!p.name?.trim()) errors.push(prefix + "이름 자동 추출 실패");
-    if (!p.birthDigits || !/^\\d{6}$/.test(p.birthDigits))
+    if (!p.birthDigits || !/^\d{6}$/.test(p.birthDigits))
       errors.push(prefix + "생년월일 앞 6자리 자동 추출 실패");
     if (!p.charges?.length) errors.push(prefix + "죄명 자동 추출 실패");
     if (p.detention === "unknown") errors.push(prefix + "구속 여부 자동 추출 실패");
