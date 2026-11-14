@@ -88,26 +88,45 @@ const hasLabel = (label, line) =>
   new RegExp(
     "^\\s*(?:\\d+[.)]\\s*)?" + labelPattern(label) + "(?:\\s|[:：]|$)",
   ).test(line);
+const factsHeading = (line) =>
+  /^\s*(?:(?:[IVX]+|[ⅠⅡⅢⅣ]+|\d+)[.)]?\s*)?(?:공\s*소\s*사\s*실|범\s*죄\s*사\s*실)(?:\s|[:：]|$)/.test(line);
+const defendantLabel = (line) =>
+  /^\s*(?:\d+[.)]\s*)?피\s*고\s*인(?=\s|[:：]|$)\s*[:：]?\s*(.*)$/.exec(line);
 export class DefendantParser {
   static split(text) {
     const sections = [];
-    let names = false;
-    for (const line of clean(text)
-      .split("\n")
-      .map((s) => s.trim())) {
-      if (/^(?:[IVX]+[.)]\s*)?공\s*소\s*사\s*실/.test(line)) break;
-      const value = labelValue("피고인", line);
-      if (value && !/관\s*련\s*사\s*항/.test(value)) {
-        sections.push({ identity: value, lines: [] });
-        names = true;
-      } else if (hasLabel("피고인", line) && !/관\s*련\s*사\s*항/.test(line)) {
-        names = true;
-      } else if (names && /^\d+[.)]\s*.+/.test(line)) {
-        sections.push({ identity: line.replace(/^\d+[.)]\s*/, ""), lines: [] });
-      } else {
-        if (line) names = false;
-        sections.at(-1)?.lines.push(line);
+    let awaitingIdentity = false;
+    let inNumberedIdentityList = false;
+    for (const source of clean(text).split("\n")) {
+      const line = source.trim();
+      if (!line) continue;
+      if (factsHeading(line)) break;
+      const label = defendantLabel(line);
+      if (label && !/^관\s*련\s*사\s*항/.test(label[1])) {
+        const candidate = label[1].replace(/^\d+[.)]\s*/, "").trim();
+        if (candidate) {
+          sections.push({ identity: candidate, lines: [] });
+          awaitingIdentity = false;
+          inNumberedIdentityList = false;
+        } else {
+          awaitingIdentity = true;
+          inNumberedIdentityList = true;
+        }
+        continue;
       }
+      if (awaitingIdentity) {
+        if (/^\d+[.)]\s*.+/.test(line) || /^[가-힣]{2,4}(?:\s|[（(,]|$)/.test(line)) {
+          sections.push({ identity: line.replace(/^\d+[.)]\s*/, ""), lines: [] });
+        }
+        awaitingIdentity = false;
+        continue;
+      }
+      if (inNumberedIdentityList && /^\d+[.)]\s*[가-힣]{2,4}(?:\s|[（(,]|$)/.test(line)) {
+        sections.push({ identity: line.replace(/^\d+[.)]\s*/, ""), lines: [] });
+        continue;
+      }
+      if (inNumberedIdentityList && !/^\d+[.)]/.test(line)) inNumberedIdentityList = false;
+      sections.at(-1)?.lines.push(line);
     }
     return sections;
   }
@@ -160,31 +179,51 @@ export class ChargeParser {
 }
 export class CounselParser {
   static parse(lines, ocr) {
-    const list = values("변호인", lines),
-      none = ["없음", "해당없음", "선임없음", "미선임", "X"];
-    let status,
-      name = "";
-    if (!list.length && !lines.some((l) => hasLabel("변호인", l)))
-      status = "absentMissing";
-    else if (
-      list.length &&
-      list.every((v) => none.includes(v.replace(/\s/g, "")))
-    )
-      status = "absentExplicit";
-    else if (
-      !list.length ||
-      list.some(
-        (v) =>
-          none.includes(v.replace(/\s/g, "")) ||
-          /판독|확인불가|[?？�]|^[:：\s]*$/.test(v),
-      )
-    )
-      status = "needsReview";
-    else {
-      status = "named";
-      name = list.join("\n");
+    const chunks = [];
+    let gathering = false;
+    for (const source of lines) {
+      const line = clean(source).trim();
+      if (!line) continue;
+      const lead = /^변\s*호\s*인(?=\s|[:：]|$)\s*[:：]?\s*(.*)$/.exec(line);
+      if (lead) {
+        gathering = true;
+        if (lead[1]) chunks.push(lead[1]);
+        continue;
+      }
+      if (/^국\s*선\s*변\s*호\s*(?:사|인)\s+/.test(line)) {
+        gathering = true;
+        chunks.push(line);
+        continue;
+      }
+      if (gathering && /^(?:담\s*당\s*변\s*호\s*(?:사|인)|소\s*속\s*변\s*호\s*사|법\s*무\s*법\s*인|변\s*호\s*사)\b/.test(line.replace(/(?<=[가-힣])(?=[가-힣])/g, ""))) {
+        chunks.push(line);
+        continue;
+      }
+      if (gathering) break;
     }
-    return { status: ocr ? "needsReview" : status, name };
+    const raw = chunks.join(" ").replace(/\s+/g, " ").trim();
+    if (!raw) return { status: lines.some(l => /^변\s*호\s*인(?=\s|[:：]|$)/.test(l)) ? "needsReview" : "absentMissing", name: "" };
+    if (/^(?:없음|해당없음|선임없음|미선임|X)$/.test(raw.replace(/\s/g, "")))
+      return { status: "absentExplicit", name: "" };
+    if (/[?？�]/.test(raw)) return { status: "needsReview", name: "" };
+
+    const firm = /법\s*무\s*법\s*인\s*([가-힣A-Za-z0-9·]+)/.exec(raw)?.[1];
+    const counselNames = (text) => [...new Set((text.match(/[가-힣]{2,4}/g) ?? [])
+      .filter(v => !["담당", "변호사", "변호인", "국선", "법무", "법인", "소속", "대표"].includes(v)))];
+    if (firm) {
+      const afterFirm = raw.slice(raw.indexOf(firm) + firm.length)
+        .replace(/^(?:\s*[,，、:]?\s*)?(?:(?:담당|소속|대표)\s*)?변\s*호\s*(?:사|인)\s*/, "");
+      const names = counselNames(afterFirm);
+      if (!names.length) return { status: "needsReview", name: "" };
+      return { status: "named", name: firm + ") " + names.join(",") };
+    }
+    if (/국\s*선/.test(raw)) {
+      const after = raw.replace(/^.*?국\s*선\s*(?:변\s*호\s*(?:사|인))?\s*[:：]?\s*/, "");
+      const name = after.match(/^([가-힣]{2,4})/)?.[1];
+      return name ? { status: "named", name: name + "(국선)" } : { status: "needsReview", name: "" };
+    }
+    const simple = raw.replace(/^(?:(?:담당|소속|대표)\s*)?변\s*호\s*(?:사|인)\s*/, "").trim();
+    return { status: "named", name: simple };
   }
 }
 export class DetentionParser {
@@ -207,10 +246,21 @@ export class DetentionParser {
 }
 export class ProsecutorParser {
   static parse(lines) {
-    const names = [
-      ...new Set(values("검사", lines).map((s) => s.replace(/[_\s]+$/, ""))),
-    ];
-    return names.length === 1 ? names[0] : "";
+    const names = new Set();
+    const header = [];
+    for (const line of lines) {
+      if (factsHeading(line)) break;
+      header.push(line);
+    }
+    for (let i = 0; i < header.length; i++) {
+      const m = /^\s*검\s*사(?=\s|[:：]|$)\s*[:：]?\s*(.*)$/.exec(clean(header[i]));
+      if (!m) continue;
+      const text = (m[1] || header[i + 1] || "").trim();
+      const candidate = text.match(/^([가-힣]{2,4})(?=\s|[（(,，、]|$)/)?.[1];
+      if (candidate && !["서명", "날인", "직인", "서명날인"].includes(candidate))
+        names.add(candidate);
+    }
+    return names.size === 1 ? [...names][0] : "";
   }
 }
 export class FilingDateParser {
