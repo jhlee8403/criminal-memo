@@ -89,7 +89,7 @@ const hasLabel = (label, line) =>
     "^\\s*(?:\\d+[.)]\\s*)?" + labelPattern(label) + "(?:\\s|[:：]|$)",
   ).test(line);
 const factsHeading = (line) =>
-  /^\s*(?:(?:[IVX]+|[ⅠⅡⅢⅣ]+|\d+)[.)]?\s*)?(?:공\s*소\s*사\s*실|범\s*죄\s*사\s*실)(?:\s|[:：]|$)/.test(line);
+  /^\s*(?:(?:[IVX]+|[ⅠⅡⅢⅣ]+|\d+)[.)]?\s*)?(?:공\s*소\s*사\s*실|범\s*죄\s*사\s*실)(?=\s|[:：]|$|의)/.test(line);
 const defendantLabel = (line) =>
   /^\s*(?:\d+[.)]\s*)?피\s*고\s*인(?=\s|[:：]|$)\s*[:：]?\s*(.*)$/.exec(line);
 export class DefendantParser {
