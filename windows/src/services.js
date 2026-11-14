@@ -207,7 +207,7 @@ export class MemoPDFRenderer {
     const draw = (value, key) => {
       if (!value) return;
       const [x, y, w, h] = boxes[key];
-      for (let size = 11; size >= 8; size -= 0.5) {
+      for (let size = 11; size >= (key === "counsel" ? 5 : 8); size -= 0.5) {
         const lines = [];
         for (const raw of value.split("\n")) {
           let line = "";
