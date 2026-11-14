@@ -195,7 +195,7 @@ export class CounselParser {
         chunks.push(line);
         continue;
       }
-      if (gathering && /^(?:담\s*당\s*변\s*호\s*(?:사|인)|소\s*속\s*변\s*호\s*사|법\s*무\s*법\s*인|변\s*호\s*사)\b/.test(line.replace(/(?<=[가-힣])(?=[가-힣])/g, ""))) {
+      if (gathering && /^(?:담\s*당\s*변\s*호\s*(?:사|인)|소\s*속\s*변\s*호\s*사|법\s*무\s*법\s*인|변\s*호\s*사)(?=\s|[:：]|$)/.test(line)) {
         chunks.push(line);
         continue;
       }
