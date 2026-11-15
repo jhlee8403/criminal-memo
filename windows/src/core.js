@@ -217,6 +217,9 @@ export class CounselParser {
       if (!names.length) return { status: "needsReview", name: "" };
       return { status: "named", name: firm + ") " + names.join(",") };
     }
+    if (/^[가-힣]{2,4}\s*\(\s*국\s*선\s*\)$/.test(raw)) {
+      return { status: "named", name: raw.replace(/\s+/g, "") };
+    }
     if (/국\s*선/.test(raw)) {
       const after = raw.replace(/^.*?국\s*선\s*(?:변\s*호\s*(?:사|인))?\s*[:：]?\s*/, "");
       const name = after.match(/^([가-힣]{2,4})/)?.[1];
