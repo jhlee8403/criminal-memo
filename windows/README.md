@@ -8,6 +8,8 @@
 
 국선·일반 변호인 후속 변경: [직함 및 국선 표시 검증](docs/COUNSEL_APPOINTED_VALIDATION.md).
 
+법무법인 명단의 이름 내부 줄바꿈 후속 수정: [원인 및 전후 검증](docs/FIRM_ROSTER_WRAP_VALIDATION.md).
+
 ## 배포 후보
 
 [distribution/CriminalMemo](distribution/CriminalMemo/) 폴더를 복사하고 `CriminalMemo.html`을 Edge에서 엽니다. ZIP은 먼저 압축을 풉니다. Node.js·npm·Python·설치·서버는 최종 사용자에게 요구하지 않습니다. 사용법은 [USER_GUIDE.txt](USER_GUIDE.txt)를 참고하세요.

@@ -556,3 +556,50 @@ test('embedded titles are not mistaken for names', () => {
   assert.equal(counsel.status,'needsReview');
   assert.equal(counsel.name,'');
 });
+
+test('firm roster fields/values collect all rows before basic-information boundaries', async () => {
+  const P = await (await import('./parser-internals.mjs')).parserInternals();
+  const cases = JSON.parse(await fs.readFile(new URL('fixtures/counsel-output-cases.json',import.meta.url),'utf8'));
+  for (const item of cases.filter(c => c.id.startsWith('firm-'))) {
+    const lines = [...item.source, 'Ⅱ . 공소사실', '변호인 본문가상변호', 'Ⅲ . 첨부', '가상첨부문장'];
+    const collected = P.fields(lines).filter(f => f.label === '변호인');
+    assert.equal(collected.length,1,item.id);
+    const expected = item.source.map((l,i)=>i ? l : l.replace(/^변\s*호\s*인\s*/,'')).filter(Boolean);
+    assert.deepEqual(collected[0].parts,expected,item.id);
+    assert.deepEqual(P.values('변호인',lines),[expected.join('\n')],item.id);
+    const person=CounselParser.parse(lines,false);
+    assert.equal(person.status,'named',item.id);
+    assert.equal(person.name,item.expected,item.id);
+    assert.deepEqual(person.lawyers,item.expected.slice('가상) '.length).split(' '),item.id);
+  }
+});
+test('firm roster preserves valid separate names across a newline', () => {
+  const counsel=CounselParser.parse(['변 호 인 법무법인 가상(담당변호사 김가상','이가상, 박가상, 최가상)'],false);
+  assert.deepEqual(counsel.lawyers,['김가상','이가상','박가상','최가상']);
+});
+test('firm roster does not invent a repair for incomplete or ambiguous name pieces', () => {
+  for(const roster of ['김가상, 강\n가상윤가상', '김가상, 이 문장은 명단이 아닙니다', '김가상, 추가 서류 제출', '김가상, 확인 필요']) {
+    const counsel=CounselParser.parse(('변 호 인 법무법인 가상(담당변호사 '+roster+')').split('\n'),false);
+    assert.equal(counsel.status,'needsReview');
+    assert.equal(counsel.name,'');
+  }
+});
+test('firm roster metadata and following fields do not become lawyers', async () => {
+  const P = await (await import('./parser-internals.mjs')).parserInternals();
+  const lines=['변 호 인 법무법인 가상(담당변호사 김가상,','열람복사용 안내 출력자: 가상출력자 다운로드일시: 2026.11.12','- 1 -','이가상, 박가상, 최가상)','적용법조 가상법조','Ⅱ . 공소사실','변호인 본문가상변호'];
+  assert.deepEqual(P.values('변호인',lines),['법무법인 가상(담당변호사 김가상,\n이가상, 박가상, 최가상)']);
+  assert.equal(CounselParser.parse(lines,false).name,'가상) 김가상 이가상 박가상 최가상');
+});
+test('OCR review override remains unchanged even when the full firm roster parses', () => {
+  const lines=['변 호 인 법무법인 가상(담당변호사 김가상, 강','가상)'];
+  const plain=CounselParser.parse(lines,false), ocr=CounselParser.parse(lines,true);
+  assert.equal(plain.status,'named');
+  assert.equal(ocr.status,'needsReview');
+  assert.deepEqual(plain.lawyers,ocr.lawyers);
+  assert.equal(plain.name,ocr.name);
+});
+
+test('two complete two-syllable names are not guessed to be one four-syllable name', () => {
+  const counsel=CounselParser.parse(['변 호 인 법무법인 가상(담당변호사 김가','상윤)'],false);
+  assert.deepEqual(counsel.lawyers,['김가','상윤']);
+});

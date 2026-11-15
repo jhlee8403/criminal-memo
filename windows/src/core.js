@@ -317,7 +317,22 @@ export class CounselParser {
           const company = (match?.[1] ?? rest).replace(/\s+/g, " ").trim();
           firms.push("법무법인 " + company);
           const people = (match?.[2] ?? "").replace(/\s*[）)]\s*$/, "")
-            .split(/[,，、\n]/)
+            .split(/[,，、]/)
+            .flatMap((part) => {
+              // Clear document instructions are not a list of lawyer names.
+              if (/서류\s*(?:제출|목록)|확인\s*필요|(?:공소|범죄)\s*사실|추가\s*서류/.test(part)) {
+                incomplete = true;
+                return [];
+              }
+              // PDF wrapping can split one three-syllable name (e.g. 강\n가상).
+              // Repair only 1+2 / 2+1 syllables within the same comma-delimited
+              // segment. Newlines between complete names remain delimiters.
+              const lines = part.split("\n").map((line) => line.trim()).join("\n");
+              return lines
+                .replace(/(^|\n)([가-힣])\n([가-힣]{2})(?=\n|$)/g, "$1$2$3")
+                .replace(/(^|\n)([가-힣]{2})\n([가-힣])(?=\n|$)/g, "$1$2$3")
+                .split("\n");
+            })
             .flatMap((part) => {
               const value = part.replace(/변\s*호\s*사/g, "").trim();
               if (!value) return [];
