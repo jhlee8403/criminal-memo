@@ -207,7 +207,8 @@ export class MemoPDFRenderer {
     const draw = (value, key) => {
       if (!value) return;
       const [x, y, w, h] = boxes[key];
-      for (let size = 11; size >= 8; size -= 0.5) {
+      // Only the counsel cell may shrink further to preserve all listed lawyers.
+      for (let size = 11; size >= (key === "counsel" ? 4 : 8); size -= 0.5) {
         const lines = [];
         for (const raw of value.split("\n")) {
           let line = "";

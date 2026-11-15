@@ -328,7 +328,7 @@ test("v1.3 direct parsers: supplied structure, metadata, body and attachment bou
   assert.deepEqual(ChargeParser.parse(lines), latestCharges);
   assert.deepEqual(CounselParser.parse(sections[0].lines, false), {
     status: "named",
-    name: "김가상, 박가상, 이가상",
+    name: "가상) 김가상 박가상 이가상",
     firm: "법무법인 가상",
     lawyers: ["김가상", "박가상", "이가상"],
   });
@@ -340,7 +340,7 @@ test("v1.3 direct parsers: supplied structure, metadata, body and attachment bou
   ]);
   assert.deepEqual(ageMarks(draft), { juvenile: false, mandatory: false });
   assert.equal(birthAssessment(person, draft.filingDate).age, null);
-  assert.equal(counselText(draft), "김가상, 박가상, 이가상");
+  assert.equal(counselText(draft), "가상) 김가상 박가상 이가상");
   assert.ok(!JSON.stringify(draft).includes("본문가상"));
   assert.ok(!JSON.stringify(draft).includes("첨부가상"));
   assert.ok(!JSON.stringify(sections).includes("다운로드일시"));
@@ -483,4 +483,30 @@ test("v1.3 unreadable submission date remains unconfirmed", async () => {
   const result = FilingDateParser.assess(doc(t).pages[0]);
   assert.equal(result.date, null);
   assert.match(result.reason, /제출일시.*판독/);
+});
+// Format examples use fictional lawyer names; no private document data is added.
+for (const [source, output, names] of [
+  ['법무법인 태평양 담당변호사 김가상, 박가상, 이가상, 최가상', '태평양) 김가상 박가상 이가상 최가상', ['김가상','박가상','이가상','최가상']],
+  ['법무법인 와이케이(담당변호사 강가상, 윤가상, 한가상, 정가상)', '와이케이) 강가상 윤가상 한가상 정가상', ['강가상','윤가상','한가상','정가상']],
+  ['법무법인 가상\n담당변호사 변호사 김가상,\n변호사 박가상, 이가상', '가상) 김가상 박가상 이가상', ['김가상','박가상','이가상']],
+  ['법 무 법 인 가상（ 담당변호사 김가상 , 박가상 ）', '가상) 김가상 박가상', ['김가상','박가상']],
+  ['법무법인 가상(담당변호사 박가상, 김가상, 박가상)', '가상) 박가상 김가상 박가상', ['박가상','김가상','박가상']],
+]) test('firm counsel display: '+source, () => {
+  const counsel = CounselParser.parse(('변호인 '+source).split('\n'), false);
+  assert.equal(counsel.status, 'named');
+  assert.deepEqual(counsel.lawyers, names);
+  assert.equal(counsel.name, output);
+  assert.equal(counselText({defendants:[{counsel}]}), output);
+});
+test('appointed counsel and absent counsel keep existing output', () => {
+  for (const [lines, output] of [
+    [['변호인 김가상(국선)'], '김가상(국선)'], [['변호인 없음'], ''], [[], ''],
+  ]) assert.equal(counselText({defendants:[{counsel:CounselParser.parse(lines,false)}]}), output);
+});
+test('PDF counsel cases preserve exact complete output strings', async () => {
+  const cases=JSON.parse(await fs.readFile(new URL('fixtures/counsel-output-cases.json', import.meta.url),'utf8'));
+  for (const c of cases) {
+    const counsel=CounselParser.parse(c.source,false);
+    assert.equal(counselText({defendants:[{counsel}]}),c.expected,c.id);
+  }
 });

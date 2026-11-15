@@ -61,7 +61,7 @@ check(page.get_text(clip=fitz.Rect(BOXES['date'])).strip()=='2026.08.28','v1.3: 
 check(page.get_text(clip=fitz.Rect(BOXES['defendants'])).strip()=='1. 홍길동','v1.3: defendant rendered')
 charge_text=''.join(page.get_text(clip=fitz.Rect(BOXES['charges'])).split())
 check(charge_text=='1.특정범죄가중처벌등에관한법률위반(위험운전치사)2.도로교통법위반(음주운전)','v1.3: exact two charges without statutes or body prose')
-check(''.join(page.get_text(clip=fitz.Rect(BOXES['counsel'])).split())=='김가상,박가상,이가상','v1.3: named lawyers only')
+check(''.join(page.get_text(clip=fitz.Rect(BOXES['counsel'])).split())=='가상)김가상박가상이가상','v1.3: named lawyers only')
 spans=[s for b in page.get_text('dict',clip=fitz.Rect(BOXES['detention']))['blocks'] for l in b.get('lines',[]) for s in l['spans']]
 check(''.join(s['text'] for s in spans)=='X' and all(s['color']==0 for s in spans),'v1.3: released defendant has black X')
 original=pixels(template[0]);actual=pixels(page);allowed=np.zeros(original.shape[:2],dtype=bool)
@@ -70,6 +70,19 @@ check(np.count_nonzero(np.any(original!=actual,axis=2)&~allowed)==0,'v1.3: origi
 for key in ['juvenile','mandatory']:
  x0,y0,x1,y1=BOXES[key]
  check(np.array_equal(original[y0*2:y1*2,x0*2:x1*2],actual[y0*2:y1*2,x0*2:x1*2]),f'v1.3: unconfirmed full birth date leaves {key} unmarked')
+# Inspect actual pdf-lib renderer output: full text, order, fit and unchanged other cells.
+for case in json.loads((ROOT/'tests/fixtures/counsel-output-cases.json').read_text()):
+ doc=fitz.open(OUT/f"counsel-{case['id']}.pdf");page=doc[0]
+ check(len(doc)==1,f"counsel {case['id']}: one page")
+ spans=[s for b in page.get_text('dict',clip=fitz.Rect(BOXES['counsel']))['blocks'] for l in b.get('lines',[]) for s in l['spans']]
+ text=''.join(s['text'] for s in spans)
+ check(''.join(text.split())==''.join(case['expected'].split()),f"counsel {case['id']}: all names in exact order, no titles or commas")
+ check(all(fitz.Rect(BOXES['counsel']).contains(fitz.Rect(s['bbox'])) for s in spans),f"counsel {case['id']}: all glyphs inside existing cell")
+ if case.get('mustShrink'):
+  check(bool(spans) and max(s['size'] for s in spans)<8,f"counsel {case['id']}: font shrinks to preserve full list")
+ reference=pixels(v13[0]);actual=pixels(page);x0,y0,x1,y1=BOXES['counsel']
+ changed=np.any(reference!=actual,axis=2);changed[(y0-2)*2:(y1+2)*2+1,(x0-2)*2:(x1+2)*2+1]=False
+ check(np.count_nonzero(changed)==0,f"counsel {case['id']}: all other memo content unchanged")
 report={'checksPassed':count,'actualTemplatePages':len(template),'syntheticTwoPageVerified':True,'actualUserTwoPageTemplateVerified':False,'templateSHA256':hashlib.sha256(source.read_bytes()).hexdigest(),'outputSource':'browser Blob downloads; see browser-report.json for file/in-memory mode; not Windows Edge'}
 (OUT/'pdf-report.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Checks:',count)

@@ -301,30 +301,36 @@ export class CounselParser {
     else {
       const organizations = list.filter((v) => /^법\s*무\s*법\s*인/.test(v));
       if (organizations.length) {
-        const firms = [],
-          names = [];
+        const firms = [], names = [], displays = [];
         let incomplete = organizations.length !== list.length;
         for (const value of organizations) {
-          const match = value.match(
-            /^법\s*무\s*법\s*인\s*(.+?)(?:[（(]\s*담\s*당\s*변\s*호\s*사\s*[:：]?\s*([\s\S]+?)[）)])?\s*$/,
-          );
-          if (!match) {
-            incomplete = true;
-            continue;
-          }
-          firms.push("법무법인 " + match[1].replace(/\s+/g, " ").trim());
-          const people = (match[2] ?? "")
+          // The 담당변호사 marker separates the firm from its lawyers, with or
+          // without parentheses and across PDF line breaks.
+          const rest = value.replace(/^법\s*무\s*법\s*인\s*/, "");
+          const match = rest.match(/^([\s\S]+?)\s*(?:[（(]\s*)?담\s*당\s*변\s*호\s*사\s*[:：]?\s*([\s\S]+)$/);
+          const company = (match?.[1] ?? rest).replace(/\s+/g, " ").trim();
+          firms.push("법무법인 " + company);
+          const people = (match?.[2] ?? "").replace(/\s*[）)]\s*$/, "")
             .split(/[,，、\n]/)
-            .map((n) => n.replace(/\s/g, ""))
-            .filter(Boolean);
-          if (!people.length || people.some((n) => !/^[가-힣]{2,10}$/.test(n)))
+            .flatMap((part) => {
+              const value = part.replace(/변\s*호\s*사/g, "").trim();
+              if (!value) return [];
+              const tokens = value.split(/\s+/);
+              return tokens.every((n) => /^[가-힣]{2,10}$/.test(n))
+                ? tokens : [value.replace(/\s/g, "")];
+            });
+          if (!company || !people.length || people.some((n) => !/^[가-힣]{2,10}$/.test(n)))
             incomplete = true;
-          else names.push(...people);
+          else {
+            names.push(...people);
+            displays.push(`${company}) ${people.join(" ")}`);
+          }
         }
-        firm = [...new Set(firms)].join("\n");
-        lawyers = [...new Set(names)];
+        firm = firms.join("\n");
+        // Preserve every listed name and its original order, including repeats.
+        lawyers = names;
         status = incomplete ? "needsReview" : "named";
-        name = incomplete ? "" : lawyers.join(", ");
+        name = incomplete ? "" : displays.join("\n");
       } else {
         status = "named";
         name = list.join("\n");

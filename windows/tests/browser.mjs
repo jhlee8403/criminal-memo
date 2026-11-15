@@ -296,7 +296,7 @@ try {
     "특정범죄가중처벌등에관한법률위반(위험운전치사)",
     "도로교통법위반(음주운전)",
   ]);
-  assert.equal(v13Draft.defendants[0].counsel.name, "김가상, 박가상, 이가상");
+  assert.equal(v13Draft.defendants[0].counsel.name, "가상) 김가상 박가상 이가상");
   assert.equal(v13Draft.defendants[0].detention, "released");
   assert.equal(
     await page.locator("#people input, #reviewed, #generate").count(),
@@ -318,6 +318,17 @@ try {
     counselVerified: true,
     manualInputs: false,
   };
+  const counselCases = JSON.parse(await fs.readFile(resolve(root, "tests/fixtures/counsel-output-cases.json"), "utf8"));
+  for (const item of counselCases) {
+    const rendered = await page.evaluate(async (item) => {
+      const draft = structuredClone(CM.getDraft());
+      draft.defendants[0].counsel = CM.CounselParser.parse(item.source, false);
+      if (CM.counselText(draft) !== item.expected) throw Error("Counsel output mismatch: " + item.id);
+      return Array.from(await CM.MemoPDFRenderer.render(draft));
+    }, item);
+    await fs.writeFile(resolve(out, `counsel-${item.id}.pdf`), new Uint8Array(rendered));
+  }
+  report.counselOutputCases = counselCases.map(c => c.id);
   await page.screenshot({ path: resolve(out, "review.png"), fullPage: true });
   assert.deepEqual(external, []);
   assert.deepEqual(report.errors, []);
