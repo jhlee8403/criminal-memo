@@ -510,3 +510,49 @@ test('PDF counsel cases preserve exact complete output strings', async () => {
     assert.equal(counselText({defendants:[{counsel}]}),c.expected,c.id);
   }
 });
+
+test("direct counsel headings are recognized by full indictment parsing", async () => {
+  const source = await latestText();
+  const cases = JSON.parse(await fs.readFile(new URL("fixtures/counsel-output-cases.json", import.meta.url), "utf8"));
+  for (const item of cases) {
+    const text = source.replace(/변 호 인[\s\S]*?(?=Ⅱ \. 공소사실)/, item.source.join("\n") + "\n");
+    const draft = IndictmentParser.parse(doc(text));
+    assert.equal(counselText(draft), item.expected, item.id);
+    assert.deepEqual(validateDraft(draft), [], item.id);
+    assert.equal(draft.prosecutor, "홍길동");
+    assert.equal(draft.filingDate, "2026-08-28");
+    assert.deepEqual(draft.defendants[0].charges, latestCharges);
+    assert.equal(draft.defendants[0].detention, "released");
+  }
+});
+for (const source of [
+  "국선변호인 변호사", "변호인 변호사 미정", "변호사 성명불상",
+  "국선변호인 선임 예정", "변호인 알 수 없음", "국선변호인 ?",
+  "변호인 국선변호사 확인 필요", "변호인 김가상\n판독불가",
+]) test("ambiguous counsel is not guessed: " + source, () => {
+  const counsel = CounselParser.parse(source.split("\n"), false);
+  assert.equal(counsel.status, "needsReview");
+  assert.equal(counsel.name, "");
+  assert.equal(counselText({defendants:[{counsel}]}), "");
+});
+test("bare general counsel never gains an appointed marker", () => {
+  for (const source of ["변호사 김가상", "변호인 김가상", "변호인\n변호사\n김가상"]) {
+    const counsel = CounselParser.parse(source.split("\n"), false);
+    assert.equal(counsel.name, "김가상");
+    assert.equal(counsel.status, "named");
+  }
+});
+test("appointed heading cannot consume body/attachment counsel", () => {
+  const counsel = CounselParser.parse(["국선변호인 변호사 김가상", "Ⅱ . 공소사실", "변호사 본문가상", "Ⅲ . 첨부", "변호사 첨부가상"], false);
+  assert.equal(counsel.name, "김가상(국선)");
+  assert.equal(CounselParser.parse(["국선변호인 김가상"], true).status, "needsReview");
+});
+test('a separately titled regular lawyer does not inherit an earlier national marker', () => {
+  const counsel = CounselParser.parse(['변호인 국선변호사 김가상','변호사 박가상'],false);
+  assert.equal(counsel.name,'김가상(국선)\n박가상');
+});
+test('embedded titles are not mistaken for names', () => {
+  const counsel = CounselParser.parse(['변호인 김가상 변호사 박가상'],false);
+  assert.equal(counsel.status,'needsReview');
+  assert.equal(counsel.name,'');
+});

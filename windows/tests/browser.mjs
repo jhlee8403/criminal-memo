@@ -320,13 +320,30 @@ try {
   };
   const counselCases = JSON.parse(await fs.readFile(resolve(root, "tests/fixtures/counsel-output-cases.json"), "utf8"));
   for (const item of counselCases) {
-    const rendered = await page.evaluate(async (item) => {
-      const draft = structuredClone(CM.getDraft());
-      draft.defendants[0].counsel = CM.CounselParser.parse(item.source, false);
-      if (CM.counselText(draft) !== item.expected) throw Error("Counsel output mismatch: " + item.id);
-      return Array.from(await CM.MemoPDFRenderer.render(draft));
-    }, item);
-    await fs.writeFile(resolve(out, `counsel-${item.id}.pdf`), new Uint8Array(rendered));
+    const input = await PDFDocument.create();
+    input.registerFontkit(fontkit);
+    const font = await input.embedFont(await fs.readFile(resolve(root, "vendor/NanumGothic-Regular.ttf")));
+    const text = v13Text.replace(/변 호 인[\s\S]*?(?=Ⅱ \. 공소사실)/, item.source.join("\n") + "\n");
+    let inputPage = input.addPage([595, 842]), y = 810;
+    for (const line of text.trim().split("\n")) {
+      inputPage.drawText(line, {x:20, y, size:8, font});
+      y -= 15;
+      if (line === "- 1 -" || line === "2 / 3") {
+        inputPage = input.addPage([595, 842]);
+        y = 810;
+      }
+    }
+    const inputPath = resolve(out, `counsel-${item.id}-input.pdf`);
+    await fs.writeFile(inputPath, await input.save());
+    await page.locator("#file").setInputFiles(inputPath);
+    await page.waitForFunction(() => !document.querySelector("#analyze").disabled);
+    await page.locator("#analyze").click();
+    await page.waitForFunction(() => !!CM.getDraft() && !document.querySelector("#analyze").disabled);
+    assert.equal(await page.evaluate(() => CM.counselText(CM.getDraft())), item.expected, item.id);
+    await page.locator("#export").waitFor({state:"visible", timeout:60000});
+    const download = page.waitForEvent("download");
+    await page.locator("#save").click();
+    await (await download).saveAs(resolve(out, `counsel-${item.id}.pdf`));
   }
   report.counselOutputCases = counselCases.map(c => c.id);
   await page.screenshot({ path: resolve(out, "review.png"), fullPage: true });

@@ -158,7 +158,9 @@ const fields = (lines) => {
       current = null;
       continue;
     }
-    const field = heading(line);
+    // A standalone counsel title ends the preceding field, while titles inside
+    // an existing counsel field remain part of its multiline value.
+    const field = heading(line) ?? (current?.label !== "변호인" ? CounselParser.heading(line) : null);
     if (field) {
       current = { label: field.label, parts: field.value ? [field.value] : [] };
       result.push(current);
@@ -275,14 +277,18 @@ export class ChargeParser {
   }
 }
 export class CounselParser {
+  static heading(line) {
+    const match = clean(line).match(/^\s*(?:\d+[.)]\s*)?(국\s*선\s*변\s*호\s*[인사]|변\s*호\s*사)(?:\s*[:：]\s*|\s+|$)(.*)$/);
+    return match ? { label: "변호인", value: `${match[1]} ${match[2]}`.trim() } : null;
+  }
   static parse(lines, ocr) {
     const list = values("변호인", lines),
-      none = ["없음", "해당없음", "선임없음", "미선임", "X"];
+      none = ["없음", "해당없음", "선임없음", "미선임", "미기재", "X"];
     let status,
       name = "",
       firm = "",
       lawyers = [];
-    if (!list.length && !lines.some((l) => hasLabel("변호인", l)))
+    if (!list.length)
       status = "absentMissing";
     else if (
       list.length &&
@@ -332,8 +338,45 @@ export class CounselParser {
         status = incomplete ? "needsReview" : "named";
         name = incomplete ? "" : displays.join("\n");
       } else {
-        status = "named";
-        name = list.join("\n");
+        const output = [];
+        let incomplete = false, explicitNone = false;
+        const stripTitles = (value) => {
+          let appointed = false, titled = false, match;
+          value = value.trim();
+          while ((match = value.match(/^(국\s*선\s*변\s*호\s*[인사]|변\s*호\s*인|변\s*호\s*사)(?=\s|[:：]|$)\s*[:：]?\s*/))) {
+            titled = true;
+            appointed ||= /국\s*선/.test(match[1]);
+            value = value.slice(match[0].length).trim();
+          }
+          return { value, appointed, titled };
+        };
+        for (const raw of list) {
+          const group = stripTitles(raw);
+          if (none.includes(group.value.replace(/\s/g, ""))) {
+            explicitNone = true;
+            continue;
+          }
+          const parts = group.value.replace(/\n\s*(?=[（(]\s*국\s*선\s*[）)])/g, "").split(/[,，、\n]/).filter((v) => v.trim());
+          if (!parts.length) incomplete = true;
+          for (const part of parts) {
+            const entry = stripTitles(part);
+            const suffix = /[（(]\s*국\s*선\s*[）)]\s*$/;
+            const appointed = (entry.titled ? entry.appointed : group.appointed) || suffix.test(entry.value);
+            const value = entry.value.replace(suffix, "").trim();
+            const tokens = value.split(/\s+/);
+            const people = tokens.every((n) => /^[가-힣]{2,5}$/.test(n))
+              ? tokens : [value.replace(/\s/g, "")];
+            if (people.some((n) => !/^[가-힣]{2,5}$/.test(n) ||
+              /미정|미상|불명|불상|예정|선정|선임|확인|판독|불가|없음|알수없음|신청|대기|담당|사무소|^국선$|^변호사$|^변호인$|^국선변호사$|^국선변호인$/.test(n))) {
+              incomplete = true;
+              continue;
+            }
+            output.push(...people.map((n) => n + (appointed ? "(국선)" : "")));
+          }
+        }
+        incomplete ||= explicitNone && output.length > 0;
+        status = incomplete ? "needsReview" : explicitNone ? "absentExplicit" : "named";
+        name = incomplete ? "" : output.join("\n");
       }
     }
     return { status: ocr ? "needsReview" : status, name, firm, lawyers };
