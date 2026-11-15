@@ -36,7 +36,9 @@ export function validDate(y, m, d) {
 export function parseDate(s) {
   const m = s
     ?.trim()
-    .match(/^(\d{4})[.\-/년]\s*(\d{1,2})[.\-/월]\s*(\d{1,2})(?:[.일])?$/);
+    .match(
+      /^(\d{4})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})\s*(?:[.일])?$/,
+    );
   if (!m || !validDate(+m[1], +m[2], +m[3])) return null;
   return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
 }
@@ -76,47 +78,124 @@ const clean = (s) =>
     .replace(/[\u200B-\u200D\u2060\uFEFF]/g, "")
     .replace(/[\u00a0\u3000]/g, " ");
 const labelPattern = (label) => [...label].join("\\s*");
-export const labelValue = (label, line) =>
-  line.match(
-    new RegExp(
-      "^\\s*(?:\\d+[.)]\\s*)?" +
-        labelPattern(label) +
-        "\\s*[:：]?\\s+(.+?)\\s*$",
-    ),
-  )?.[1];
-const hasLabel = (label, line) =>
-  new RegExp(
-    "^\\s*(?:\\d+[.)]\\s*)?" + labelPattern(label) + "(?:\\s|[:：]|$)",
-  ).test(line);
+const fieldLabels = [
+  "공소제기일",
+  "기소일자",
+  "기소일",
+  "작성일자",
+  "작성일",
+  "검사",
+  "피고인",
+  "성명",
+  "주민등록번호",
+  "생년월일",
+  "직업",
+  "주거",
+  "주소",
+  "등록기준지",
+  "죄명",
+  "적용법조",
+  "구속여부",
+  "변호인",
+  "사건번호",
+  "수신자",
+  "발신자",
+  "제목",
+];
+const fieldHead = new RegExp(
+  "^\\s*(?:\\d+[.)]\\s*)?(" +
+    fieldLabels.map(labelPattern).join("|") +
+    ")(?:\\s*[:：]\\s*|\\s+|$)(.*)$",
+);
+const bodyHead =
+  /^(?:(?:[IVX]+|\d+)[.)]\s*)?(?:공\s*소\s*사\s*실|범\s*죄\s*사\s*실|증\s*거\s*방\s*법|첨\s*부\s*서\s*류)/;
+const heading = (line) => {
+  const m = clean(line).match(fieldHead);
+  return m ? { label: m[1].replace(/\s/g, ""), value: m[2].trim() } : null;
+};
+export const labelValue = (label, line) => {
+  const field = heading(line);
+  return field?.label === label && field.value ? field.value : undefined;
+};
+const hasLabel = (label, line) => heading(line)?.label === label;
+// Read a field until the next known label/body heading, including unnumbered wraps.
+// The same boundary rules are used for all fields so values cannot cross defendants.
+const fields = (lines) => {
+  const result = [];
+  let current;
+  for (const raw of lines) {
+    const line = clean(raw).trim();
+    if (bodyHead.test(line)) break;
+    const field = heading(line);
+    if (field) {
+      current = { label: field.label, parts: field.value ? [field.value] : [] };
+      result.push(current);
+    } else if (line && current) current.parts.push(line);
+  }
+  return result;
+};
+const values = (label, lines) =>
+  fields(lines)
+    .filter((f) => f.label === label)
+    .map((f) => f.parts.join("\n"));
 export class DefendantParser {
   static split(text) {
     const sections = [];
-    let names = false;
-    for (const line of clean(text)
-      .split("\n")
-      .map((s) => s.trim())) {
-      if (/^(?:[IVX]+[.)]\s*)?공\s*소\s*사\s*실/.test(line)) break;
-      const value = labelValue("피고인", line);
-      if (value && !/관\s*련\s*사\s*항/.test(value)) {
-        sections.push({ identity: value, lines: [] });
-        names = true;
-      } else if (hasLabel("피고인", line) && !/관\s*련\s*사\s*항/.test(line)) {
-        names = true;
-      } else if (names && /^\d+[.)]\s*.+/.test(line)) {
+    let pending = false;
+    const lines = clean(text)
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+    for (const [index, line] of lines.entries()) {
+      if (!line) continue;
+      if (bodyHead.test(line)) break;
+      const field = heading(line);
+      if (field?.label === "피고인") {
+        if (/관\s*련\s*사\s*항/.test(field.value)) continue;
+        pending = true;
+        if (field.value) {
+          sections.push({ identity: field.value, lines: [] });
+          pending = false;
+        }
+      } else if (pending && field?.label === "성명") {
+        if (field.value) {
+          sections.push({ identity: field.value, lines: [] });
+          pending = false;
+        }
+      } else if (pending && !field) {
+        sections.push({ identity: line.replace(/^\d+[.)]\s*/, ""), lines: [] });
+        pending = false;
+      } else if (
+        !field &&
+        /^\d+[.)]\s*\S+/.test(line) &&
+        sections.length &&
+        (/^\d+[.)]\s*[^()（）：:\d]+[（(]\s*\d{6}/.test(line) ||
+          ["성명", "주민등록번호", "생년월일", "직업", "주거", "주소"].includes(
+            heading(lines[index + 1] ?? "")?.label,
+          ))
+      ) {
         sections.push({ identity: line.replace(/^\d+[.)]\s*/, ""), lines: [] });
       } else {
-        if (line) names = false;
         sections.at(-1)?.lines.push(line);
+        if (field && field.label !== "성명") pending = false;
       }
     }
     return sections;
   }
   static parse(section, ocr) {
-    const front = section.identity.match(/(?<!\d)(\d{6})(?!\d)/)?.[1] ?? "";
+    const firstField = section.lines.findIndex((l) => heading(l));
+    const identity = [
+      section.identity,
+      ...section.lines.slice(0, firstField < 0 ? section.lines.length : firstField),
+      ...values("주민등록번호", section.lines),
+      ...values("생년월일", section.lines),
+    ].join("\n");
+    const front = identity.match(/(?<!\d)(\d{6})(?!\d)/)?.[1] ?? "";
+    const named = values("성명", section.lines)[0]?.split("\n")[0];
     return {
       id: crypto.randomUUID?.() ?? Math.random().toString(36),
-      name: section.identity
-        .split(/[（(]/)[0]
+      name: (named || section.identity)
+        .split(/[（(\n]/)[0]
         .replace(/\d{6}.*$/, "")
         .replace(/^\d+[.)]\s*/, "")
         .replace(/^[_、:：\s]+/, "")
@@ -129,33 +208,29 @@ export class DefendantParser {
     };
   }
 }
-const values = (label, lines) =>
-  lines.map((l) => labelValue(label, l)).filter((v) => v !== undefined);
 export class ChargeParser {
   static parse(lines) {
-    const output = [];
-    let active = false;
-    for (const line of lines) {
-      const value = labelValue("죄명", line);
-      if (value) {
-        output.push(value);
-        active = true;
-      } else if (hasLabel("죄명", line)) {
-        active = true;
-      } else if (
-        active &&
-        /^\d+[.)]\s*/.test(line) &&
-        !["피고인", "적용법조", "구속여부", "변호인"].some((l) =>
-          hasLabel(l, line),
-        )
-      ) {
-        output.push(line);
-      } else if (line.trim()) active = false;
-    }
-    return output
-      .flatMap((v) => v.split(/[,，、;]/))
-      .map((v) => v.replace(/^\d+[.)]\s*/, "").trim())
-      .filter(Boolean);
+    return values("죄명", lines).flatMap((v) => {
+      // Newline is a separate charge unless an open parenthesis proves a wrapped title.
+      const result = [];
+      let balance = 0,
+        chunk = "";
+      const flush = () => {
+        const value = chunk
+          .replace(/^\s*(?:\d+[.)]|[가-힣][.)])\s*/, "")
+          .trim();
+        if (value) result.push(value);
+        chunk = "";
+      };
+      for (const c of v) {
+        if ("(（".includes(c)) balance++;
+        if (")）".includes(c)) balance = Math.max(0, balance - 1);
+        if (/[,，、;；\n]/.test(c) && balance === 0) flush();
+        else if (c !== "\n") chunk += c;
+      }
+      flush();
+      return result;
+    });
   }
 }
 export class CounselParser {
@@ -207,28 +282,61 @@ export class DetentionParser {
 }
 export class ProsecutorParser {
   static parse(lines) {
+    // Names may be on the next line, spaced by PDF text items, and followed by a signature.
     const names = [
-      ...new Set(values("검사", lines).map((s) => s.replace(/[_\s]+$/, ""))),
+      ...new Set(
+        values("검사", lines)
+          .map((s) =>
+            s
+              .split("\n")[0]
+              .replace(/[_＿]+.*$/, "")
+              .replace(
+                /\s*(?:[（(]인[）)]|[（(]서명[）)]|[（(]날인[）)])\s*$/,
+                "",
+              )
+              .replace(/\s/g, "")
+              .trim(),
+          )
+          .filter((s) => /^[가-힣]{2,10}$/.test(s)),
+      ),
     ];
     return names.length === 1 ? names[0] : "";
   }
 }
 export class FilingDateParser {
   static parse(firstPage) {
-    const explicit = values("기소일", firstPage.text.split("\n")).concat(
-      values("공소제기일", firstPage.text.split("\n")),
+    if (!firstPage) return null;
+    const lines = clean(firstPage.text).split(/\r?\n/);
+    const explicitFields = fields(lines).filter((f) =>
+      ["기소일", "기소일자", "공소제기일"].includes(f.label),
     );
     const header = firstPage.ocr
-      ? firstPage.text.split("\n").slice(0, 8)
-      : firstPage.lines
+      ? lines.slice(0, 8)
+      : (firstPage.lines ?? [])
           .filter((l) => l.y <= firstPage.height * 0.25)
-          .map((l) => l.text);
-    const dates = [
-      ...new Set(
-        (explicit.length ? explicit : header).map(parseDate).filter(Boolean),
-      ),
-    ];
-    return dates.length === 1 ? dates[0] : null;
+          .map((l) => clean(l.text));
+    const candidates = explicitFields.length
+      ? explicitFields.map((f) => f.parts.join(" "))
+      : header.map((l, i) => {
+          // Join only date-shaped fragments; never join an arrest/identity field into a date.
+          if (!/^\s*\d{4}\s*[.년/\-]/.test(l)) return "";
+          let date = l.trim();
+          for (
+            let j = i + 1;
+            j < header.length && j <= i + 2 && !parseDate(date);
+            j++
+          ) {
+            if (!/^\s*[\d\s.월일/\-]+$/.test(header[j])) break;
+            date += " " + header[j].trim();
+          }
+          return date;
+        });
+    const dates = [...new Set(candidates.map(parseDate).filter(Boolean))];
+    // Explicit but invalid/conflicting dates must not silently fall back to another header date.
+    return dates.length === 1 &&
+      (!explicitFields.length || candidates.every(parseDate))
+      ? dates[0]
+      : null;
   }
 }
 export class IndictmentParser {
@@ -245,7 +353,7 @@ export class IndictmentParser {
       warnings: [],
     };
     if (!draft.defendants.length)
-      draft.warnings.push("피고인을 찾지 못했습니다. 직접 입력하세요.");
+      draft.warnings.push("피고인 이름을 자동 추출하지 못했습니다.");
     if (!draft.prosecutor) draft.warnings.push("검사 이름을 확인하세요.");
     if (!draft.filingDate)
       draft.warnings.push("첫 페이지 기소일을 확정하지 못했습니다.");

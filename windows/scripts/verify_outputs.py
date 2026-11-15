@@ -51,9 +51,7 @@ check(np.array_equal(pixels(two_source[1]),pixels(two_out[1])),'synthetic templa
 aged=fitz.open(OUT/'age-marks.pdf')[0]
 for key in ['juvenile','mandatory']:
  r=fitz.Rect(BOXES[key]);before=template[0].get_pixmap(clip=r,alpha=False);after=aged.get_pixmap(clip=r,alpha=False)
- check(before.samples!=after.samples,f'confirmed age rule adds {key} circle')
- shapes=[d for d in aged.get_drawings() if d['color']==(1,0,0) and fitz.Rect(d['rect']).intersects(r)]
- check(any(d['fill'] is None for d in shapes),f'{key}: red transparent ellipse, original text retained')
-report={'checksPassed':count,'actualTemplatePages':len(template),'syntheticTwoPageVerified':True,'actualUserTwoPageTemplateVerified':False,'templateSHA256':hashlib.sha256(source.read_bytes()).hexdigest(),'outputSource':'browser Blob downloads from in-memory diagnostic; not Windows Edge file://'}
+ check(before.samples==after.samples,f'auto-only does not infer {key} circle from a manual year')
+report={'checksPassed':count,'actualTemplatePages':len(template),'syntheticTwoPageVerified':True,'actualUserTwoPageTemplateVerified':False,'templateSHA256':hashlib.sha256(source.read_bytes()).hexdigest(),'outputSource':'browser Blob downloads; see browser-report.json for file/in-memory mode; not Windows Edge'}
 (OUT/'pdf-report.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Checks:',count)

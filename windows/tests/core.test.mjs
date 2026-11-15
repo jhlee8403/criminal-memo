@@ -33,7 +33,7 @@ const person = (digits, age, year = "") => ({
   statedAge: age,
   confirmedYear: year,
 });
-test("actual sample1 fields, blank counsel and age mismatch", async () => {
+test("repository sample1 fields, blank counsel and unconfirmed age", async () => {
   const d = IndictmentParser.parse(doc(await text(1)));
   assert.deepEqual(
     d.defendants.map((p) => p.name),
@@ -48,10 +48,9 @@ test("actual sample1 fields, blank counsel and age mismatch", async () => {
     { text: "O", color: "red" },
   ]);
   const a = birthAssessment(d.defendants[0], d.filingDate);
-  assert.equal(a.birth, "1984-12-04");
-  assert.equal(a.age, 40);
+  assert.equal(a.birth, null);
+  assert.equal(a.age, null);
   assert.equal(a.resolved, false);
-  assert.match(a.warnings[0], /41세/);
 });
 test("actual sample2 cross-page defendant relationships", async () => {
   const d = IndictmentParser.parse(doc(await text(2)));
@@ -75,24 +74,10 @@ test("actual sample2 cross-page defendant relationships", async () => {
     { text: "O", color: "red" },
     { text: "X", color: "black" },
   ]);
-  assert.deepEqual(
-    d.defendants.map((p) => birthAssessment(p, d.filingDate).age),
-    [54, 55],
-  );
   assert.ok(
-    d.defendants.every((p) => birthAssessment(p, d.filingDate).resolved),
+    d.defendants.every((p) => !birthAssessment(p, d.filingDate).resolved),
   );
 });
-for (const [digits, year, age, date] of [
-  ["100101", "2010", 16, "2026-10-27"],
-  ["710305", "1971", 55, "2026-10-27"],
-  ["000101", "2000", 26, "2026-10-27"],
-])
-  test("stated age resolves century " + year, () => {
-    const a = birthAssessment(person(digits, age), date);
-    assert.equal(a.birth.slice(0, 4), year);
-    assert.equal(a.resolved, true);
-  });
 test("suffix changes do not affect extraction or age", async () => {
   const original = await text(2);
   const a = IndictmentParser.parse(doc(original)),
@@ -119,79 +104,19 @@ for (const digits of [
     assert.equal(a.resolved, false);
     assert.equal(a.birth, null);
   });
-test("leap day respects actual century", () => {
-  assert.equal(
-    birthAssessment(person("000229", null, "1900"), "2025-08-22").birth,
-    null,
-  );
-  assert.equal(
-    birthAssessment(person("000229", null, "2000"), "2025-08-22").age,
-    25,
-  );
-});
-test("age18/19 boundary", () => {
-  assert.equal(
-    birthAssessment(person("060823", null, "2006"), "2025-08-22").age,
-    18,
-  );
-  assert.equal(
-    birthAssessment(person("060823", null, "2006"), "2025-08-23").age,
-    19,
-  );
-});
-test("age70/71 boundary", () => {
-  assert.equal(
-    birthAssessment(person("540823", null, "1954"), "2025-08-22").age,
-    70,
-  );
-  assert.equal(
-    birthAssessment(person("540823", null, "1954"), "2025-08-23").age,
-    71,
-  );
-});
-test("no age means no assumed century", () => {
-  assert.equal(
-    birthAssessment(person("100101", null), "2025-08-22").resolved,
-    false,
-  );
-});
-test("invalid manual edit never falls back", () => {
-  assert.equal(
-    birthAssessment(person("720324", 54, "197"), "2026-10-27").resolved,
-    false,
-  );
-  assert.equal(
-    birthAssessment(person("720324", 54, "1984"), "2026-10-27").birth,
-    null,
-  );
-});
-test("future birth rejected", () => {
-  assert.equal(
-    birthAssessment(person("250101", null, "2025"), "2024-01-01").birth,
-    null,
-  );
-});
-test("manual confirmation keeps mismatch warning but enables marks", () => {
-  const p = person("101204", 15);
-  const d = { defendants: [p], filingDate: "2025-08-22" };
-  assert.equal(ageMarks(d).juvenile, false);
-  p.confirmedYear = "2010";
-  assert.equal(ageMarks(d).juvenile, true);
-  assert.ok(birthAssessment(p, d.filingDate).warnings.length);
-});
-test("age rules are independently configurable", () => {
-  const d = {
-    defendants: [
-      person("060822", null, "2006"),
-      person("550822", null, "1955"),
-    ],
-    filingDate: "2025-08-22",
-  };
-  assert.deepEqual(ageMarks(d), { juvenile: false, mandatory: false });
-  assert.deepEqual(ageMarks(d, { juvenileUnder: 20, mandatoryOver: 69 }), {
-    juvenile: true,
-    mandatory: true,
-  });
+test("auto-only never infers age from stated age or a manual year", () => {
+  for (const p of [
+    person("100101", 16, "2010"),
+    person("500101", 76, "1950"),
+  ]) {
+    const assessment = birthAssessment(p, "2026-11-05");
+    assert.equal(assessment.resolved, false);
+    assert.equal(assessment.age, null);
+    assert.deepEqual(ageMarks({ defendants: [p], filingDate: "2026-11-05" }), {
+      juvenile: false,
+      mandatory: false,
+    });
+  }
   assert.equal(AGE_RULES.juvenileUnder, 19);
 });
 for (const [states, expected] of [
@@ -260,4 +185,102 @@ test("ambiguous header dates remain unknown", () => {
 test("calendar dates reject rollover", () => {
   assert.equal(parseDate("2025.2.29."), null);
   assert.equal(parseDate("2024년 2월 29일"), "2024-02-29");
+});
+test("synthetic split labels, numbered defendants, multiline charges and body boundary", async () => {
+  const t = await fs.readFile(
+    new URL("fixtures/layout-variants.txt", import.meta.url),
+    "utf8",
+  );
+  const d = IndictmentParser.parse(doc(t));
+  assert.equal(d.prosecutor, "홍길동");
+  assert.equal(d.filingDate, "2026-11-05");
+  assert.deepEqual(
+    d.defendants.map((p) => [p.name, p.birthDigits, p.charges, p.detention]),
+    [
+      ["김가상", "900101", ["사기", "도로교통법위반(음주운전)"], "released"],
+      ["이가상", "920202", ["상해", "절도"], "detained"],
+    ],
+  );
+  assert.equal(counselText(d), "박변호");
+  assert.deepEqual(validateDraft(d), []);
+});
+for (const date of [
+  "2026 . 11 . 5 .",
+  "2026 - 11 - 05",
+  "2026 / 11 / 5",
+  "2026 년 11 월 5 일",
+])
+  test("date whitespace: " + date, () =>
+    assert.equal(parseDate(date), "2026-11-05"),
+  );
+test("split header date, signature and Unicode spaces", () => {
+  const d = IndictmentParser.parse(
+    doc(
+      "2026.\n11.\n5.\n검\u3000사：홍\u00a0길\u2009동 ___\n피고인：김가상\n죄명：절도",
+    ),
+  );
+  assert.equal(d.filingDate, "2026-11-05");
+  assert.equal(d.prosecutor, "홍길동");
+  assert.equal(d.defendants[0].name, "김가상");
+});
+test("explicit invalid/conflicting dates and prosecutors stay unconfirmed", () => {
+  for (const fields of [
+    "기소일 2026.2.30.",
+    "기소일\n2026.11.5.\n공소제기일 2026.11.6.",
+  ]) {
+    const d = IndictmentParser.parse(
+      doc("2026.11.5.\n" + fields + "\n피고인 김가상"),
+    );
+    assert.equal(d.filingDate, null);
+  }
+  assert.equal(
+    IndictmentParser.parse(doc("검사 홍길동\n검사 김검사")).prosecutor,
+    "",
+  );
+});
+test("separate identity fields and charges do not consume metadata", () => {
+  const d = IndictmentParser.parse(
+    doc(
+      "피고인\n성명\n김가상\n생년월일 900101\n직업 회사원\n죄명\n절도\n상해\n적용법조\n형법 제329조\n구속여부 불구속\n변호인\n없음",
+    ),
+  );
+  assert.equal(d.defendants[0].name, "김가상");
+  assert.equal(d.defendants[0].birthDigits, "900101");
+  assert.deepEqual(d.defendants[0].charges, ["절도", "상해"]);
+  assert.equal(d.defendants[0].counsel.status, "absentExplicit");
+});
+test("repeated split defendant labels keep each person’s fields", () => {
+  const d = IndictmentParser.parse(
+    doc(
+      "피고인\n김가상 (900101)\n죄명 사기\n변호인 박변호\n피고인\n이가상 (920202)\n죄명 절도\n구속여부 불구속",
+    ),
+  );
+  assert.deepEqual(
+    d.defendants.map((p) => p.name),
+    ["김가상", "이가상"],
+  );
+  assert.deepEqual(
+    d.defendants.map((p) => p.charges),
+    [["사기"], ["절도"]],
+  );
+  assert.equal(d.defendants[1].counsel.status, "absentMissing");
+});
+test("numbered defendants with birth on separate lines and commas inside charge titles", () => {
+  const d = IndictmentParser.parse(
+    doc(
+      "피고인\n1. 김가상\n주민등록번호 900101\n죄명 특정법위반(가, 나)\n절도\n2. 이가상\n생년월일 920202\n죄명 상해",
+    ),
+  );
+  assert.deepEqual(
+    d.defendants.map((p) => [p.name, p.birthDigits, p.charges]),
+    [
+      ["김가상", "900101", ["특정법위반(가, 나)", "절도"]],
+      ["이가상", "920202", ["상해"]],
+    ],
+  );
+});
+test('address or job numbers cannot substitute for missing birth digits', () => {
+  const d = IndictmentParser.parse(doc('피고인 김가상\n직업 123456\n주거 900101번지\n죄명 절도'));
+  assert.equal(d.defendants[0].birthDigits, '');
+  assert.ok(validateDraft(d).some(s => s.includes('생년월일')));
 });

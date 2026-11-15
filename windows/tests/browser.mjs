@@ -108,11 +108,10 @@ try {
     );
     assert.deepEqual(
       expectations.birth.map((a) => a.age),
-      i === 0 ? [40] : [54, 55],
+      i === 0 ? [null] : [null, null],
     );
-    assert.equal(expectations.birth[0].resolved, i !== 0);
-    await page.locator("#reviewed").check();
-    await page.locator("#generate").click();
+    assert.equal(expectations.birth[0].resolved, false);
+    assert.equal(await page.locator("#people input").count(), 0);
     await page.locator("#export").waitFor({ state: "visible", timeout: 60000 });
     const download = page.waitForEvent("download");
     await page.locator("#save").click();
@@ -124,6 +123,34 @@ try {
       download: true,
     });
   }
+  // Synthetic format fixture, not a real latest indictment.
+  const syntheticText = await fs.readFile(
+    resolve(root, "tests/fixtures/layout-variants.txt"),
+    "utf8",
+  );
+  const syntheticPDF = await page.evaluate(async (text) => {
+    const draft = CM.IndictmentParser.parse({
+      text,
+      usedOCR: false,
+      pages: [
+        {
+          text,
+          height: 842,
+          lines: text.split("\n").map((text, i) => ({ text, y: i * 12 })),
+        },
+      ],
+    });
+    return Array.from(await CM.MemoPDFRenderer.render(draft));
+  }, syntheticText);
+  assert.equal(
+    (await PDFDocument.load(new Uint8Array(syntheticPDF))).getPageCount(),
+    1,
+  );
+  await fs.writeFile(
+    resolve(out, "synthetic-layout-output.pdf"),
+    new Uint8Array(syntheticPDF),
+  );
+  report.syntheticLayoutOnePage = true;
   // A synthetic two-page template proves all pages survive; it is not a replacement for the actual one-page original.
   const templateName = names.find((f) => f.normalize("NFC") === "형사메모.pdf");
   const template = await fs.readFile(resolve(root, "..", templateName));
@@ -219,10 +246,14 @@ try {
   assert.ok(mixed.defendants[1].charges.some((c) => c.includes("상해")));
   assert.ok(mixed.defendants[1].charges.some((c) => c.includes("절도")));
   report.mixedPDF = { passed: true, defendants: 2, crossPageCharges: true };
-  // Verify edits invalidate output and insecure/unknown fields cannot silently generate.
-  await page.locator("#people input").first().fill("수정된이름");
-  assert.equal(await page.locator("#reviewed").isChecked(), false);
+  // Auto-only: OCR uncertainty blocks output; there is no manual input/review bypass.
   assert.equal(await page.locator("#export").isVisible(), false);
+  assert.equal(
+    await page
+      .locator("#reviewed, #generate, #addPerson, #people input")
+      .count(),
+    0,
+  );
   await page.screenshot({ path: resolve(out, "review.png"), fullPage: true });
   assert.deepEqual(external, []);
   assert.deepEqual(report.errors, []);

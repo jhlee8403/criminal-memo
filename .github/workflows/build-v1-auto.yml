@@ -19,6 +19,9 @@ jobs:
       - name: Install exact dependencies
         run: npm ci
         working-directory: windows
+      - name: Parser regression tests
+        run: npm test
+        working-directory: windows
       - name: Build offline standalone HTML
         run: npm run build
         working-directory: windows
@@ -35,3 +38,9 @@ jobs:
           path: windows/distribution/CriminalMemo/
           if-no-files-found: error
           retention-days: 14
+      - name: Download instructions
+        run: |
+          echo '### Windows 자동 추출 시험판' >> "$GITHUB_STEP_SUMMARY"
+          echo '이 실행의 Artifacts에서 CriminalMemo-v1-auto-only ZIP을 다운로드하고 압축을 푼 뒤 CriminalMemo.html을 여세요.' >> "$GITHUB_STEP_SUMMARY"
+          echo "Source commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo '최신 사용자 공소장 정확도 및 Windows Edge 실행은 별도 검증이 필요합니다.' >> "$GITHUB_STEP_SUMMARY"

@@ -2,6 +2,8 @@
 
 **대상 Windows Edge의 `file://` 검증은 미완료입니다.** 실행 구조는 서버·EXE 없이 HTML 더블클릭을 목표로 유지했습니다. 현재 환경의 관리자 정책이 `file://` 탐색을 차단하여, 동일한 배포 HTML을 메모리에 올린 진단으로만 엔진·업무 흐름을 실행 검증했습니다. 이 결과를 HTML 더블클릭 성공으로 해석하지 않습니다.
 
+현재 자동 전용 실험판의 파서 변경 및 검증 범위: [파서 검증 보고서](docs/PARSER_VALIDATION.md).
+
 ## 배포 후보
 
 [distribution/CriminalMemo](distribution/CriminalMemo/) 폴더를 복사하고 `CriminalMemo.html`을 Edge에서 엽니다. ZIP은 먼저 압축을 풉니다. Node.js·npm·Python·설치·서버는 최종 사용자에게 요구하지 않습니다. 사용법은 [USER_GUIDE.txt](USER_GUIDE.txt)를 참고하세요.
