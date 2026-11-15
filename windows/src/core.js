@@ -107,8 +107,37 @@ const fieldHead = new RegExp(
     fieldLabels.map(labelPattern).join("|") +
     ")(?:\\s*[:：]\\s*|\\s+|$)(.*)$",
 );
-const bodyHead =
-  /^(?:(?:[IVX]+|\d+)[.)]\s*)?(?:공\s*소\s*사\s*실|범\s*죄\s*사\s*실|증\s*거\s*방\s*법|첨\s*부\s*서\s*류)/;
+const sectionPrefix = /^(?:(?:[IVXⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+|\d+)\s*[.．。)）]?\s*)?/;
+const sectionTitle = (line) => clean(line).trim().replace(sectionPrefix, "");
+const isBodyHeading = (line) =>
+  /^(?:공\s*소\s*사\s*실|범\s*죄\s*사\s*실|증\s*거\s*방\s*법|첨\s*부)(?:\s|서|$)/.test(
+    sectionTitle(line),
+  );
+const identityHead = (line) =>
+  /^피\s*고\s*인\s*관\s*련\s*사\s*항/.test(sectionTitle(line));
+const metadata =
+  /열\s*람\s*복\s*사\s*용|출\s*력\s*자|다\s*운\s*로\s*드\s*일\s*시|제\s*출\s*일\s*시/;
+const pageNumber =
+  /^\s*(?:[-–—]\s*\d+\s*[-–—]|\d+\s*[/／]\s*\d+|\d+\s*(?:쪽|페이지)|\d+)\s*$/;
+// Remove known page furniture before collecting field continuations, including a
+// timestamp on the next line of a metadata label. Never remove arbitrary prose.
+const contentLines = (lines) => {
+  const output = [];
+  let metadataContinuation = false;
+  for (const raw of lines) {
+    const line = clean(raw).trim();
+    if (metadata.test(line)) {
+      metadataContinuation = true;
+      continue;
+    }
+    if (!line) continue;
+    if (metadataContinuation && /^[\d\s.년월일:/\-]+$/.test(line)) continue;
+    metadataContinuation = false;
+    if (pageNumber.test(line)) continue;
+    output.push(line);
+  }
+  return output;
+};
 const heading = (line) => {
   const m = clean(line).match(fieldHead);
   return m ? { label: m[1].replace(/\s/g, ""), value: m[2].trim() } : null;
@@ -123,9 +152,12 @@ const hasLabel = (label, line) => heading(line)?.label === label;
 const fields = (lines) => {
   const result = [];
   let current;
-  for (const raw of lines) {
-    const line = clean(raw).trim();
-    if (bodyHead.test(line)) break;
+  for (const line of contentLines(lines)) {
+    if (isBodyHeading(line)) break;
+    if (identityHead(line)) {
+      current = null;
+      continue;
+    }
     const field = heading(line);
     if (field) {
       current = { label: field.label, parts: field.value ? [field.value] : [] };
@@ -142,13 +174,11 @@ export class DefendantParser {
   static split(text) {
     const sections = [];
     let pending = false;
-    const lines = clean(text)
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter(Boolean);
+    const lines = contentLines(clean(text).split(/\r?\n/));
     for (const [index, line] of lines.entries()) {
       if (!line) continue;
-      if (bodyHead.test(line)) break;
+      if (isBodyHeading(line)) break;
+      if (identityHead(line)) continue;
       const field = heading(line);
       if (field?.label === "피고인") {
         if (/관\s*련\s*사\s*항/.test(field.value)) continue;
@@ -186,7 +216,10 @@ export class DefendantParser {
     const firstField = section.lines.findIndex((l) => heading(l));
     const identity = [
       section.identity,
-      ...section.lines.slice(0, firstField < 0 ? section.lines.length : firstField),
+      ...section.lines.slice(
+        0,
+        firstField < 0 ? section.lines.length : firstField,
+      ),
       ...values("주민등록번호", section.lines),
       ...values("생년월일", section.lines),
     ].join("\n");
@@ -211,7 +244,8 @@ export class DefendantParser {
 export class ChargeParser {
   static parse(lines) {
     return values("죄명", lines).flatMap((v) => {
-      // Newline is a separate charge unless an open parenthesis proves a wrapped title.
+      // Parenthetical qualifiers on the next line belong to the preceding title.
+      // Bare unnumbered charge lines still form separate charges.
       const result = [];
       let balance = 0,
         chunk = "";
@@ -219,10 +253,17 @@ export class ChargeParser {
         const value = chunk
           .replace(/^\s*(?:\d+[.)]|[가-힣][.)])\s*/, "")
           .trim();
-        if (value) result.push(value);
+        if (value)
+          result.push(
+            value
+              .replace(/[（(]\s*/g, "(")
+              .replace(/\s*[）)]/g, ")")
+              .replace(/\s+([()])/g, "$1"),
+          );
         chunk = "";
       };
-      for (const c of v) {
+      const joined = v.replace(/\n\s*(?=[（(])/g, "");
+      for (const c of joined) {
         if ("(（".includes(c)) balance++;
         if (")）".includes(c)) balance = Math.max(0, balance - 1);
         if (/[,，、;；\n]/.test(c) && balance === 0) flush();
@@ -238,7 +279,9 @@ export class CounselParser {
     const list = values("변호인", lines),
       none = ["없음", "해당없음", "선임없음", "미선임", "X"];
     let status,
-      name = "";
+      name = "",
+      firm = "",
+      lawyers = [];
     if (!list.length && !lines.some((l) => hasLabel("변호인", l)))
       status = "absentMissing";
     else if (
@@ -256,10 +299,38 @@ export class CounselParser {
     )
       status = "needsReview";
     else {
-      status = "named";
-      name = list.join("\n");
+      const organizations = list.filter((v) => /^법\s*무\s*법\s*인/.test(v));
+      if (organizations.length) {
+        const firms = [],
+          names = [];
+        let incomplete = organizations.length !== list.length;
+        for (const value of organizations) {
+          const match = value.match(
+            /^법\s*무\s*법\s*인\s*(.+?)(?:[（(]\s*담\s*당\s*변\s*호\s*사\s*[:：]?\s*([\s\S]+?)[）)])?\s*$/,
+          );
+          if (!match) {
+            incomplete = true;
+            continue;
+          }
+          firms.push("법무법인 " + match[1].replace(/\s+/g, " ").trim());
+          const people = (match[2] ?? "")
+            .split(/[,，、\n]/)
+            .map((n) => n.replace(/\s/g, ""))
+            .filter(Boolean);
+          if (!people.length || people.some((n) => !/^[가-힣]{2,10}$/.test(n)))
+            incomplete = true;
+          else names.push(...people);
+        }
+        firm = [...new Set(firms)].join("\n");
+        lawyers = [...new Set(names)];
+        status = incomplete ? "needsReview" : "named";
+        name = incomplete ? "" : lawyers.join(", ");
+      } else {
+        status = "named";
+        name = list.join("\n");
+      }
     }
-    return { status: ocr ? "needsReview" : status, name };
+    return { status: ocr ? "needsReview" : status, name, firm, lawyers };
   }
 }
 export class DetentionParser {
@@ -291,7 +362,7 @@ export class ProsecutorParser {
               .split("\n")[0]
               .replace(/[_＿]+.*$/, "")
               .replace(
-                /\s*(?:[（(]인[）)]|[（(]서명[）)]|[（(]날인[）)])\s*$/,
+                /\s*(?:[（(]\s*인\s*[）)]|[（(]\s*서명\s*[）)]|[（(]\s*날인\s*[）)])\s*$/,
                 "",
               )
               .replace(/\s/g, "")
@@ -305,65 +376,142 @@ export class ProsecutorParser {
 }
 export class FilingDateParser {
   static parse(firstPage) {
-    if (!firstPage) return null;
-    const lines = clean(firstPage.text).split(/\r?\n/);
-    const explicitFields = fields(lines).filter((f) =>
+    return this.assess(firstPage).date;
+  }
+  static assess(firstPage) {
+    const candidates = [];
+    const result = (date, reason = "") => ({ date, reason, candidates });
+    if (!firstPage) return result(null, "첫 페이지가 없습니다.");
+    const raw = clean(firstPage.text).split(/\r?\n/);
+    const lines = contentLines(raw);
+    const beforeIdentity = [];
+    for (const line of lines) {
+      if (isBodyHeading(line) || identityHead(line) || hasLabel("피고인", line))
+        break;
+      beforeIdentity.push(line);
+    }
+    const readDate = (source, start) => {
+      let value = source[start] ?? "";
+      for (
+        let j = start + 1;
+        j <= start + 2 && j < source.length && !parseDate(value);
+        j++
+      ) {
+        if (!/^[\d\s.년월일/\-]+$/.test(source[j])) break;
+        value += " " + source[j];
+      }
+      return parseDate(value);
+    };
+    const explicit = fields(beforeIdentity).filter((f) =>
       ["기소일", "기소일자", "공소제기일"].includes(f.label),
     );
-    const header = firstPage.ocr
-      ? lines.slice(0, 8)
-      : (firstPage.lines ?? [])
-          .filter((l) => l.y <= firstPage.height * 0.25)
-          .map((l) => clean(l.text));
-    const candidates = explicitFields.length
-      ? explicitFields.map((f) => f.parts.join(" "))
-      : header.map((l, i) => {
-          // Join only date-shaped fragments; never join an arrest/identity field into a date.
-          if (!/^\s*\d{4}\s*[.년/\-]/.test(l)) return "";
-          let date = l.trim();
-          for (
-            let j = i + 1;
-            j < header.length && j <= i + 2 && !parseDate(date);
-            j++
-          ) {
-            if (!/^\s*[\d\s.월일/\-]+$/.test(header[j])) break;
-            date += " " + header[j].trim();
-          }
-          return date;
+    for (const f of explicit)
+      candidates.push({
+        source: "explicit",
+        date: parseDate(f.parts.join(" ")),
+      });
+    for (const [i, line] of beforeIdentity.entries()) {
+      if (!heading(line) && /검\s*찰\s*청|공\s*소\s*청/.test(line))
+        candidates.push({
+          source: "body",
+          date: readDate(beforeIdentity, i + 1),
         });
-    const dates = [...new Set(candidates.map(parseDate).filter(Boolean))];
-    // Explicit but invalid/conflicting dates must not silently fall back to another header date.
-    return dates.length === 1 &&
-      (!explicitFields.length || candidates.every(parseDate))
-      ? dates[0]
-      : null;
+    }
+    // Submission is corroboration/conflict evidence only, never a filing-date fallback.
+    for (const [i, line] of raw.entries()) {
+      const tail = line.match(/제\s*출\s*일\s*시\s*[:：]?\s*(.*)$/)?.[1];
+      if (tail === undefined) continue;
+      const value = tail.trim() || raw[i + 1]?.trim() || "";
+      const match = value.match(
+        /^(\d{4}\s*[.년/\-]\s*\d{1,2}\s*[.월/\-]\s*\d{1,2}\s*[.일]?)/,
+      );
+      candidates.push({
+        source: "submission",
+        date: match ? parseDate(match[1]) : null,
+      });
+    }
+    const contextual = candidates.filter((c) => c.source !== "submission");
+    if (!contextual.length && !raw.some((l) => metadata.test(l))) {
+      const header = firstPage.ocr
+        ? lines.slice(0, 8)
+        : contentLines(
+            (firstPage.lines ?? [])
+              .filter((l) => l.y <= firstPage.height * 0.25)
+              .map((l) => l.text),
+          );
+      for (const [i, line] of header.entries()) {
+        const previous = (header[i - 1] ?? "").replace(/\s/g, "");
+        if (
+          beforeIdentity.includes(line) &&
+          !/범죄일시|구속일|구속여부|체포일|생년월일/.test(previous) &&
+          /^\d{4}\s*[.년/\-]/.test(line)
+        )
+          candidates.push({ source: "header", date: readDate(header, i) });
+      }
+    }
+    const evidence = candidates.filter((c) => c.source !== "submission");
+    if (!evidence.length)
+      return result(
+        null,
+        "공소장 본문 날짜 또는 명시된 기소일 근거를 찾지 못했습니다.",
+      );
+    if (evidence.some((c) => !c.date))
+      return result(
+        null,
+        "공소장 본문 날짜 또는 명시된 기소일을 판독하지 못했습니다.",
+      );
+    const dates = [...new Set(evidence.map((c) => c.date))];
+    if (dates.length !== 1)
+      return result(null, "공소장 본문 날짜와 다른 기소일 후보가 충돌합니다.");
+    if (
+      candidates.some(
+        (c) => c.source === "submission" && c.date && c.date !== dates[0],
+      )
+    )
+      return result(
+        null,
+        "공소장 본문 날짜와 법원 제출일시의 날짜가 다릅니다.",
+      );
+    if (candidates.some((c) => c.source === "submission" && !c.date))
+      return result(
+        null,
+        "법원 제출일시를 판독하지 못해 본문 날짜와 비교할 수 없습니다.",
+      );
+    return result(dates[0]);
   }
 }
 export class IndictmentParser {
   static parse(document) {
     const text = clean(document.text),
       sections = DefendantParser.split(text),
-      lines = text.split("\n");
+      lines = text.split("\n"),
+      filingDateAssessment = FilingDateParser.assess(document.pages[0]);
     const draft = {
       defendants: sections.map((s) =>
         DefendantParser.parse(s, document.usedOCR),
       ),
       prosecutor: ProsecutorParser.parse(lines),
-      filingDate: FilingDateParser.parse(document.pages[0]),
+      filingDate: filingDateAssessment.date,
+      filingDateAssessment,
       warnings: [],
     };
     if (!draft.defendants.length)
       draft.warnings.push("피고인 이름을 자동 추출하지 못했습니다.");
     if (!draft.prosecutor) draft.warnings.push("검사 이름을 확인하세요.");
-    if (!draft.filingDate)
-      draft.warnings.push("첫 페이지 기소일을 확정하지 못했습니다.");
+    if (!draft.filingDate) draft.warnings.push(filingDateAssessment.reason);
     return draft;
   }
 }
 export function validateDraft(draft) {
   const errors = [];
   if (!draft.prosecutor?.trim()) errors.push("검사 이름 자동 추출 실패");
-  if (!parseDate(draft.filingDate)) errors.push("기소일 자동 추출 실패");
+  if (!parseDate(draft.filingDate))
+    errors.push(
+      "기소일 자동 추출 실패" +
+        (draft.filingDateAssessment?.reason
+          ? ": " + draft.filingDateAssessment.reason
+          : ""),
+    );
   if (!draft.defendants.length) errors.push("피고인 자동 추출 실패");
   draft.defendants.forEach((p, i) => {
     const prefix = `피고인 ${i + 1}: `;
@@ -371,8 +519,10 @@ export function validateDraft(draft) {
     if (!p.birthDigits || !/^\d{6}$/.test(p.birthDigits))
       errors.push(prefix + "생년월일 앞 6자리 자동 추출 실패");
     if (!p.charges?.length) errors.push(prefix + "죄명 자동 추출 실패");
-    if (p.detention === "unknown") errors.push(prefix + "구속 여부 자동 추출 실패");
-    if (p.counsel.status === "needsReview") errors.push(prefix + "변호인 기재 상태 자동 추출 실패");
+    if (p.detention === "unknown")
+      errors.push(prefix + "구속 여부 자동 추출 실패");
+    if (p.counsel.status === "needsReview")
+      errors.push(prefix + "변호인 기재 상태 자동 추출 실패");
     if (p.counsel.status === "named" && !p.counsel.name?.trim())
       errors.push(prefix + "변호인 이름 자동 추출 실패");
   });

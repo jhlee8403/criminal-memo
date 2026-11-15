@@ -52,6 +52,24 @@ aged=fitz.open(OUT/'age-marks.pdf')[0]
 for key in ['juvenile','mandatory']:
  r=fitz.Rect(BOXES[key]);before=template[0].get_pixmap(clip=r,alpha=False);after=aged.get_pixmap(clip=r,alpha=False)
  check(before.samples==after.samples,f'auto-only does not infer {key} circle from a manual year')
+# Fictional v1.3 layout reaches the real renderer through automatic UI analysis.
+v13=fitz.open(OUT/'synthetic-v13-output.pdf')
+check(len(v13)==1,'v1.3: automatic memo is one page')
+page=v13[0]
+check(page.get_text(clip=fitz.Rect(BOXES['prosecutor'])).strip()=='홍길동','v1.3: prosecutor name only')
+check(page.get_text(clip=fitz.Rect(BOXES['date'])).strip()=='2026.08.28','v1.3: contextual body date rendered')
+check(page.get_text(clip=fitz.Rect(BOXES['defendants'])).strip()=='1. 홍길동','v1.3: defendant rendered')
+charge_text=''.join(page.get_text(clip=fitz.Rect(BOXES['charges'])).split())
+check(charge_text=='1.특정범죄가중처벌등에관한법률위반(위험운전치사)2.도로교통법위반(음주운전)','v1.3: exact two charges without statutes or body prose')
+check(''.join(page.get_text(clip=fitz.Rect(BOXES['counsel'])).split())=='김가상,박가상,이가상','v1.3: named lawyers only')
+spans=[s for b in page.get_text('dict',clip=fitz.Rect(BOXES['detention']))['blocks'] for l in b.get('lines',[]) for s in l['spans']]
+check(''.join(s['text'] for s in spans)=='X' and all(s['color']==0 for s in spans),'v1.3: released defendant has black X')
+original=pixels(template[0]);actual=pixels(page);allowed=np.zeros(original.shape[:2],dtype=bool)
+for x0,y0,x1,y1 in BOXES.values():allowed[int((y0-2)*2):int((y1+2)*2)+1,int((x0-2)*2):int((x1+2)*2)+1]=True
+check(np.count_nonzero(np.any(original!=actual,axis=2)&~allowed)==0,'v1.3: original template outside input fields unchanged')
+for key in ['juvenile','mandatory']:
+ x0,y0,x1,y1=BOXES[key]
+ check(np.array_equal(original[y0*2:y1*2,x0*2:x1*2],actual[y0*2:y1*2,x0*2:x1*2]),f'v1.3: unconfirmed full birth date leaves {key} unmarked')
 report={'checksPassed':count,'actualTemplatePages':len(template),'syntheticTwoPageVerified':True,'actualUserTwoPageTemplateVerified':False,'templateSHA256':hashlib.sha256(source.read_bytes()).hexdigest(),'outputSource':'browser Blob downloads; see browser-report.json for file/in-memory mode; not Windows Edge'}
 (OUT/'pdf-report.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Checks:',count)
