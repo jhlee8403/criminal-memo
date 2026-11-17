@@ -1,0 +1,652 @@
+{
+  "browser": "156.0.8078.79",
+  "platform": "linux",
+  "htmlSHA256": "5d7a3f75ecaf6e15a28a02d82f2e4a9c9c82575ecfc5d4d412a3390c13c90903",
+  "windowsEdge104Verified": false,
+  "maskRequested": true,
+  "softwareGL": false,
+  "externalRequests": [],
+  "errors": [],
+  "checks": [
+    "ten individual two-page PDFs, date propagation without time propagation, per-file invalidation; no ZIP",
+    "partial failure isolation, required/invalid hearing, single PDF name, stale analysis rejection, duplicate rejection",
+    "missing prosecutor/counsel/all/detention and blank OCR generate with warnings; age X requires all adults; bad template fails"
+  ],
+  "fileMode": false,
+  "fileError": "page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///workspace/criminal-memo/windows/distribution/CriminalMemo/CriminalMemo.html\nCall log:\n\u001b[2m  - navigating to \"file:///workspace/criminal-memo/windows/distribution/CriminalMemo/CriminalMemo.html\", waiting until \"load\"\u001b[22m\n",
+  "compatibility": {
+    "before": {
+      "withResolvers": "undefined",
+      "toSorted": "undefined",
+      "setUnion": "undefined"
+    },
+    "atBoot": {
+      "withResolvers": "undefined",
+      "toSorted": "undefined",
+      "setUnion": "undefined"
+    },
+    "after": "function"
+  },
+  "outputTransports": [
+    {
+      "file": "two-memo-0.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-1.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-2.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-3.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-4.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-5.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-6.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-7.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-8.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-memo-9.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-folder-fallback.pdf",
+      "transport": "in-memory diagnostic after blocked download request"
+    },
+    {
+      "file": "two-partial.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-single.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-single-latest.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-original-1.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-original-2.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-no-parentheses.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-parentheses.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-multiline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-all-names.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-appointed.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-none.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-missing.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-appointed-heading.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-appointed-no-title.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-appointed-lawyer.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-appointed-split.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-regular-title.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-regular-split.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-appointed-explicit-none.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-appointed-suffix-split.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-four-spaced.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-six-name-split.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-twelve-2-rows-newline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-twelve-2-rows-comma.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-twelve-3-rows-newline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-twelve-3-rows-comma.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-twelve-4-rows-newline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-twelve-4-rows-comma.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-name-split-two-one.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-four-inline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-counsel-firm-parentheses-lines.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-scanned.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-mixed.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-missing-prosecutor.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-missing-counsel.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-missing-all.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-missing-detention.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-empty.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-age-adult.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-age-adults.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-age-adult-unknown.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-age-juvenile-unknown.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "two-age-filing-unknown.pdf",
+      "transport": "browser download"
+    }
+  ],
+  "folderCapability": {
+    "secure": false,
+    "picker": "undefined",
+    "supported": false
+  },
+  "folderTest": {
+    "nativeSelectionVerified": false,
+    "simulatedHandleExactBytes": 0,
+    "insecureContextRejected": true,
+    "unsupportedFallback": true,
+    "note": "folder UI handle simulations run in the separate secure file-origin Chromium 103 test"
+  },
+  "individualDownloads": [
+    "1000 2026고단203948.pdf",
+    "1030 2025고정1382.pdf",
+    "1100 2026고단203950.pdf",
+    "1130 2026고단203951.pdf",
+    "1200 2026고단203952.pdf",
+    "1230 2026고단203953.pdf",
+    "1300 2026고단203954.pdf",
+    "1330 2026고단203955.pdf",
+    "1400 2026고단203956.pdf",
+    "1430 2026고정203957.pdf"
+  ],
+  "ocrUnchanged": true,
+  "mixedOCRUnchanged": true,
+  "partialCases": [
+    {
+      "id": "prosecutor",
+      "missing": "검사"
+    },
+    {
+      "id": "counsel",
+      "missing": "변호인"
+    },
+    {
+      "id": "all",
+      "missing": "피고인"
+    },
+    {
+      "id": "detention",
+      "missing": "구속"
+    }
+  ],
+  "ageCases": [
+    {
+      "id": "adult",
+      "people": [
+        {
+          "front": "071117",
+          "birth": "2007.11.17."
+        }
+      ],
+      "mark": "cross"
+    },
+    {
+      "id": "adults",
+      "people": [
+        {
+          "front": "900101",
+          "birth": "1990.1.1."
+        },
+        {
+          "name": "이가상",
+          "front": "561117",
+          "birth": "1956.11.17."
+        }
+      ],
+      "mark": "cross"
+    },
+    {
+      "id": "adult-unknown",
+      "people": [
+        {
+          "front": "900101",
+          "birth": "1990.1.1."
+        },
+        {
+          "name": "이가상",
+          "front": "071118"
+        }
+      ],
+      "mark": ""
+    },
+    {
+      "id": "juvenile-unknown",
+      "people": [
+        {
+          "front": "071118",
+          "birth": "2007.11.18."
+        },
+        {
+          "name": "이가상"
+        }
+      ],
+      "mark": "circle"
+    },
+    {
+      "id": "filing-unknown",
+      "people": [
+        {
+          "front": "900101",
+          "birth": "1990.1.1."
+        }
+      ],
+      "mark": ""
+    }
+  ],
+  "definitions": [
+    {
+      "case": "2026고단203948",
+      "people": [
+        {
+          "detention": "2026. 10. 28. 구속(2026. 10. 26. 체포)",
+          "label": "구속여부."
+        }
+      ],
+      "states": "O",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "two-memo-0.pdf",
+      "filename": "1000 2026고단203948.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "10:00"
+      ]
+    },
+    {
+      "case": "2025고정1382",
+      "people": [
+        {
+          "detention": null
+        }
+      ],
+      "states": "X",
+      "mandatory": false,
+      "juvenile": false,
+      "output": "two-memo-1.pdf",
+      "filename": "1030 2025고정1382.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "10:30"
+      ]
+    },
+    {
+      "case": "2026고단203950",
+      "people": [
+        {
+          "front": "561117",
+          "birth": "1956.11.17."
+        }
+      ],
+      "states": "X",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "two-memo-2.pdf",
+      "filename": "1100 2026고단203950.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "11:00"
+      ]
+    },
+    {
+      "case": "2026고단203951",
+      "people": [
+        {
+          "front": "071118",
+          "birth": "2007.11.18."
+        }
+      ],
+      "states": "X",
+      "mandatory": false,
+      "juvenile": true,
+      "output": "two-memo-3.pdf",
+      "filename": "1130 2026고단203951.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "11:30"
+      ]
+    },
+    {
+      "case": "2026고단203952",
+      "people": [
+        {
+          "front": "401101",
+          "birth": "1940.11.1.",
+          "detention": "구속"
+        }
+      ],
+      "states": "O",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "two-memo-4.pdf",
+      "filename": "1200 2026고단203952.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "12:00"
+      ]
+    },
+    {
+      "case": "2026고단203953",
+      "people": [
+        {
+          "detention": "구속"
+        },
+        {
+          "name": "이가상"
+        }
+      ],
+      "states": "OX",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "two-memo-5.pdf",
+      "filename": "1230 2026고단203953.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "12:30"
+      ]
+    },
+    {
+      "case": "2026고단203954",
+      "people": [
+        {},
+        {
+          "name": "이가상",
+          "front": "071118",
+          "birth": "2007.11.18."
+        }
+      ],
+      "states": "XX",
+      "mandatory": false,
+      "juvenile": true,
+      "output": "two-memo-6.pdf",
+      "filename": "1300 2026고단203954.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "13:00"
+      ]
+    },
+    {
+      "case": "2026고단203955",
+      "people": [
+        {
+          "detention": "구속"
+        },
+        {
+          "name": "이가상",
+          "detention": "구속"
+        }
+      ],
+      "states": "OO",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "two-memo-7.pdf",
+      "filename": "1330 2026고단203955.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "13:30"
+      ]
+    },
+    {
+      "case": "2026고단203956",
+      "people": [
+        {
+          "front": "071118"
+        }
+      ],
+      "states": "X",
+      "mandatory": false,
+      "juvenile": false,
+      "counsel": "변 호 인 법무법인 가상(담당변호사 김가상, 박가상, 이가상, 최가상)",
+      "output": "two-memo-8.pdf",
+      "filename": "1400 2026고단203956.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "14:00"
+      ]
+    },
+    {
+      "case": "2026고정203957",
+      "people": [
+        {
+          "detention": null
+        }
+      ],
+      "states": "X",
+      "mandatory": false,
+      "juvenile": false,
+      "counsel": "국선변호인 변호사 김가상",
+      "output": "two-memo-9.pdf",
+      "filename": "1430 2026고정203957.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "14:30"
+      ]
+    }
+  ],
+  "counselCases": [
+    {
+      "id": "no-parentheses",
+      "expected": "태평양) 김가상 박가상 이가상 최가상"
+    },
+    {
+      "id": "parentheses",
+      "expected": "와이케이) 강가상 윤가상 한가상 정가상"
+    },
+    {
+      "id": "multiline",
+      "expected": "가상) 김가상 박가상 이가상"
+    },
+    {
+      "id": "all-names",
+      "expected": "가상) 김가상 박가상 이가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "appointed",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "none",
+      "expected": ""
+    },
+    {
+      "id": "missing",
+      "expected": ""
+    },
+    {
+      "id": "appointed-heading",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-no-title",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-lawyer",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-split",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "regular-title",
+      "expected": "김가상"
+    },
+    {
+      "id": "regular-split",
+      "expected": "김가상"
+    },
+    {
+      "id": "appointed-explicit-none",
+      "expected": ""
+    },
+    {
+      "id": "appointed-suffix-split",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "firm-four-spaced",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-six-name-split",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상"
+    },
+    {
+      "id": "firm-twelve-2-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-2-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-3-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-3-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-4-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-4-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-name-split-two-one",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-four-inline",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-parentheses-lines",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    }
+  ],
+  "passed": true
+}

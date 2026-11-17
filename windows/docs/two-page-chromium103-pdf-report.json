@@ -1,0 +1,9 @@
+{
+  "checksPassed": 412,
+  "pdfsVerified": 54,
+  "firstTemplateSHA256": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9",
+  "secondTemplateSHA256": "5164a65054179dd49edaf601f009324051f608f8aef0e3d4e0b5d94bccd4b26b",
+  "secondPageContentAndPixelsUnchanged": true,
+  "firstPageComparedTo": "f25b9b0 shipped HTML renderer, same draft/options",
+  "windowsEdge104Verified": false
+}

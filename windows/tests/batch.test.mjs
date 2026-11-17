@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {unzipSync,strFromU8} from 'fflate';
-import {caseFromFilename,memoFilename,createMemoZip} from '../src/batch.js';
+import {caseFromFilename,memoFilename} from '../src/batch.js';
 import {assessFirstHearing} from '../src/first-hearing.js';
 import {birthAssessment,ageMarks,DetentionParser,IndictmentParser,emptyDefendant,detentionGlyphs} from '../src/core.js';
 for(const [file,expected]of[
@@ -20,13 +19,6 @@ for(const date of ['2026-11-18','20261118','2026.11.18','2026. 11. 18.'])
 test('batch requires both date/time and valid calendar/clock',()=>{
  for(const [date,time]of[['',''],['20261118',''],['','1000'],['20260229','1000'],['20261118','2400'],['20261301','1000']])
   assert.throws(()=>memoFilename('2026고단1',{date,time}));
-});
-test('ZIP contains separate exact PDF byte arrays and refuses collisions',()=>{
- const a=new TextEncoder().encode('%PDF-one'),b=new TextEncoder().encode('%PDF-two');
- const result=unzipSync(createMemoZip([{name:'1000 2026고단1.pdf',bytes:a},{name:'1030 2026고정2.pdf',bytes:b}]));
- assert.deepEqual(Object.keys(result),['1000 2026고단1.pdf','1030 2026고정2.pdf']);
- assert.equal(strFromU8(result['1000 2026고단1.pdf']),'%PDF-one');
- assert.throws(()=>createMemoZip([{name:'same.pdf',bytes:a},{name:'same.pdf',bytes:b}]),/중복/);
 });
 for(const label of ['구속여부','구속여부.'])test('detention annotation '+label,()=>{
  assert.equal(DetentionParser.parse([label+' 2026. 10. 28. 구속(2026. 10. 26. 체포)']),'detained');

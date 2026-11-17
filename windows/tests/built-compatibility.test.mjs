@@ -73,3 +73,15 @@ test("distribution manifest records Edge 104 and the paired legacy build", async
   assert.equal(manifest.pdfjsBuild, "legacy");
   assert.equal(manifest.pdfjsVersion, "4.8.69");
 });
+test('both actual one-page originals are embedded byte-for-byte, including the provided second sheet', async () => {
+  const {createHash}=await import('node:crypto');
+  const context=vm.createContext({window:{}});vm.runInContext(scripts[0],context);
+  const docs=context.window.CM_DOCUMENTS;
+  const second=await fs.readFile(new URL('../templates/형사메모(2쪽).pdf',import.meta.url));
+  assert.deepEqual(Buffer.from(docs.secondTemplate,'base64'),second);
+  assert.equal(createHash('sha256').update(second).digest('hex'),'5164a65054179dd49edaf601f009324051f608f8aef0e3d4e0b5d94bccd4b26b');
+  assert.equal(docs.templateSHA256,'6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9');
+  assert.equal(docs.secondTemplateSHA256,createHash('sha256').update(second).digest('hex'));
+  const manifest=JSON.parse(await fs.readFile(new URL('manifest.json',root),'utf8'));
+  assert.equal(manifest.secondTemplateSHA256,docs.secondTemplateSHA256);
+});

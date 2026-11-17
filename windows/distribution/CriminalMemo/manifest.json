@@ -1,15 +1,17 @@
 {
-  "builtAt": "2026-11-17T12:17:24.384Z",
+  "builtAt": "2026-11-17T12:49:33.792Z",
   "browserTarget": "edge104",
   "pdfjsBuild": "legacy",
   "pdfjsVersion": "4.8.69",
   "templateSHA256": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9",
+  "secondTemplateSHA256": "5164a65054179dd49edaf601f009324051f608f8aef0e3d4e0b5d94bccd4b26b",
   "files": {
-    "CriminalMemo.html": "28a6fb485500052098004c10e9a9ef0a3161052069a59ace35d5f52970f0212e",
-    "README.txt": "6150568aa545d6da3d48b5259fe1618a82530608193568fb4cdb0a50bd6324b4",
+    "CriminalMemo.html": "5d7a3f75ecaf6e15a28a02d82f2e4a9c9c82575ecfc5d4d412a3390c13c90903",
+    "README.txt": "0cc0f3838eff90ee05862ecb2377af7559662443e64f730fba807a773b34a6c5",
     "assets/NanumGothic-OFL.txt": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f",
-    "assets/THIRD_PARTY_LICENSES.txt": "69975f53a9ef76a222caf0a796d4be923d24307cf72b52a9f40ff2f395374707",
+    "assets/THIRD_PARTY_LICENSES.txt": "3ee5cec4b8bb3c42018245edaba27023ce8007e1955b6ba2d566870d8d2893ba",
     "assets/tessdata-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "templates/형사메모(2쪽).pdf": "5164a65054179dd49edaf601f009324051f608f8aef0e3d4e0b5d94bccd4b26b",
     "templates/형사메모.pdf": "6e2334b1cc4d1c844096d8679c216c62718c13449a7b357c609c879aa3df31f9"
   }
 }

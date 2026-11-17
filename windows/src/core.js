@@ -14,11 +14,11 @@ export const counselText = (d) =>
     .map((p) => p.counsel.name.trim())
     .filter(Boolean)
     .join("\n");
-export function detentionGlyphs(people) {
-  if (people.some((p) => !["detained", "released"].includes(p.detention)))
+export function detentionGlyphs(people, { partial = false } = {}) {
+  if (!partial && people.some((p) => !["detained", "released"].includes(p.detention)))
     throw Error("피고인별 구속 여부를 확인하세요.");
   return people.map((p) => ({
-    text: p.detention === "detained" ? "O" : "X",
+    text: p.detention === "detained" ? "O" : p.detention === "released" ? "X" : " ",
     color: p.detention === "detained" ? "red" : "black",
   }));
 }
@@ -82,6 +82,12 @@ export function ageMarks(draft, rules = AGE_RULES) {
     juvenile: ages.some((a) => a.resolved && a.age < rules.juvenileUnder),
     mandatory: draft.defendants.some(p => p.detention === "detained") || ages.some((a) => a.resolved && a.age >= rules.mandatoryAtLeast),
   };
+}
+export function juvenileMark(draft) {
+  const ages = draft.defendants.map(p => birthAssessment(p, draft.filingDate));
+  if (ages.some(a => a.resolved && a.age < AGE_RULES.juvenileUnder)) return "circle";
+  if (ages.length && ages.every(a => a.resolved && a.age >= AGE_RULES.juvenileUnder)) return "cross";
+  return "";
 }
 const clean = (s) =>
   s

@@ -1,4 +1,3 @@
-import { zipSync } from 'fflate';
 import { assessFirstHearing, normalizeHearingTime } from './first-hearing.js';
 export function caseFromFilename(name) {
   const matches = [...String(name).normalize('NFC').matchAll(/(20\d{2})(고단|고정)(\d+)/g)];
@@ -11,14 +10,4 @@ export function memoFilename(caseNumber, firstHearing) {
   const assessment = assessFirstHearing(firstHearing, {required:true});
   if (assessment.error) throw Error(assessment.error);
   return `${normalizeHearingTime(firstHearing.time).replace(':','')} ${caseNumber}.pdf`;
-}
-export function createMemoZip(entries) {
-  const files = Object.create(null);
-  for (const entry of entries) {
-    if (!entry.bytes) continue;
-    if (Object.hasOwn(files, entry.name)) throw Error(`중복 저장 파일명: ${entry.name}. 사건번호와 시간을 확인하세요.`);
-    files[entry.name] = entry.bytes;
-  }
-  if (!Object.keys(files).length) throw Error('생성된 메모가 없습니다.');
-  return zipSync(files, {level:6});
 }

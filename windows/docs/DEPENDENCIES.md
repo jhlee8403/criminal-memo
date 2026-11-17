@@ -6,7 +6,6 @@
 |---|---|---|
 | pdfjs-dist | 4.8.69 | Apache-2.0, legacy 본체/worker를 Edge 104 타깃 classic IIFE로 빌드, PDF eval 비활성화 |
 | core-js (PDF.js legacy 내장) | 3.38.1 | MIT, Promise/TypedArray/ArrayBuffer/Set 등 호환 모듈, 별도 네트워크 로딩 없음 |
-| fflate | 0.8.2 | MIT, ZIP 동기 압축을 HTML에 번들링, 런타임 다운로드 없음 |
 | pdf-lib | 1.17.1 | MIT |
 | @pdf-lib/fontkit | 1.1.1 | MIT |
 | tesseract.js | 5.1.1 | Apache-2.0 |

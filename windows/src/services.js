@@ -7,7 +7,7 @@ import {
   numbered,
   detentionGlyphs,
   ageMarks,
-  validateDraft,
+  juvenileMark,
 } from "./core.js";
 export const bytes = (b64) =>
   Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
@@ -160,15 +160,18 @@ export async function analyze(
   pdf,
   { forceOCR = false, progress = () => {} } = {},
 ) {
-  const pages = [],
+  const pages = [], warnings = [],
     ocr = new OCRService(progress);
   let usedOCR = false;
   try {
     for (let n = 1; n <= pdf.numPages; n++) {
       progress(`페이지 ${n}/${pdf.numPages}`, 0);
       const page = await pdf.getPage(n);
-      let result = await PDFTextExtractor.page(page);
+      let result;
+      try { result = await PDFTextExtractor.page(page); }
+      catch (error) { result = {text:"",lines:[],height:page.getViewport({scale:1}).height}; warnings.push(`페이지 ${n}: 텍스트 추출 실패 · ${error.message}`); }
       if (forceOCR || result.text.replace(/[^\p{L}\p{N}]/gu, "").length < 20) {
+        try {
         const data = await ocr.recognize(
           await PDFTextExtractor.render(page, 3),
         );
@@ -180,24 +183,26 @@ export async function analyze(
           confidence: data.confidence,
         };
         usedOCR = true;
+        } catch (error) { warnings.push(`페이지 ${n}: OCR 추출 실패 · ${error.message}`); }
       }
       pages.push(result);
     }
   } finally {
     await ocr.close();
   }
-  return { pages, usedOCR, text: pages.map((p) => p.text).join("\n") };
+  return { pages, usedOCR, warnings, text: pages.map((p) => p.text).join("\n") };
 }
 export class MemoPDFRenderer {
-  static async render(draft, { templateBytes, firstHearing, caseNumber } = {}) {
-    const errors = validateDraft(draft);
-    if (errors.length) throw Error(errors.join("\n"));
+  static async render(draft, { templateBytes, secondTemplateBytes, firstHearing, caseNumber } = {}) {
     const hearing = assessFirstHearing(firstHearing);
     if (hearing.error) throw Error(hearing.error);
-    const glyphs = detentionGlyphs(draft.defendants);
+    const glyphs = detentionGlyphs(draft.defendants, {partial:true});
     const doc = await PDFDocument.load(
       templateBytes ?? bytes(window.CM_DOCUMENTS.template),
     );
+    if (doc.getPageCount() !== 1) throw Error("첫 페이지 원본 양식은 1페이지여야 합니다.");
+    const second = await PDFDocument.load(secondTemplateBytes ?? bytes(window.CM_DOCUMENTS.secondTemplate));
+    if (second.getPageCount() !== 1) throw Error("두 번째 원본 양식은 1페이지여야 합니다.");
     const fontData = bytes(window.CM_DOCUMENTS.font);
     doc.registerFontkit(fontkit);
     const font = await doc.embedFont(fontData, { subset: false });
@@ -251,7 +256,7 @@ export class MemoPDFRenderer {
       numbered(
         draft.defendants.flatMap((p) =>
           p.charges.map((c) =>
-            draft.defendants.length > 1 ? `${c} (${p.name})` : c,
+            draft.defendants.length > 1 && p.name ? `${c} (${p.name})` : c,
           ),
         ),
       ),
@@ -297,19 +302,30 @@ export class MemoPDFRenderer {
         });
       }
     }
+    if (juvenileMark(draft) === "cross") {
+      const [cx,cy,cw,ch] = boxes.juvenile;
+      // Same measured center as the juvenile ellipse; printed label stays visible.
+      for (const sign of [-1,1]) page.drawLine({
+        start:{x:cx+cw/2-6,y:height-cy-ch/2-sign*6},
+        end:{x:cx+cw/2+6,y:height-cy-ch/2+sign*6},
+        thickness:1.5,color:rgb(0,0,0),
+      });
+    }
+    const [secondPage] = await doc.copyPages(second, [0]);
+    doc.addPage(secondPage);
     return await doc.save();
   }
 }
 export class PDFExportService {
-  static download(data, name, { zip = false } = {}) {
+  static download(data, name) {
     const url = URL.createObjectURL(
-      new Blob([data], { type: zip ? "application/zip" : "application/pdf" }),
+      new Blob([data], { type: "application/pdf" }),
     );
     const a = document.createElement("a");
     a.href = url;
     a.download =
       (name.trim() || "형사신건메모").replace(/[<>:"/\\|?*\x00-\x1f]/g, "_") +
-      (zip ? ".zip" : ".pdf");
+      ".pdf";
     document.body.append(a);
     a.click();
     a.remove();

@@ -17,7 +17,11 @@ if (pdfs.length !== 1)
   throw Error("원본 형사메모 PDF를 하나로 찾을 수 없습니다.");
 const template = await fs.readFile(path.join(root, "..", pdfs[0]));
 await fs.writeFile(path.join(out, "templates/형사메모.pdf"), template);
+const secondTemplate = await read("templates/형사메모(2쪽).pdf");
+await fs.writeFile(path.join(out, "templates/형사메모(2쪽).pdf"), secondTemplate);
 const resources = {
+  secondTemplate: secondTemplate.toString("base64"),
+  secondTemplateSHA256: createHash("sha256").update(secondTemplate).digest("hex"),
   template: template.toString("base64"),
   font: (await read("vendor/NanumGothic-Regular.ttf")).toString("base64"),
   templateSHA256: createHash("sha256").update(template).digest("hex"),
@@ -120,7 +124,6 @@ const licenses = [
     (await read("vendor/core-js-LICENSE.txt")).toString(),
 ];
 for (const name of [
-  "fflate",
   "pdfjs-dist",
   "pdf-lib",
   "@pdf-lib/fontkit",
@@ -162,6 +165,7 @@ const manifest = {
   pdfjsBuild: "legacy",
   pdfjsVersion: "4.8.69",
   templateSHA256: resources.templateSHA256,
+  secondTemplateSHA256: resources.secondTemplateSHA256,
   files: {},
 };
 async function scan(dir) {
