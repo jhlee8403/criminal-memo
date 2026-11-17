@@ -1,6 +1,7 @@
-import { PDFDocument, rgb } from "pdf-lib";
+import { PDFDocument, rgb, pushGraphicsState, popGraphicsState, scale } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import Tesseract from "tesseract.js";
+import { fitOverlayMarks, markFontMetrics, markTextRects, markFitRects } from "./mark-layout.js";
 import { assessFirstHearing } from "./first-hearing.js";
 import {
   counselText,
@@ -24,10 +25,8 @@ export const boxes = {
   // Measured original cell: x=29.744..106.263, y=540.1292..600.9031 pt.
   firstHearing: [34, 548, 67, 42],
   detention: [537, 48, 25, 22],
-  // Free band: table top 722.330, printed 소년 starts 732.124pt.
-  juvenile: [168, 723.5, 39, 8],
-  // Printed 국참 bounds x177.384..197.413, y748.187..758.673.
-  jury: [174, 746, 26, 15],
+  juvenile: markFitRects.juvenile,
+  jury: markFitRects.jury,
   mandatory: [109, 746, 56, 15],
 };
 class LocalCMapReaderFactory {
@@ -309,23 +308,22 @@ export class MemoPDFRenderer {
         });
       }
     }
-    const drawGlyphs=(items,key)=>{
-      if(!items.some(g=>g.text.trim()))return;
-      const [gx,gy,gw,gh]=boxes[key];
-      for(let size=14;size>=3;size-=.25){
-        const width=mono.widthOfTextAtSize(items.map(g=>g.text).join(''),size);
-        if(width>gw || size*1.249>gh)continue;
-        let dx=gx+(gw-width)/2;
-        for(const g of items){
-          page.drawText(g.text,{x:dx,y:height-(gy+(gh-size*1.249)/2+size*.932),size,font:mono,color:g.color==='red'?rgb(1,0,0):rgb(0,0,0)});
-          dx+=mono.widthOfTextAtSize(g.text,size);
-        }
-        return;
+    const markMetrics=markFontMetrics(fontkit.create(fontData));
+    const drawOverlay=(items,key)=>{
+      const layout=fitOverlayMarks(items,markTextRects[key],boxes[key],markMetrics);
+      for(const run of layout.runs){
+        // Scale only this mark horizontally; retain the surrounding page state.
+        page.pushOperators(pushGraphicsState(),scale(layout.xScale,1));
+        page.drawText(run.text,{
+          x:run.x/layout.xScale,y:height-run.baseline,
+          size:layout.fontSize,font,
+          color:run.color==='red'?rgb(1,0,0):rgb(0,0,0),
+        });
+        page.pushOperators(popGraphicsState());
       }
-      throw Error(`${key}: 표시가 한 줄에 들어가지 않습니다.`);
     };
-    drawGlyphs(juvenileGlyphs(draft),'juvenile');
-    drawGlyphs([juryGlyph(draft)],'jury');
+    drawOverlay(juvenileGlyphs(draft),'juvenile');
+    drawOverlay([juryGlyph(draft)],'jury');
     const [secondPage] = await doc.copyPages(second, [0]);
     doc.addPage(secondPage);
     return await doc.save();

@@ -12,6 +12,8 @@
 
 Edge 104 호환 빌드 변경 및 실제 검증 범위: [호환성 보고서](docs/EDGE104_COMPATIBILITY.md).
 
+소년·국참 출력 크기/중앙 정렬 후속 수정: [레이아웃 전후 검증](docs/MARK_LAYOUT_VALIDATION.md). 판정·다운로드 로직은 유지합니다.
+
 ## 다운로드·소년·국참 브랜치
 
 `b53ac20`에서 분기한 `experiment/v1-download-juvenile-jury`입니다.
@@ -58,7 +60,8 @@ npm run test:built-compatibility
 python -m pip install -r scripts/requirements-test.txt
 python scripts/prepare_fixtures.py
 npm run test:browser
-python scripts/verify_download_juvenile_jury.py
+npm run test:mark-layout
+python scripts/verify_mark_layout.py
 ```
 
 브라우저 실행 파일은 기본 `/usr/bin/chromium`, 필요하면 `CM_CHROMIUM` 환경 변수로 지정합니다. 일반 Chromium의 기본 보안 설정을 사용하며 `--disable-web-security`, `--allow-file-access-from-files` 등을 사용하지 않습니다. 컨테이너에서는 Playwright의 기본 프로세스 샌드박스 옵션을 사용하지만 관리 URL 정책을 수정하지 않습니다.
