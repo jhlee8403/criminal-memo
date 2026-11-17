@@ -1,6 +1,7 @@
 import { PDFDocument, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import Tesseract from "tesseract.js";
+import { assessFirstHearing } from "./first-hearing.js";
 import {
   counselText,
   numbered,
@@ -17,6 +18,8 @@ export const boxes = {
   prosecutor: [385, 48, 112, 22],
   counsel: [385, 78, 112, 20],
   filingDate: [231, 247, 174, 20],
+  // Measured original cell: x=29.744..106.263, y=540.1292..600.9031 pt.
+  firstHearing: [34, 548, 67, 42],
   detention: [537, 48, 25, 22],
   juvenile: [174, 730, 26, 15],
   mandatory: [109, 746, 56, 15],
@@ -185,9 +188,11 @@ export async function analyze(
   return { pages, usedOCR, text: pages.map((p) => p.text).join("\n") };
 }
 export class MemoPDFRenderer {
-  static async render(draft, { templateBytes } = {}) {
+  static async render(draft, { templateBytes, firstHearing } = {}) {
     const errors = validateDraft(draft);
     if (errors.length) throw Error(errors.join("\n"));
+    const hearing = assessFirstHearing(firstHearing);
+    if (hearing.error) throw Error(hearing.error);
     const glyphs = detentionGlyphs(draft.defendants);
     const doc = await PDFDocument.load(
       templateBytes ?? bytes(window.CM_DOCUMENTS.template),
@@ -209,6 +214,8 @@ export class MemoPDFRenderer {
       const [x, y, w, h] = boxes[key];
       // Only the counsel cell may shrink further to preserve all listed lawyers.
       for (let size = 11; size >= (key === "counsel" ? 4 : 8); size -= 0.5) {
+        // A hearing must stay exactly two lines; shrink instead of wrapping its date.
+        if (key === "firstHearing" && value.split("\n").some(l => font.widthOfTextAtSize(l, size) > w)) continue;
         const lines = [];
         for (const raw of value.split("\n")) {
           let line = "";
@@ -251,6 +258,7 @@ export class MemoPDFRenderer {
     draw(draft.prosecutor, "prosecutor");
     draw(counselText(draft), "counsel");
     draw(draft.filingDate?.replaceAll("-", ".") ?? "", "filingDate");
+    draw(hearing.text, "firstHearing");
     const [x, y, w, h] = boxes.detention;
     let fitted = false;
     for (let size = 14; size >= 8; size -= 0.5) {

@@ -1,8 +1,8 @@
-name: Build Criminal Memo v1 auto-only test
+name: Build Criminal Memo first-hearing test
 on:
   push:
     branches:
-      - experiment/v1-auto-latest-pdf
+      - experiment/v1-first-hearing
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,16 +34,16 @@ jobs:
           ! grep -q 'id="addPerson"' windows/distribution/CriminalMemo/CriminalMemo.html
           ! grep -q 'id="reviewed"' windows/distribution/CriminalMemo/CriminalMemo.html
           grep -q 'v1 자동 추출 시험판' windows/distribution/CriminalMemo/CriminalMemo.html
-      - name: Upload Windows v1 auto-only distribution ZIP
+      - name: Upload first-hearing trial distribution ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: CriminalMemo-v1-auto-only
+          name: CriminalMemo-first-hearing
           path: windows/distribution/CriminalMemo/
           if-no-files-found: error
           retention-days: 14
       - name: Download instructions
         run: |
-          echo '### Windows 자동 추출 시험판' >> "$GITHUB_STEP_SUMMARY"
-          echo '이 실행의 Artifacts에서 CriminalMemo-v1-auto-only ZIP을 다운로드하고 압축을 푼 뒤 CriminalMemo.html을 여세요.' >> "$GITHUB_STEP_SUMMARY"
+          echo '### Windows 첫기일 선택 입력 시험판' >> "$GITHUB_STEP_SUMMARY"
+          echo '이 실행의 Artifacts에서 CriminalMemo-first-hearing ZIP을 다운로드하고 압축을 푼 뒤 CriminalMemo.html을 여세요.' >> "$GITHUB_STEP_SUMMARY"
           echo "Source commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
           echo '최신 사용자 공소장 정확도 및 Windows Edge 실행은 별도 검증이 필요합니다.' >> "$GITHUB_STEP_SUMMARY"

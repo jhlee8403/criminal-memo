@@ -1,7 +1,8 @@
 import * as services from "./services.js";
 import * as core from "./core.js";
+import * as hearing from "./first-hearing.js";
 const $ = id => document.getElementById(id);
-const state = { source: null, output: null, draft: null, outputBytes: null, tab: "source", zoom: 1, renderToken: 0, busy: false };
+const state = { source: null, output: null, draft: null, outputBytes: null, tab: "source", zoom: 1, renderToken: 0, busy: false, hearingRevision: 0 };
 function status(text, error = false) {
   $("status").textContent = text;
   $("status").classList.toggle("error", error);
@@ -61,6 +62,30 @@ function showExtraction() {
     : "필수 항목을 모두 자동 추출했습니다.";
   return errors;
 }
+const readFirstHearing = () => ({ date: $("hearingDate").value, time: $("hearingTime").value });
+function checkFirstHearing() {
+  const result = hearing.assessFirstHearing(readFirstHearing());
+  $("hearingError").textContent = result.error;
+  for (const id of ["hearingDate", "hearingTime"]) $(id).setAttribute("aria-invalid", String(!!result.error));
+  return result;
+}
+for (const id of ["hearingDate", "hearingTime"]) $(id).oninput = () => {
+  state.hearingRevision++;
+  const hadOutput = !!state.outputBytes;
+  clearOutput();
+  if (state.tab === "output") {
+    state.tab = "source";
+    ++state.renderToken;
+    $("canvasHost").replaceChildren();
+    void preview();
+  }
+  const result = checkFirstHearing();
+  if (result.error) status(result.error, true);
+  else if (hadOutput) status("첫기일이 변경되어 이전 메모를 무효화했습니다. 문서 분석을 다시 실행하세요.");
+  else if (!state.busy) status(state.source
+    ? "현재 첫기일 설정을 반영하려면 문서 분석을 실행하세요."
+    : "공소장 PDF를 선택한 후 문서 분석을 실행하세요.");
+};
 $("file").onchange = async () => {
   if (!$("file").files[0]) return;
   busy(true);
@@ -82,6 +107,8 @@ $("file").onchange = async () => {
 };
 $("analyze").onclick = async () => {
   if (!state.source || state.busy) return;
+  const initialHearing = checkFirstHearing();
+  if (initialHearing.error) { status(initialHearing.error, true); return; }
   busy(true);
   clearOutput();
   $("editor").hidden = true;
@@ -94,17 +121,27 @@ $("analyze").onclick = async () => {
     $("rawText").textContent = extracted.text;
     const errors = showExtraction();
     if (errors.length) {
-      status("자동 추출 실패: " + errors.join(" / ") + ". 수동 입력은 제공하지 않습니다.", true);
+      status("자동 추출 실패: " + errors.join(" / ") + ". 공소장 정보의 수동 입력은 제공하지 않습니다.", true);
       return;
     }
-    const data = await services.MemoPDFRenderer.render(state.draft);
-    state.output = await services.PDFInputService.fromBytes(data);
+    const revision = state.hearingRevision;
+    const firstHearing = readFirstHearing();
+    checkFirstHearing();
+    const data = await services.MemoPDFRenderer.render(state.draft, { firstHearing });
+    const output = await services.PDFInputService.fromBytes(data);
+    if (revision !== state.hearingRevision) {
+      await output.destroy();
+      status("첫기일이 변경되었습니다. 문서 분석을 다시 실행하세요.");
+      return;
+    }
+    state.output = output;
     state.outputBytes = data;
     state.tab = "output";
     $("outputTab").disabled = false;
     $("export").hidden = false;
     await preview();
-    status("필수 항목 자동 추출 및 메모 생성 완료. 생성된 PDF를 확인하여 저장하세요.");
+    if (revision === state.hearingRevision)
+      status("필수 항목 자동 추출 및 메모 생성 완료. 생성된 PDF를 확인하여 저장하세요.");
   } catch (error) {
     status("자동 분석 또는 PDF 생성 실패: " + error.message, true);
   } finally { busy(false); }
@@ -120,7 +157,7 @@ for (const [id, delta] of [["zoomIn", 0.25], ["zoomOut", -0.25]])
     $("zoomLabel").textContent = Math.round(state.zoom * 100) + "%";
     void preview();
   };
-window.CM = { ...services, ...core, getDraft: () => state.draft };
+window.CM = { ...services, ...core, ...hearing, getDraft: () => state.draft };
 services.PDFInputService.fromBytes(services.bytes(window.CM_DOCUMENTS.template))
   .then(async pdf => {
     $("templateInfo").textContent = "내장 원본 양식: " + pdf.numPages + "페이지 (출력 시 첫 페이지만 사용)";

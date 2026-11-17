@@ -1,8 +1,8 @@
-# Criminal Memo — Windows/Edge 오프라인 전환
+# Criminal Memo — 첫기일 선택 입력 시험판
 
 **회사 Windows의 Microsoft Edge 104.0.1293.47 실행은 미검증입니다.** PDF.js legacy 호환 빌드와 Edge 104 문법 타깃을 사용합니다. Linux Chromium 103의 실제 `file://`에서 전체 흐름을 검증했고, 최신 Chromium은 관리 URL 정책 차단으로 동일 HTML의 메모리 진단을 수행했습니다. 구형 Linux 엔진 및 API 제거 시험의 성공을 실제 Windows Edge 104 실행 성공으로 해석하지 않습니다. 서버·설치 없이 단일 HTML로 실행하는 구조는 유지했습니다.
 
-현재 자동 전용 실험판 v1.3의 파서 변경 및 검증 범위: [실제 확인 구조 재현 검증](docs/PARSER_V13_VALIDATION.md).
+기존 자동 전용 실험판 v1.3의 파서 변경 및 검증 범위: [실제 확인 구조 재현 검증](docs/PARSER_V13_VALIDATION.md).
 
 변호인 표시 후속 변경: [법무법인 출력 검증](docs/COUNSEL_OUTPUT_VALIDATION.md).
 
@@ -11,6 +11,13 @@
 법무법인 명단의 이름 내부 줄바꿈 후속 수정: [원인 및 전후 검증](docs/FIRM_ROSTER_WRAP_VALIDATION.md).
 
 Edge 104 호환 빌드 변경 및 실제 검증 범위: [호환성 보고서](docs/EDGE104_COMPATIBILITY.md).
+
+## 첫기일 선택 입력 브랜치
+
+이 브랜치는 `6b6e718`에서 분기한 `experiment/v1-first-hearing`입니다.
+기존 `experiment/v1-auto-latest-pdf`는 변경하지 않습니다.
+첫기일 날짜·시간만 직접 입력할 수 있고, 공소장 정보는 계속 자동 추출합니다.
+[좌표·입력 검증 및 최종 PDF 확인](docs/FIRST_HEARING_VALIDATION.md).
 
 ## 배포 후보
 
@@ -22,9 +29,10 @@ Edge 104 호환 빌드 변경 및 실제 검증 범위: [호환성 보고서](do
 
 ## 개발 구조
 
+- `src/first-hearing.js`: 선택 입력된 첫기일 날짜·시간 검증과 두 줄 표시 형식.
 - `src/core.js`: 독립 피고인·죄명·검사·변호인·기소일·구속 파서, 생년월일 해석, AgeRuleEngine 함수와 독립 표시 설정.
 - `src/services.js`: PDFInputService, PDFTextExtractor, OCRService, MemoPDFRenderer, PDFExportService.
-- `src/app.js`: 자동 추출 결과 읽기 전용 표시, 원문/결과 미리보기, 다운로드. DOM에 문서 내용을 넣을 때 textContent/value만 사용합니다.
+- `src/app.js`: 첫기일 날짜·시간 선택 입력, 자동 추출 결과 읽기 전용 표시, 원문/결과 미리보기, 다운로드. DOM에 문서 내용을 넣을 때 textContent/value만 사용합니다.
 - `src/CriminalMemo.html`, `styles.css`: UI 원본.
 - `scripts/build.mjs`: npm 잠금 버전으로 단일 HTML과 템플릿·라이선스·SHA-256 목록 생성.
 - `tests/`: Swift 사례를 계승한 Node 테스트, 브라우저 진단.
@@ -46,6 +54,7 @@ python -m pip install -r scripts/requirements-test.txt
 python scripts/prepare_fixtures.py
 npm run test:browser
 python scripts/verify_outputs.py
+python scripts/verify_first_hearing.py
 ```
 
 브라우저 실행 파일은 기본 `/usr/bin/chromium`, 필요하면 `CM_CHROMIUM` 환경 변수로 지정합니다. 일반 Chromium의 기본 보안 설정을 사용하며 `--disable-web-security`, `--allow-file-access-from-files` 등을 사용하지 않습니다. 컨테이너에서는 Playwright의 기본 프로세스 샌드박스 옵션을 사용하지만 관리 URL 정책을 수정하지 않습니다.
