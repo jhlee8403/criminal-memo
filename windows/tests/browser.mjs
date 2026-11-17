@@ -20,16 +20,37 @@ const samples = [1, 2].map((n) =>
 const browser = await chromium.launch({
   executablePath: process.env.CM_CHROMIUM || "/usr/bin/chromium",
   headless: true,
-  args: ["--disable-dev-shm-usage"],
+  args: ["--disable-dev-shm-usage", ...(process.env.CM_SOFTWARE_GL === "1" ? ["--use-gl=angle", "--use-angle=swiftshader"] : [])],
 });
 const context = await browser.newContext({
   acceptDownloads: true,
   offline: true,
 });
+const maskModernAPIs = process.env.CM_NO_MODERN_APIS === "1";
+const recordCompatibility = (mask) => {
+  const inspect = () => ({withResolvers:typeof Promise.withResolvers,
+    transfer:typeof ArrayBuffer.prototype.transfer,
+    toSorted:typeof Uint8Array.prototype.toSorted,
+    setUnion:typeof Set.prototype.union,
+    abortAny:typeof AbortSignal.any});
+  window.CM_COMPAT_BEFORE = inspect();
+  if (mask) {
+    delete Promise.withResolvers;
+    delete ArrayBuffer.prototype.transfer;
+    delete ArrayBuffer.prototype.transferToFixedLength;
+    delete Object.getPrototypeOf(Uint8Array.prototype).toSorted;
+    delete Object.getPrototypeOf(Uint8Array.prototype).toReversed;
+    delete Object.getPrototypeOf(Uint8Array.prototype).with;
+    for (const key of ['union','intersection','difference','symmetricDifference','isDisjointFrom','isSubsetOf','isSupersetOf']) delete Set.prototype[key];
+    delete AbortSignal.any;
+  }
+  window.CM_COMPAT_AT_BOOT = inspect();
+};
+await context.addInitScript(recordCompatibility, maskModernAPIs);
 const external = [];
-await context.route(/^https?:/, (route) => {
-  external.push(route.request().url());
-  return route.abort();
+// Native offline mode blocks HTTP; observe attempts without adding Fetch interception.
+context.on("request", (request) => {
+  if (/^https?:/.test(request.url())) external.push(request.url());
 });
 const artifactHash = createHash("sha256")
   .update(
@@ -43,6 +64,9 @@ const report = {
   browser: browser.version(),
   platform: process.platform,
   windowsEdgeVerified: false,
+  windowsEdge104Verified: false,
+  compatibilityMaskRequested: maskModernAPIs,
+  softwareGL: process.env.CM_SOFTWARE_GL === "1",
   offlineContext: true,
   fileMode: {},
   checks: [],
@@ -50,6 +74,11 @@ const report = {
   errors: [],
 };
 let page = await context.newPage();
+const captureErrors = () => page.on("pageerror", (e) => report.errors.push(e.message));
+captureErrors();
+// Older headless engines may pause RAF while idle; poll test conditions on timers.
+const waitUntil = (fn, arg = {}, options = {}) => page.waitForFunction(fn, arg, {polling:100, ...options});
+page.setDefaultTimeout(60000);
 try {
   try {
     await page.goto(
@@ -64,6 +93,9 @@ try {
     if (!e.message.includes("ERR_BLOCKED_BY_ADMINISTRATOR")) throw e;
     await page.close();
     page = await context.newPage();
+    captureErrors();
+    page.setDefaultTimeout(60000);
+    await page.evaluate(recordCompatibility, maskModernAPIs);
     await page.setContent(
       await fs.readFile(
         resolve(root, "distribution/CriminalMemo/CriminalMemo.html"),
@@ -72,15 +104,34 @@ try {
     );
     report.mode = "in-memory HTML diagnostic (NOT file://)";
   }
-  page.on("pageerror", (e) => report.errors.push(e.message));
-  await page.waitForFunction(() => !!window.CM);
+  await waitUntil(() => !!window.CM);
+  report.compatibility = await page.evaluate(() => ({before:window.CM_COMPAT_BEFORE,
+    atBoot:window.CM_COMPAT_AT_BOOT, after:{withResolvers:typeof Promise.withResolvers,
+      transfer:typeof ArrayBuffer.prototype.transfer, toSorted:typeof Uint8Array.prototype.toSorted,
+      setUnion:typeof Set.prototype.union}}));
+  if (maskModernAPIs) assert.equal(report.compatibility.atBoot.withResolvers,"undefined");
+  assert.equal(report.compatibility.after.withResolvers,"function");
+  assert.equal(report.compatibility.after.toSorted,"function");
+  assert.equal(report.compatibility.after.setUnion,"function");
+  await waitUntil(() => document.querySelector("#templateInfo").textContent.includes("1페이지"));
+  await waitUntil(() => !document.querySelector("#file").disabled);
+  assert.match(await page.locator("#templateInfo").textContent(), /1페이지/);
+  report.fileSelectionReadyAfterInitialization = true;
   for (let i = 0; i < samples.length; i++) {
     await page.locator("#file").setInputFiles(samples[i]);
-    await page.waitForFunction(
+    await waitUntil(
       () => !document.querySelector("#analyze").disabled,
     );
+    assert.equal(await page.locator("#analyze").isEnabled(),true);
+    assert.equal(await page.evaluate(() => {
+      const canvas=document.querySelector("#canvasHost canvas");
+      if(!canvas || !canvas.width || !canvas.height) return false;
+      const pixels=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height).data;
+      for(let i=0;i<pixels.length;i+=4) if(pixels[i]<240 || pixels[i+1]<240 || pixels[i+2]<240) return true;
+      return false;
+    }),true,"Source preview must contain rendered PDF content before analysis");
     await page.locator("#analyze").click();
-    await page.waitForFunction(
+    await waitUntil(
       () => !!CM.getDraft() && !document.querySelector("#analyze").disabled,
     );
     const draft = await page.evaluate(() => CM.getDraft());
@@ -122,6 +173,8 @@ try {
       names: draft.defendants.map((p) => p.name),
       ...expectations,
       download: true,
+      sourcePreviewRendered: true,
+      analyzeButtonEnabledAfterSelection: true,
     });
   }
   // Synthetic format fixture, not a real latest indictment.
@@ -204,11 +257,11 @@ try {
   report.longTextRejected = true;
   // A real image-only PDF exercises automatic OCR, not just forced OCR over a text layer.
   await page.locator("#file").setInputFiles(resolve(out, "scanned-sample.pdf"));
-  await page.waitForFunction(
+  await waitUntil(
     () => !document.querySelector("#analyze").disabled,
   );
   await page.locator("#analyze").click();
-  await page.waitForFunction(
+  await waitUntil(
     () => !!CM.getDraft() && !document.querySelector("#analyze").disabled,
     {},
     { timeout: 120000 },
@@ -230,11 +283,11 @@ try {
   };
   // Mixed PDF: native first page + image-only second page, preserving cross-page defendant scope.
   await page.locator("#file").setInputFiles(resolve(out, "mixed-sample.pdf"));
-  await page.waitForFunction(
+  await waitUntil(
     () => !document.querySelector("#analyze").disabled,
   );
   await page.locator("#analyze").click();
-  await page.waitForFunction(
+  await waitUntil(
     () => !!CM.getDraft() && !document.querySelector("#analyze").disabled,
     {},
     { timeout: 120000 },
@@ -279,11 +332,11 @@ try {
   const inputPath = resolve(out, "synthetic-v13-input.pdf");
   await fs.writeFile(inputPath, await v13Input.save());
   await page.locator("#file").setInputFiles(inputPath);
-  await page.waitForFunction(
+  await waitUntil(
     () => !document.querySelector("#analyze").disabled,
   );
   await page.locator("#analyze").click();
-  await page.waitForFunction(
+  await waitUntil(
     () => !!CM.getDraft() && !document.querySelector("#analyze").disabled,
   );
   const v13Draft = await page.evaluate(() => CM.getDraft());
@@ -336,9 +389,9 @@ try {
     const inputPath = resolve(out, `counsel-${item.id}-input.pdf`);
     await fs.writeFile(inputPath, await input.save());
     await page.locator("#file").setInputFiles(inputPath);
-    await page.waitForFunction(() => !document.querySelector("#analyze").disabled);
+    await waitUntil(() => !document.querySelector("#analyze").disabled);
     await page.locator("#analyze").click();
-    await page.waitForFunction(() => !!CM.getDraft() && !document.querySelector("#analyze").disabled);
+    await waitUntil(() => !!CM.getDraft() && !document.querySelector("#analyze").disabled);
     assert.equal(await page.evaluate(() => CM.counselText(CM.getDraft())), item.expected, item.id);
     await page.locator("#export").waitFor({state:"visible", timeout:60000});
     const download = page.waitForEvent("download");
@@ -355,6 +408,7 @@ try {
   report.runtimeDiagnosticPassed = false;
   report.targetWindowsReady = false;
   report.failure = e.stack;
+  report.lastStatus = await page.locator("#status").textContent().catch(() => "unavailable");
   throw e;
 } finally {
   await fs.writeFile(

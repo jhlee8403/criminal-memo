@@ -1,6 +1,6 @@
 # Criminal Memo — Windows/Edge 오프라인 전환
 
-**대상 Windows Edge의 `file://` 검증은 미완료입니다.** 실행 구조는 서버·EXE 없이 HTML 더블클릭을 목표로 유지했습니다. 현재 환경의 관리자 정책이 `file://` 탐색을 차단하여, 동일한 배포 HTML을 메모리에 올린 진단으로만 엔진·업무 흐름을 실행 검증했습니다. 이 결과를 HTML 더블클릭 성공으로 해석하지 않습니다.
+**회사 Windows의 Microsoft Edge 104.0.1293.47 실행은 미검증입니다.** PDF.js legacy 호환 빌드와 Edge 104 문법 타깃을 사용합니다. Linux Chromium 103의 실제 `file://`에서 전체 흐름을 검증했고, 최신 Chromium은 관리 URL 정책 차단으로 동일 HTML의 메모리 진단을 수행했습니다. 구형 Linux 엔진 및 API 제거 시험의 성공을 실제 Windows Edge 104 실행 성공으로 해석하지 않습니다. 서버·설치 없이 단일 HTML로 실행하는 구조는 유지했습니다.
 
 현재 자동 전용 실험판 v1.3의 파서 변경 및 검증 범위: [실제 확인 구조 재현 검증](docs/PARSER_V13_VALIDATION.md).
 
@@ -9,6 +9,8 @@
 국선·일반 변호인 후속 변경: [직함 및 국선 표시 검증](docs/COUNSEL_APPOINTED_VALIDATION.md).
 
 법무법인 명단의 이름 내부 줄바꿈 후속 수정: [원인 및 전후 검증](docs/FIRM_ROSTER_WRAP_VALIDATION.md).
+
+Edge 104 호환 빌드 변경 및 실제 검증 범위: [호환성 보고서](docs/EDGE104_COMPATIBILITY.md).
 
 ## 배포 후보
 
@@ -22,7 +24,7 @@
 
 - `src/core.js`: 독립 피고인·죄명·검사·변호인·기소일·구속 파서, 생년월일 해석, AgeRuleEngine 함수와 독립 표시 설정.
 - `src/services.js`: PDFInputService, PDFTextExtractor, OCRService, MemoPDFRenderer, PDFExportService.
-- `src/app.js`: 검토·수정, 원문/결과 미리보기, 다운로드. DOM에 문서 내용을 넣을 때 textContent/value만 사용합니다.
+- `src/app.js`: 자동 추출 결과 읽기 전용 표시, 원문/결과 미리보기, 다운로드. DOM에 문서 내용을 넣을 때 textContent/value만 사용합니다.
 - `src/CriminalMemo.html`, `styles.css`: UI 원본.
 - `scripts/build.mjs`: npm 잠금 버전으로 단일 HTML과 템플릿·라이선스·SHA-256 목록 생성.
 - `tests/`: Swift 사례를 계승한 Node 테스트, 브라우저 진단.
@@ -38,6 +40,7 @@ cd windows
 npm ci --cache /tmp/criminal-memo-npm
 npm run build
 npm test
+npm run test:built-compatibility
 # Python/Chromium은 개발 검증용이며 최종 사용자에게 필요하지 않습니다.
 python -m pip install -r scripts/requirements-test.txt
 python scripts/prepare_fixtures.py

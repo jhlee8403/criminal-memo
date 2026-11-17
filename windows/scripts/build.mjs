@@ -6,6 +6,8 @@ import { build } from "esbuild";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const out = path.join(root, "distribution/CriminalMemo");
 const read = (p) => fs.readFile(path.join(root, p));
+// Syntax lowering and PDF.js runtime API compatibility are separate requirements.
+const browserTarget = "edge104";
 await fs.mkdir(path.join(out, "assets"), { recursive: true });
 await fs.mkdir(path.join(out, "templates"), { recursive: true });
 const pdfs = (await fs.readdir(path.join(root, ".."))).filter(
@@ -62,13 +64,15 @@ await fs.writeFile(
 );
 for (const kind of ["pdf", "pdf.worker"])
   await build({
-    entryPoints: [path.join(root, `node_modules/pdfjs-dist/build/${kind}.mjs`)],
+    entryPoints: [
+      path.join(root, `node_modules/pdfjs-dist/legacy/build/${kind}.mjs`),
+    ],
     bundle: true,
     format: "iife",
     globalName: kind === "pdf" ? "pdfjsLib" : "pdfjsWorker",
     outfile: path.join(out, `assets/${kind}.js`),
     platform: "browser",
-    target: "es2022",
+    target: browserTarget,
     minify: true,
     legalComments: "eof",
   });
@@ -78,7 +82,7 @@ await build({
   format: "iife",
   outfile: path.join(out, "assets/app.js"),
   platform: "browser",
-  target: "es2022",
+  target: browserTarget,
   minify: true,
   legalComments: "eof",
 });
@@ -111,7 +115,10 @@ await fs.copyFile(
   path.join(root, "vendor/tessdata-LICENSE.txt"),
   path.join(out, "assets/tessdata-Apache-2.0.txt"),
 );
-const licenses = [];
+const licenses = [
+  "core-js 3.38.1 (embedded in pdfjs-dist legacy builds; MIT)\n" +
+    (await read("vendor/core-js-LICENSE.txt")).toString(),
+];
 for (const name of [
   "pdfjs-dist",
   "pdf-lib",
@@ -150,6 +157,9 @@ await fs.writeFile(
 );
 const manifest = {
   builtAt: new Date().toISOString(),
+  browserTarget,
+  pdfjsBuild: "legacy",
+  pdfjsVersion: "4.8.69",
   templateSHA256: resources.templateSHA256,
   files: {},
 };
