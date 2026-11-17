@@ -1,7 +1,7 @@
 // Pure business rules: no browser, filesystem or network dependencies.
 export const AGE_RULES = Object.freeze({
   juvenileUnder: 19,
-  mandatoryOver: 70,
+  mandatoryAtLeast: 70,
 });
 export const numbered = (v) =>
   v
@@ -56,6 +56,17 @@ export function birthAssessment(person, filingDate) {
     return { resolved: false, birth: null, age: null, warnings: ["유효하지 않은 생년월일 앞 6자리"] };
   if (!filing)
     return { resolved: false, birth: null, age: null, warnings: ["기소일을 자동 추출하지 못했습니다"] };
+  const rawEvidence = person.birthDateEvidence ?? [];
+  const evidence = [...new Set(rawEvidence.map(parseDate).filter(Boolean))];
+  if (!person.birthReview && evidence.length === 1 && rawEvidence.every(parseDate)) {
+    const birth = evidence[0];
+    const digits = birth.slice(2).replaceAll("-", "");
+    if (digits === front && birth <= filing) {
+      const [fy,fm,fd] = filing.split("-").map(Number);
+      const [by,bm,bd] = birth.split("-").map(Number);
+      return {resolved:true,birth,age:fy-by-Number(fm<bm || (fm===bm && fd<bd)),warnings:[]};
+    }
+  }
   return {
     resolved: false,
     birth: null,
@@ -69,7 +80,7 @@ export function ageMarks(draft, rules = AGE_RULES) {
   );
   return {
     juvenile: ages.some((a) => a.resolved && a.age < rules.juvenileUnder),
-    mandatory: ages.some((a) => a.resolved && a.age > rules.mandatoryOver),
+    mandatory: draft.defendants.some(p => p.detention === "detained") || ages.some((a) => a.resolved && a.age >= rules.mandatoryAtLeast),
   };
 }
 const clean = (s) =>
@@ -139,7 +150,7 @@ const contentLines = (lines) => {
   return output;
 };
 const heading = (line) => {
-  const m = clean(line).match(fieldHead);
+  const m = clean(line).replace(/^(\s*(?:\d+[.)]\s*)?구\s*속\s*여\s*부)\s*[.．]\s*/, "$1 ").match(fieldHead);
   return m ? { label: m[1].replace(/\s/g, ""), value: m[2].trim() } : null;
 };
 export const labelValue = (label, line) => {
@@ -214,7 +225,7 @@ export class DefendantParser {
     }
     return sections;
   }
-  static parse(section, ocr) {
+  static parse(section, ocr, {caseType} = {}) {
     const firstField = section.lines.findIndex((l) => heading(l));
     const identity = [
       section.identity,
@@ -237,9 +248,10 @@ export class DefendantParser {
         .trim(),
       birthDigits: front,
       birthReview: ocr,
+      birthDateEvidence: values("생년월일", section.lines),
       counsel: CounselParser.parse(section.lines, ocr),
       charges: ChargeParser.parse(section.lines),
-      detention: DetentionParser.parse(section.lines),
+      detention: DetentionParser.parse(section.lines, {caseType}),
     };
   }
 }
@@ -398,21 +410,17 @@ export class CounselParser {
   }
 }
 export class DetentionParser {
-  static parse(lines) {
+  static parse(lines, {caseType} = {}) {
     const list = values("구속여부", lines);
-    const states = list.map((s) => {
-      s = s.replace(/\s/g, "");
+    if (!list.length) return caseType === "고정" ? "released" : "unknown";
+    const date = "\\d{4}[.년/\\-]\\d{1,2}[.월/\\-]\\d{1,2}[.일]?";
+    const detained = new RegExp(`^(?:${date})?구속(?:기소)?(?:[（(](?:${date})?체포[）)])?$`);
+    const states = list.map(value => {
+      const s=value.replace(/\s/g, "");
       if (/^불구속(?:기소)?$/.test(s)) return "released";
-      if (
-        /^구속(?:기소)?$/.test(s) ||
-        /^\d{4}[.년]\d{1,2}[.월]\d{1,2}[.일]?구속$/.test(s)
-      )
-        return "detained";
-      return "unknown";
+      return detained.test(s) ? "detained" : "unknown";
     });
-    return states.length && states.every((s) => s === states[0])
-      ? states[0]
-      : "unknown";
+    return states.every(s => s === states[0]) ? states[0] : "unknown";
   }
 }
 export class ProsecutorParser {
@@ -545,14 +553,14 @@ export class FilingDateParser {
   }
 }
 export class IndictmentParser {
-  static parse(document) {
+  static parse(document, {caseType} = {}) {
     const text = clean(document.text),
       sections = DefendantParser.split(text),
       lines = text.split("\n"),
       filingDateAssessment = FilingDateParser.assess(document.pages[0]);
     const draft = {
       defendants: sections.map((s) =>
-        DefendantParser.parse(s, document.usedOCR),
+        DefendantParser.parse(s, document.usedOCR, {caseType}),
       ),
       prosecutor: ProsecutorParser.parse(lines),
       filingDate: filingDateAssessment.date,

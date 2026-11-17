@@ -1,0 +1,326 @@
+{
+  "browser": "103.0.5058.0",
+  "platform": "linux",
+  "htmlSHA256": "28a6fb485500052098004c10e9a9ef0a3161052069a59ace35d5f52970f0212e",
+  "windowsEdge104Verified": false,
+  "maskRequested": false,
+  "softwareGL": true,
+  "externalRequests": [],
+  "errors": [],
+  "checks": [
+    "ten PDFs, date propagation without time propagation, ZIP with exact names, per-file invalidation",
+    "partial failure isolation, required/invalid hearing, single PDF name, stale analysis rejection, duplicate rejection"
+  ],
+  "fileMode": true,
+  "compatibility": {
+    "before": {
+      "withResolvers": "undefined",
+      "toSorted": "undefined",
+      "setUnion": "undefined"
+    },
+    "atBoot": {
+      "withResolvers": "undefined",
+      "toSorted": "undefined",
+      "setUnion": "undefined"
+    },
+    "after": "function"
+  },
+  "ocrUnchanged": true,
+  "mixedOCRUnchanged": true,
+  "definitions": [
+    {
+      "case": "2026고단203948",
+      "people": [
+        {
+          "detention": "2026. 10. 28. 구속(2026. 10. 26. 체포)",
+          "label": "구속여부."
+        }
+      ],
+      "states": "O",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "batch-memo-0.pdf",
+      "filename": "1000 2026고단203948.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "10:00"
+      ]
+    },
+    {
+      "case": "2025고정1382",
+      "people": [
+        {
+          "detention": null
+        }
+      ],
+      "states": "X",
+      "mandatory": false,
+      "juvenile": false,
+      "output": "batch-memo-1.pdf",
+      "filename": "1030 2025고정1382.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "10:30"
+      ]
+    },
+    {
+      "case": "2026고단203950",
+      "people": [
+        {
+          "front": "561117",
+          "birth": "1956.11.17."
+        }
+      ],
+      "states": "X",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "batch-memo-2.pdf",
+      "filename": "1100 2026고단203950.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "11:00"
+      ]
+    },
+    {
+      "case": "2026고단203951",
+      "people": [
+        {
+          "front": "071118",
+          "birth": "2007.11.18."
+        }
+      ],
+      "states": "X",
+      "mandatory": false,
+      "juvenile": true,
+      "output": "batch-memo-3.pdf",
+      "filename": "1130 2026고단203951.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "11:30"
+      ]
+    },
+    {
+      "case": "2026고단203952",
+      "people": [
+        {
+          "front": "401101",
+          "birth": "1940.11.1.",
+          "detention": "구속"
+        }
+      ],
+      "states": "O",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "batch-memo-4.pdf",
+      "filename": "1200 2026고단203952.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "12:00"
+      ]
+    },
+    {
+      "case": "2026고단203953",
+      "people": [
+        {
+          "detention": "구속"
+        },
+        {
+          "name": "이가상"
+        }
+      ],
+      "states": "OX",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "batch-memo-5.pdf",
+      "filename": "1230 2026고단203953.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "12:30"
+      ]
+    },
+    {
+      "case": "2026고단203954",
+      "people": [
+        {},
+        {
+          "name": "이가상",
+          "front": "071118",
+          "birth": "2007.11.18."
+        }
+      ],
+      "states": "XX",
+      "mandatory": false,
+      "juvenile": true,
+      "output": "batch-memo-6.pdf",
+      "filename": "1300 2026고단203954.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "13:00"
+      ]
+    },
+    {
+      "case": "2026고단203955",
+      "people": [
+        {
+          "detention": "구속"
+        },
+        {
+          "name": "이가상",
+          "detention": "구속"
+        }
+      ],
+      "states": "OO",
+      "mandatory": true,
+      "juvenile": false,
+      "output": "batch-memo-7.pdf",
+      "filename": "1330 2026고단203955.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "13:30"
+      ]
+    },
+    {
+      "case": "2026고단203956",
+      "people": [
+        {
+          "front": "071118"
+        }
+      ],
+      "states": "X",
+      "mandatory": false,
+      "juvenile": false,
+      "counsel": "변 호 인 법무법인 가상(담당변호사 김가상, 박가상, 이가상, 최가상)",
+      "output": "batch-memo-8.pdf",
+      "filename": "1400 2026고단203956.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "14:00"
+      ]
+    },
+    {
+      "case": "2026고정203957",
+      "people": [
+        {
+          "detention": null
+        }
+      ],
+      "states": "X",
+      "mandatory": false,
+      "juvenile": false,
+      "counsel": "국선변호인 변호사 김가상",
+      "output": "batch-memo-9.pdf",
+      "filename": "1430 2026고정203957.pdf",
+      "hearing": [
+        "2026. 11. 18.",
+        "14:30"
+      ]
+    }
+  ],
+  "counselCases": [
+    {
+      "id": "no-parentheses",
+      "expected": "태평양) 김가상 박가상 이가상 최가상"
+    },
+    {
+      "id": "parentheses",
+      "expected": "와이케이) 강가상 윤가상 한가상 정가상"
+    },
+    {
+      "id": "multiline",
+      "expected": "가상) 김가상 박가상 이가상"
+    },
+    {
+      "id": "all-names",
+      "expected": "가상) 김가상 박가상 이가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "appointed",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "none",
+      "expected": ""
+    },
+    {
+      "id": "missing",
+      "expected": ""
+    },
+    {
+      "id": "appointed-heading",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-no-title",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-lawyer",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-split",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "regular-title",
+      "expected": "김가상"
+    },
+    {
+      "id": "regular-split",
+      "expected": "김가상"
+    },
+    {
+      "id": "appointed-explicit-none",
+      "expected": ""
+    },
+    {
+      "id": "appointed-suffix-split",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "firm-four-spaced",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-six-name-split",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상"
+    },
+    {
+      "id": "firm-twelve-2-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-2-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-3-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-3-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-4-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-4-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-name-split-two-one",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-four-inline",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-parentheses-lines",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    }
+  ],
+  "passed": true
+}

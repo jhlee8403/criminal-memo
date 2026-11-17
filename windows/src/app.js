@@ -1,167 +1,150 @@
-import * as services from "./services.js";
-import * as core from "./core.js";
-import * as hearing from "./first-hearing.js";
-const $ = id => document.getElementById(id);
-const state = { source: null, output: null, draft: null, outputBytes: null, tab: "source", zoom: 1, renderToken: 0, busy: false, hearingRevision: 0 };
-function status(text, error = false) {
-  $("status").textContent = text;
-  $("status").classList.toggle("error", error);
+import * as services from './services.js';
+import * as core from './core.js';
+import * as hearing from './first-hearing.js';
+import * as batch from './batch.js';
+const $=id=>document.getElementById(id);
+const state={entries:[],selected:null,busy:false,tab:'source',previewDoc:null,token:0,zoom:1};
+function status(text,error=false){$('status').textContent=text;$('status').classList.toggle('error',error);}
+const firstHearing=e=>({date:e.dateInput.value,time:e.timeInput.value});
+const successful=()=>state.entries.filter(e=>e.bytes);
+function updateDownload(){
+  const outputs=successful();
+  $('export').hidden=state.busy || !outputs.length;
+  $('save').textContent=state.entries.length>1?`메모 ZIP 다운로드 (${outputs.length}개)`:'PDF 다운로드';
 }
-function busy(value) {
-  state.busy = value;
-  $("file").disabled = value;
-  $("analyze").disabled = value || !state.source;
-  $("forceOCR").disabled = value;
+function setBusy(value){state.busy=value;$('file').disabled=value;$('analyze').disabled=value||!state.entries.length;$('forceOCR').disabled=value;updateDownload();}
+function setRow(e,text,error=false){e.statusText.textContent=text;e.statusText.classList.toggle('error',error);}
+function validateEntry(e){return e.meta.error || hearing.assessFirstHearing(firstHearing(e),{required:true}).error;}
+function invalidate(e){
+  e.revision++;e.bytes=null;e.filename='';
+  const error=validateEntry(e);e.errorText.textContent=error;
+  setRow(e,error?'입력 오류':'설정 변경 · 다시 분석하세요',!!error);
+  if(state.selected===e && state.tab==='output'){state.tab='source';void preview();}
+  updateDownload();
+  if(!state.busy)status(`입력 변경 · 현재 생성된 메모 ${successful().length}개. 변경한 파일은 다시 분석하세요.`);
 }
-function clearOutput() {
-  if (state.output) { void state.output.destroy(); state.output = null; }
-  state.outputBytes = null;
-  $("outputTab").disabled = true;
-  $("export").hidden = true;
-}
-async function preview() {
-  const token = ++state.renderToken;
-  $("rawText").hidden = state.tab !== "text";
-  $("canvasHost").hidden = state.tab === "text";
-  if (state.tab === "text") return;
-  const doc = state.tab === "output" ? state.output : state.source;
-  if (!doc) return;
-  $("canvasHost").replaceChildren();
-  try {
-    for (let n = 1; n <= doc.numPages; n++) {
-      const canvas = await services.PDFTextExtractor.render(await doc.getPage(n), state.zoom * 1.25);
-      if (token !== state.renderToken) return;
-      $("canvasHost").append(canvas);
-    }
-  } catch (error) {
-    if (token === state.renderToken) status(error.message, true);
+async function preview(){
+  const token=++state.token;
+  const entry=state.selected;
+  $('canvasHost').replaceChildren();
+  $('rawText').hidden=state.tab!=='text';$('canvasHost').hidden=state.tab==='text';
+  $('outputTab').disabled=!entry?.bytes;
+  $('people').replaceChildren();
+  if(entry?.draft){
+    const d=entry.draft;
+    const lines=[`사건: ${entry.meta.caseNumber}`,`검사: ${d.prosecutor}`,`기소일: ${d.filingDate}`,
+      ...d.defendants.flatMap((p,i)=>[`피고인 ${i+1}: ${p.name}`,`생년월일 앞 6자리: ${p.birthDigits}`,`죄명: ${p.charges.join(', ')}`,`변호인: ${p.counsel.status==='named'?p.counsel.name:p.counsel.status==='needsReview'?'판정 불가':'기재 없음'}`,`구속: ${p.detention==='detained'?'O':p.detention==='released'?'X':'판정 불가'}`]),
+      ...d.warnings];
+    for(const text of lines){const p=document.createElement('p');p.textContent=text;$('people').append(p);}
   }
-}
-function line(label, value) {
-  const p = document.createElement("p");
-  p.textContent = label + ": " + (value || "(자동 추출 실패)");
-  return p;
-}
-function showExtraction() {
-  const d = state.draft;
-  $("editor").hidden = false;
-  $("people").replaceChildren(
-    line("검사", d.prosecutor),
-    line("기소일", d.filingDate),
-    ...d.defendants.flatMap((p, i) => [
-      line(`피고인 ${i + 1}`, p.name),
-      line("생년월일 앞 6자리", p.birthDigits),
-      line("죄명", p.charges.join(", ")),
-      line("변호인", p.counsel.status === "named" ? p.counsel.name : p.counsel.status === "needsReview" ? "(판정 불가)" : "기재 없음"),
-      line("구속 여부", p.detention === "detained" ? "O" : p.detention === "released" ? "X" : "(판정 불가)")
-    ])
-  );
-  const errors = core.validateDraft(d);
-  $("warnings").textContent = errors.length
-    ? "메모를 자동 생성할 수 없습니다. 추출 실패 항목:\n" + errors.join("\n")
-    : "필수 항목을 모두 자동 추출했습니다.";
-  return errors;
-}
-const readFirstHearing = () => ({ date: $("hearingDate").value, time: $("hearingTime").value });
-function checkFirstHearing() {
-  const result = hearing.assessFirstHearing(readFirstHearing());
-  $("hearingError").textContent = result.error;
-  for (const id of ["hearingDate", "hearingTime"]) $(id).setAttribute("aria-invalid", String(!!result.error));
-  return result;
-}
-for (const id of ["hearingDate", "hearingTime"]) $(id).oninput = () => {
-  state.hearingRevision++;
-  const hadOutput = !!state.outputBytes;
-  clearOutput();
-  if (state.tab === "output") {
-    state.tab = "source";
-    ++state.renderToken;
-    $("canvasHost").replaceChildren();
-    void preview();
-  }
-  const result = checkFirstHearing();
-  if (result.error) status(result.error, true);
-  else if (hadOutput) status("첫기일이 변경되어 이전 메모를 무효화했습니다. 문서 분석을 다시 실행하세요.");
-  else if (!state.busy) status(state.source
-    ? "현재 첫기일 설정을 반영하려면 문서 분석을 실행하세요."
-    : "공소장 PDF를 선택한 후 문서 분석을 실행하세요.");
-};
-$("file").onchange = async () => {
-  if (!$("file").files[0]) return;
-  busy(true);
-  clearOutput();
-  state.draft = null;
-  $("editor").hidden = true;
-  $("rawText").textContent = "";
-  try {
-    if (state.source) await state.source.destroy();
-    state.source = await services.PDFInputService.open($("file").files[0]);
-    $("fileInfo").textContent = `${$("file").files[0].name} · ${state.source.numPages}페이지`;
-    state.tab = "source";
-    await preview();
-    status("공소장을 불러왔습니다. 자동 분석을 시작하세요.");
-  } catch (error) {
-    state.source = null;
-    status(error.message, true);
-  } finally { busy(false); }
-};
-$("analyze").onclick = async () => {
-  if (!state.source || state.busy) return;
-  const initialHearing = checkFirstHearing();
-  if (initialHearing.error) { status(initialHearing.error, true); return; }
-  busy(true);
-  clearOutput();
-  $("editor").hidden = true;
-  try {
-    const extracted = await services.analyze(state.source, {
-      forceOCR: $("forceOCR").checked,
-      progress: (s, p) => status(`${s}${Number.isFinite(p) ? " · " + Math.round(p * 100) + "%" : ""}`)
-    });
-    state.draft = core.IndictmentParser.parse(extracted);
-    $("rawText").textContent = extracted.text;
-    const errors = showExtraction();
-    if (errors.length) {
-      status("자동 추출 실패: " + errors.join(" / ") + ". 공소장 정보의 수동 입력은 제공하지 않습니다.", true);
-      return;
+  $('rawText').textContent=entry?.rawText||'';
+  if(state.previewDoc){void state.previewDoc.destroy();state.previewDoc=null;}
+  if(!entry || state.tab==='text')return;
+  try{
+    const doc=state.tab==='output'&&entry.bytes?await services.PDFInputService.fromBytes(entry.bytes):await services.PDFInputService.open(entry.file);
+    if(token!==state.token){await doc.destroy();return;}
+    state.previewDoc=doc;
+    for(let n=1;n<=doc.numPages;n++){
+      const canvas=await services.PDFTextExtractor.render(await doc.getPage(n),state.zoom*1.25);
+      if(token!==state.token)return;
+      $('canvasHost').append(canvas);
     }
-    const revision = state.hearingRevision;
-    const firstHearing = readFirstHearing();
-    checkFirstHearing();
-    const data = await services.MemoPDFRenderer.render(state.draft, { firstHearing });
-    const output = await services.PDFInputService.fromBytes(data);
-    if (revision !== state.hearingRevision) {
-      await output.destroy();
-      status("첫기일이 변경되었습니다. 문서 분석을 다시 실행하세요.");
-      return;
-    }
-    state.output = output;
-    state.outputBytes = data;
-    state.tab = "output";
-    $("outputTab").disabled = false;
-    $("export").hidden = false;
-    await preview();
-    if (revision === state.hearingRevision)
-      status("필수 항목 자동 추출 및 메모 생성 완료. 생성된 PDF를 확인하여 저장하세요.");
-  } catch (error) {
-    status("자동 분석 또는 PDF 생성 실패: " + error.message, true);
-  } finally { busy(false); }
-};
-$("save").onclick = () => {
-  if (state.outputBytes) services.PDFExportService.download(state.outputBytes, "형사신건메모");
-};
-for (const [id, tab] of [["sourceTab", "source"], ["outputTab", "output"], ["textTab", "text"]])
-  $(id).onclick = () => { state.tab = tab; void preview(); };
-for (const [id, delta] of [["zoomIn", 0.25], ["zoomOut", -0.25]])
-  $(id).onclick = () => {
-    state.zoom = Math.max(0.5, Math.min(2, state.zoom + delta));
-    $("zoomLabel").textContent = Math.round(state.zoom * 100) + "%";
-    void preview();
+  }catch(error){if(token===state.token)status(`미리보기 오류: ${error.message}`,true);}
+}
+function selectEntry(entry,tab='source'){state.selected=entry;state.tab=tab;void preview();}
+function entryRow(file,index){
+  const e={file,meta:batch.caseFromFilename(file.name),revision:0,bytes:null,filename:'',draft:null,rawText:''};
+  const card=document.createElement('section');card.className='batch-item';card.dataset.index=String(index);
+  const title=document.createElement('h3');title.textContent=`${index+1}. ${file.name}`;
+  const caseText=document.createElement('p');caseText.textContent=e.meta.caseNumber||'사건번호 추출 실패';
+  const input=(label,kind,placeholder)=>{
+    const l=document.createElement('label');l.textContent=label;
+    const i=document.createElement('input');i.type='text';i.inputMode='numeric';i.autocomplete='off';i.placeholder=placeholder;i.dataset.field=kind;l.append(i);card.append(l);return i;
   };
-window.CM = { ...services, ...core, ...hearing, getDraft: () => state.draft };
-services.PDFInputService.fromBytes(services.bytes(window.CM_DOCUMENTS.template))
-  .then(async pdf => {
-    $("templateInfo").textContent = "내장 원본 양식: " + pdf.numPages + "페이지 (출력 시 첫 페이지만 사용)";
-    await pdf.destroy();
-  })
-  .catch(error => status(error.message, true));
-status("초기 Windows v1 자동 추출 시험판 · 문서를 외부로 전송하지 않습니다.");
+  card.append(title,caseText);
+  e.dateInput=input('첫기일 날짜','date','20261118 또는 2026-11-18');
+  e.timeInput=input('첫기일 시간','time','1000 또는 10:00');
+  e.errorText=document.createElement('p');e.errorText.className='error';e.errorText.setAttribute('role','alert');
+  e.statusText=document.createElement('p');e.statusText.setAttribute('role','status');
+  const show=document.createElement('button');show.type='button';show.className='secondary';show.textContent='이 파일 보기';show.onclick=()=>selectEntry(e,e.bytes?'output':'source');
+  card.append(e.errorText,e.statusText,show);e.card=card;
+  e.dateInput.oninput=()=>{
+    invalidate(e);
+    if(index===0)for(const other of state.entries.slice(1)){
+      if(other.dateInput.value!==e.dateInput.value){other.dateInput.value=e.dateInput.value;invalidate(other);}
+    }
+  };
+  e.timeInput.oninput=()=>invalidate(e);
+  e.errorText.textContent=e.meta.error;setRow(e,e.meta.error?'생성 제외 · 사건번호 오류':'첫기일 날짜와 시간을 입력하세요',!!e.meta.error);
+  return e;
+}
+$('file').onchange=async()=>{
+  if(state.busy)return;
+  ++state.token;
+  state.entries=Array.from($('file').files).map(entryRow);
+  $('batchList').replaceChildren(...state.entries.map(e=>e.card));
+  $('fileInfo').textContent=`${state.entries.length}개 파일 선택`;
+  state.selected=state.entries[0]||null;state.tab='source';
+  setBusy(false);
+  status('첫 번째 날짜는 나머지 파일에도 복사됩니다. 시간은 파일마다 입력하세요.');
+  await preview();
+};
+$('analyze').onclick=async()=>{
+  if(state.busy||!state.entries.length)return;
+  setBusy(true);
+  const forceOCR=$('forceOCR').checked;
+  // Refuse collisions before generation; a ZIP must never overwrite an earlier memo.
+  const planned=new Map(),duplicates=new Set();
+  for(const e of state.entries){
+    e.bytes=null;e.filename='';e.errorText.textContent='';
+    if(validateEntry(e))continue;
+    const name=batch.memoFilename(e.meta.caseNumber,firstHearing(e));
+    if(planned.has(name)){duplicates.add(e);duplicates.add(planned.get(name));}else planned.set(name,e);
+  }
+  try{
+    for(const [index,e] of state.entries.entries()){
+      const revision=e.revision;
+      let pdf;
+      try{
+        const error=validateEntry(e);if(error)throw Error(error);
+        if(duplicates.has(e))throw Error('같은 사건번호·시간의 저장 파일명이 중복됩니다. 입력을 확인하세요.');
+        const first=firstHearing(e),filename=batch.memoFilename(e.meta.caseNumber,first);
+        if(state.entries.some(other=>other!==e&&other.bytes&&other.filename===filename))throw Error('저장 파일명이 다른 생성 결과와 중복됩니다.');
+        setRow(e,'분석 중');status(`${index+1}/${state.entries.length}: ${e.file.name}`);
+        pdf=await services.PDFInputService.open(e.file);
+        const extracted=await services.analyze(pdf,{forceOCR,progress:(text,p)=>setRow(e,`분석 중 · ${text}${Number.isFinite(p)?` ${Math.round(p*100)}%`:''}`)});
+        e.rawText=extracted.text;e.draft=core.IndictmentParser.parse(extracted,{caseType:e.meta.caseType});
+        const errors=core.validateDraft(e.draft);if(errors.length)throw Error(errors.join(' / '));
+        setRow(e,'메모 생성 중');
+        const bytes=await services.MemoPDFRenderer.render(e.draft,{firstHearing:first,caseNumber:e.meta.caseNumber});
+        if(e.revision!==revision)throw Error('분석 중 입력값이 변경되었습니다. 다시 분석하세요.');
+        e.bytes=bytes;e.filename=filename;setRow(e,`생성 완료 · ${filename}`);
+      }catch(error){e.bytes=null;e.filename='';e.errorText.textContent=error.message;setRow(e,'오류 · 생성 제외',true);}
+      finally{if(pdf)await pdf.destroy();}
+    }
+  }finally{
+    setBusy(false);
+    const outputs=successful();
+    status(`생성 완료 ${outputs.length}/${state.entries.length}개. 오류·변경 파일은 목록의 사유를 확인하세요.`,outputs.length!==state.entries.length);
+    state.selected=outputs[0]||state.entries[0];state.tab=outputs.length?'output':'source';
+    await preview();
+  }
+};
+$('save').onclick=()=>{
+  if(state.busy)return;
+  try{
+    const outputs=successful();
+    if(state.entries.length>1){
+      const zip=batch.createMemoZip(outputs.map(e=>({name:e.filename,bytes:e.bytes})));
+      services.PDFExportService.download(zip,'criminal-memo-batch',{zip:true});
+    }else if(outputs[0])services.PDFExportService.download(outputs[0].bytes,outputs[0].filename.replace(/\.pdf$/,''));
+  }catch(error){status(error.message,true);}
+};
+for(const [id,tab]of[['sourceTab','source'],['outputTab','output'],['textTab','text']])$(id).onclick=()=>{state.tab=tab;void preview();};
+for(const [id,delta]of[['zoomIn',.25],['zoomOut',-.25]])$(id).onclick=()=>{state.zoom=Math.max(.5,Math.min(2,state.zoom+delta));$('zoomLabel').textContent=Math.round(state.zoom*100)+'%';void preview();};
+window.CM={...services,...core,...hearing,...batch,getDraft:()=>state.selected?.draft,
+  getEntries:()=>state.entries.map(e=>({name:e.file.name,...e.meta,firstHearing:firstHearing(e),filename:e.filename,status:e.statusText.textContent,error:e.errorText.textContent,generated:!!e.bytes,draft:e.draft}))};
+services.PDFInputService.fromBytes(services.bytes(window.CM_DOCUMENTS.template)).then(async pdf=>{
+  $('templateInfo').textContent=`내장 원본 양식: ${pdf.numPages}페이지`;await pdf.destroy();
+}).catch(error=>status(error.message,true));
+status('공소장 파일들을 선택하세요. 사건번호는 파일명에서 추출합니다.');

@@ -6,13 +6,14 @@ import {
   counselText,
   numbered,
   detentionGlyphs,
-  birthAssessment,
-  AGE_RULES,
+  ageMarks,
   validateDraft,
 } from "./core.js";
 export const bytes = (b64) =>
   Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 export const boxes = {
+  // Measured case cell x=69.203..176.665, y=43.872..100.570 pt.
+  caseNumber: [74, 61, 97, 27],
   defendants: [33, 128, 140, 111],
   charges: [180, 78, 151, 161],
   prosecutor: [385, 48, 112, 22],
@@ -188,7 +189,7 @@ export async function analyze(
   return { pages, usedOCR, text: pages.map((p) => p.text).join("\n") };
 }
 export class MemoPDFRenderer {
-  static async render(draft, { templateBytes, firstHearing } = {}) {
+  static async render(draft, { templateBytes, firstHearing, caseNumber } = {}) {
     const errors = validateDraft(draft);
     if (errors.length) throw Error(errors.join("\n"));
     const hearing = assessFirstHearing(firstHearing);
@@ -244,6 +245,7 @@ export class MemoPDFRenderer {
       }
       throw Error(`${key}: 내용이 칸을 넘습니다. 줄여 주세요.`);
     };
+    draw(caseNumber, "caseNumber");
     draw(numbered(draft.defendants.map((p) => p.name)), "defendants");
     draw(
       numbered(
@@ -281,14 +283,9 @@ export class MemoPDFRenderer {
       }
     }
     if (!fitted) throw Error("구속 표시가 한 줄에 들어가지 않습니다.");
-    const ages = draft.defendants.map((p) =>
-      birthAssessment(p, draft.filingDate),
-    );
-    for (const [key, condition] of [
-      ["juvenile", (a) => a.age < AGE_RULES.juvenileUnder],
-      ["mandatory", (a) => a.age > AGE_RULES.mandatoryOver],
-    ]) {
-      if (ages.some((a) => a.resolved && condition(a))) {
+    const marks = ageMarks(draft);
+    for (const key of ["juvenile", "mandatory"]) {
+      if (marks[key]) {
         const [cx, cy, cw, ch] = boxes[key];
         page.drawEllipse({
           x: cx + cw / 2,
@@ -304,15 +301,15 @@ export class MemoPDFRenderer {
   }
 }
 export class PDFExportService {
-  static download(data, name) {
+  static download(data, name, { zip = false } = {}) {
     const url = URL.createObjectURL(
-      new Blob([data], { type: "application/pdf" }),
+      new Blob([data], { type: zip ? "application/zip" : "application/pdf" }),
     );
     const a = document.createElement("a");
     a.href = url;
     a.download =
       (name.trim() || "형사신건메모").replace(/[<>:"/\\|?*\x00-\x1f]/g, "_") +
-      ".pdf";
+      (zip ? ".zip" : ".pdf");
     document.body.append(a);
     a.click();
     a.remove();

@@ -120,6 +120,7 @@ const licenses = [
     (await read("vendor/core-js-LICENSE.txt")).toString(),
 ];
 for (const name of [
+  "fflate",
   "pdfjs-dist",
   "pdf-lib",
   "@pdf-lib/fontkit",
