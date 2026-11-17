@@ -5,13 +5,15 @@ import * as batch from './batch.js';
 import * as storage from './storage.js';
 const $=id=>document.getElementById(id);
 const state={entries:[],selected:null,busy:false,tab:'source',previewDoc:null,token:0,zoom:1,folder:null};
-function status(text,error=false){$('status').textContent=text;$('status').classList.toggle('error',error);}
+function status(text,error=false){$('status').textContent=core.redactResidentNumbers(text);$('status').classList.toggle('error',error);}
 const firstHearing=e=>({date:e.dateInput.value,time:e.timeInput.value});
 const successful=()=>state.entries.filter(e=>e.bytes);
 function updateDownload(){
   const outputs=successful();
   $('export').hidden=state.busy || !outputs.length;
-  $('save').textContent=`전체 개별 다운로드 (${outputs.length}개)`;
+  const pending=outputs.filter(e=>!e.downloadRequested);
+  $('save').textContent=pending.length?`다음 메모 다운로드 (${outputs.length-pending.length+1}/${outputs.length}) · ${pending[0].filename}`:'모든 메모 다운로드 요청됨';
+  $('save').disabled=state.busy||!pending.length;
   $('saveFolder').disabled=state.busy || !outputs.length || !state.folder;
   for(const e of state.entries){e.downloadButton.disabled=state.busy||!e.bytes;e.folderButton.disabled=state.busy||!e.bytes||!state.folder;}
 }
@@ -19,7 +21,7 @@ function setBusy(value){state.busy=value;$('file').disabled=value;$('analyze').d
 function setRow(e,text,error=false){e.statusText.textContent=text;e.statusText.classList.toggle('error',error);}
 function validateEntry(e){return e.meta.error || hearing.assessFirstHearing(firstHearing(e),{required:true}).error;}
 function invalidate(e){
-  e.revision++;e.bytes=null;e.filename='';e.savedText.textContent='';e.warningText.textContent='';
+  e.revision++;e.bytes=null;e.filename='';e.savedText.textContent='';e.warningText.textContent='';e.downloadRequested=false;
   const error=validateEntry(e);e.errorText.textContent=error;
   setRow(e,error?'입력 오류':'설정 변경 · 다시 분석하세요',!!error);
   if(state.selected===e && state.tab==='output'){state.tab='source';void preview();}
@@ -37,6 +39,7 @@ async function preview(){
     const d=entry.draft;
     const lines=[`사건: ${entry.meta.caseNumber}`,`검사: ${d.prosecutor}`,`기소일: ${d.filingDate}`,
       ...d.defendants.flatMap((p,i)=>[`피고인 ${i+1}: ${p.name}`,`생년월일 앞 6자리: ${p.birthDigits}`,`죄명: ${p.charges.join(', ')}`,`변호인: ${p.counsel.status==='named'?p.counsel.name:p.counsel.status==='needsReview'?'판정 불가':'기재 없음'}`,`구속: ${p.detention==='detained'?'O':p.detention==='released'?'X':'판정 불가'}`]),
+      `소년: ${core.juvenileGlyphs(d).map(g=>g.text).join('')}`,`국참(지정 죄명 자동 분류): ${core.juryGlyph(d).text.trim()||'보류'}`,
       ...d.warnings];
     for(const text of lines){const p=document.createElement('p');p.textContent=text;$('people').append(p);}
   }
@@ -56,9 +59,9 @@ async function preview(){
 }
 function selectEntry(entry,tab='source'){state.selected=entry;state.tab=tab;void preview();}
 function entryRow(file,index){
-  const e={file,meta:batch.caseFromFilename(file.name),revision:0,bytes:null,filename:'',draft:null,rawText:''};
+  const e={file,meta:batch.caseFromFilename(file.name),revision:0,bytes:null,filename:'',draft:null,rawText:'',downloadRequested:false};
   const card=document.createElement('section');card.className='batch-item';card.dataset.index=String(index);
-  const title=document.createElement('h3');title.textContent=`${index+1}. ${file.name}`;
+  const title=document.createElement('h3');title.textContent=`${index+1}. ${core.redactResidentNumbers(file.name)}`;
   const caseText=document.createElement('p');caseText.textContent=e.meta.caseNumber||'사건번호 추출 실패';
   const input=(label,kind,placeholder)=>{
     const l=document.createElement('label');l.textContent=label;
@@ -103,7 +106,7 @@ $('analyze').onclick=async()=>{
   // Refuse duplicate planned names before generation and folder saving.
   const planned=new Map(),duplicates=new Set();
   for(const e of state.entries){
-    e.bytes=null;e.filename='';e.errorText.textContent='';e.warningText.textContent='';e.savedText.textContent='';e.draft=null;e.rawText='';
+    e.bytes=null;e.filename='';e.errorText.textContent='';e.warningText.textContent='';e.savedText.textContent='';e.draft=null;e.rawText='';e.downloadRequested=false;
     if(validateEntry(e))continue;
     const name=batch.memoFilename(e.meta.caseNumber,firstHearing(e));
     if(planned.has(name)){duplicates.add(e);duplicates.add(planned.get(name));}else planned.set(name,e);
@@ -120,16 +123,16 @@ $('analyze').onclick=async()=>{
         setRow(e,'분석 중');status(`${index+1}/${state.entries.length}: ${e.file.name}`);
         pdf=await services.PDFInputService.open(e.file);
         const extracted=await services.analyze(pdf,{forceOCR,progress:(text,p)=>setRow(e,`분석 중 · ${text}${Number.isFinite(p)?` ${Math.round(p*100)}%`:''}`)});
-        e.rawText=extracted.text;
+        e.rawText=core.redactResidentNumbers(extracted.text);
         try { e.draft=core.IndictmentParser.parse(extracted,{caseType:e.meta.caseType}); }
         catch (error) { e.draft={prosecutor:'',filingDate:null,defendants:[],warnings:[`정보 해석 실패: ${error.message}`]}; }
-        const warnings=[...new Set([...core.validateDraft(e.draft),...e.draft.warnings,...(extracted.warnings||[])])];
+        const warnings=[...new Set([...core.validateDraft(e.draft),...e.draft.warnings,...e.draft.defendants.flatMap((p,i)=>core.birthAssessment(p,e.draft.filingDate).warnings.map(w=>`피고인 ${i+1}: ${w}`)),...(core.juryGlyph(e.draft).text===' '?['죄명 정보가 불완전하여 국참 자동 분류 표시를 보류합니다.']:[]),...(extracted.warnings||[])])];
         e.warningText.textContent=warnings.length?'추출 경고 · 확인되지 않은 항목은 빈칸으로 생성합니다: '+warnings.join(' / '):'';
         setRow(e,'메모 생성 중');
         const bytes=await services.MemoPDFRenderer.render(e.draft,{firstHearing:first,caseNumber:e.meta.caseNumber});
         if(e.revision!==revision)throw Error('분석 중 입력값이 변경되었습니다. 다시 분석하세요.');
         e.bytes=bytes;e.filename=filename;setRow(e,`생성 완료${warnings.length?' (추출 경고 있음)':''} · ${filename}`);
-      }catch(error){e.bytes=null;e.filename='';e.errorText.textContent=error.message;setRow(e,'생성 오류 · 제외',true);}
+      }catch(error){e.bytes=null;e.filename='';e.errorText.textContent=core.redactResidentNumbers(error.message);setRow(e,'생성 오류 · 제외',true);}
       finally{if(pdf)await pdf.destroy();}
     }
   }finally{
@@ -143,7 +146,9 @@ $('analyze').onclick=async()=>{
 function downloadEntry(e){
   if(state.busy||!e.bytes)return;
   services.PDFExportService.download(e.bytes,e.filename.replace(/\.pdf$/,''));
-  e.savedText.textContent='다운로드 요청됨 · 브라우저에서 저장 여부를 확인하세요.';
+  e.downloadRequested=true;
+  e.savedText.textContent='다운로드 요청됨 · 실제 저장 여부는 브라우저에서 확인하세요. 저장되지 않았다면 이 메모 다운로드를 다시 누르세요.';
+  updateDownload();
 }
 async function saveToFolder(e){
   if(state.busy||!e.bytes||!state.folder)return;
@@ -173,21 +178,25 @@ $('chooseFolder').onclick=async()=>{
 $('saveFolder').onclick=async()=>{
   if(state.busy||!state.folder)return;
   // Each file is isolated; permission loss falls back to explicit per-file downloads.
-  for(const e of successful()){
-    if(!state.folder)break;
+  const outputs=successful();
+  for(const [i,e] of outputs.entries()){
+    if(!state.folder){for(const pending of outputs.slice(i))pending.savedText.textContent='저장 보류 · 폴더 권한을 확인하거나 이 메모 다운로드를 사용하세요.';break;}
     await saveToFolder(e);
   }
+  const saved=outputs.filter(e=>e.savedText.textContent.startsWith('폴더 저장 완료')).length;
+  status(`폴더 저장 결과: 완료 ${saved}/${outputs.length}개. 실패·보류 항목은 각 사건의 사유를 확인하고 개별 다운로드를 사용할 수 있습니다.`,saved!==outputs.length);
 };
 $('save').onclick=()=>{
   if(state.busy)return;
-  for(const e of successful())downloadEntry(e);
-  status('개별 다운로드를 요청했습니다. 다중 다운로드가 차단되면 각 사건의 다운로드 버튼을 사용하세요. 실제 저장 여부는 브라우저에서 확인하세요.');
+  const next=successful().find(e=>!e.downloadRequested);
+  if(next)downloadEntry(next);
+  status('한 번 클릭할 때 메모 하나만 다운로드 요청합니다. 다음 메모 버튼을 계속 누르세요. 차단되거나 저장되지 않은 파일은 각 사건의 이 메모 다운로드 버튼을 누르세요. 실제 저장 완료는 브라우저에서 확인하세요.');
 };
 $('folderInfo').textContent=storage.canChooseFolder()?'폴더를 직접 선택해 저장할 수 있습니다. 회사 정책에 따라 제한될 수 있습니다.':'폴더 직접 저장을 지원하지 않는 환경입니다. 각 사건의 개별 다운로드를 사용하세요.';
 for(const [id,tab]of[['sourceTab','source'],['outputTab','output'],['textTab','text']])$(id).onclick=()=>{state.tab=tab;void preview();};
 for(const [id,delta]of[['zoomIn',.25],['zoomOut',-.25]])$(id).onclick=()=>{state.zoom=Math.max(.5,Math.min(2,state.zoom+delta));$('zoomLabel').textContent=Math.round(state.zoom*100)+'%';void preview();};
 window.CM={...services,...core,...hearing,...batch,...storage,getDraft:()=>state.selected?.draft,
-  getEntries:()=>state.entries.map(e=>({name:e.file.name,...e.meta,firstHearing:firstHearing(e),filename:e.filename,status:e.statusText.textContent,error:e.errorText.textContent,warning:e.warningText.textContent,saveStatus:e.savedText.textContent,generated:!!e.bytes,draft:e.draft}))};
+  getEntries:()=>state.entries.map(e=>({name:core.redactResidentNumbers(e.file.name),...e.meta,firstHearing:firstHearing(e),filename:e.filename,status:e.statusText.textContent,error:e.errorText.textContent,warning:e.warningText.textContent,saveStatus:e.savedText.textContent,downloadRequested:e.downloadRequested,generated:!!e.bytes,draft:e.draft}))};
 Promise.all(['template','secondTemplate'].map(async key=>{const pdf=await services.PDFInputService.fromBytes(services.bytes(window.CM_DOCUMENTS[key]));try{return pdf.numPages;}finally{await pdf.destroy();}})).then(counts=>{
   $('templateInfo').textContent=`내장 원본 양식: 첫 페이지 ${counts[0]}페이지 + 두 번째 ${counts[1]}페이지 · 최종 2페이지`;
 }).catch(error=>status('원본 양식 로딩 오류: '+error.message,true));

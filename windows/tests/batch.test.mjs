@@ -34,39 +34,3 @@ test('고정 default applies only to missing fields, per defendant',()=>{
  assert.equal(IndictmentParser.parse(document,{caseType:'고단'}).defendants[0].detention,'unknown');
  assert.equal(DetentionParser.parse(['구속여부'],{caseType:'고정'}),'unknown');
 });
-const person=(digits,birth,detention='released')=>({...emptyDefendant(),birthDigits:digits,birthDateEvidence:birth?[birth]:[],detention});
-for(const [digits,birth,filing,age,juvenile,mandatory]of[
- ['561118','1956-11-18','2026-11-18',70,false,true],
- ['561118','1956-11-18','2026-11-17',69,false,false],
- ['071118','2007-11-18','2026-11-17',18,true,false],
- ['071118','2007-11-18','2026-11-18',19,false,false],
-])test('age boundary '+age,()=>{
- const p=person(digits,birth);
- assert.equal(birthAssessment(p,filing).age,age);
- assert.deepEqual(ageMarks({defendants:[p],filingDate:filing}),{juvenile,mandatory});
-});
-test('no century is inferred from suffix, stated age, or untrusted evidence',()=>{
- const p={...person('071118'),statedAge:18,confirmedYear:'2007'};
- assert.equal(birthAssessment(p,'2026-11-17').resolved,false);
- for(const birth of ['1907-11-18','2007-11-18']){
-  const a=person('071118',birth);a.birthReview=true;
-  assert.equal(birthAssessment(a,'2026-11-17').resolved,false);
- }
- const conflicting=person('071118','2007-11-18');conflicting.birthDateEvidence.push('1907-11-18');
- assert.equal(birthAssessment(conflicting,'2026-11-17').resolved,false);
- assert.equal(birthAssessment(person('071118','2007-11-19'),'2026-11-17').resolved,false);
- const invalid=person('071118','2007-11-18');invalid.birthDateEvidence.push('판독불가');
- assert.equal(birthAssessment(invalid,'2026-11-17').resolved,false);
-});
-test('any detained or qualifying defendant marks once without assigning an age',()=>{
- const people=[person('900101'),person('920202',null,'detained')];
- assert.deepEqual(ageMarks({defendants:people,filingDate:'2026-11-18'}),{juvenile:false,mandatory:true});
- const d={defendants:[...people,person('071118','2007-11-18')],filingDate:'2026-11-17'};
- assert.deepEqual(ageMarks(d),{juvenile:true,mandatory:true});
-});
-test('full birth-date evidence is read only from explicit per-person DOB fields',()=>{
- const text='공소제기일 2026.11.18.\n피고인 김가상 (561118-XXXXXXX), 15세\n생년월일 1956.11.18.\n죄명 절도\n구속여부 불구속';
- const d=IndictmentParser.parse({text,usedOCR:false,pages:[{text,lines:[],height:842}]});
- assert.equal(birthAssessment(d.defendants[0],d.filingDate).age,70);
- assert.equal(ageMarks(d).mandatory,true);
-});

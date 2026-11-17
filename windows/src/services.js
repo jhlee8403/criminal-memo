@@ -7,7 +7,9 @@ import {
   numbered,
   detentionGlyphs,
   ageMarks,
-  juvenileMark,
+  juvenileGlyphs,
+  juryGlyph,
+  redactResidentNumbers,
 } from "./core.js";
 export const bytes = (b64) =>
   Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
@@ -22,7 +24,10 @@ export const boxes = {
   // Measured original cell: x=29.744..106.263, y=540.1292..600.9031 pt.
   firstHearing: [34, 548, 67, 42],
   detention: [537, 48, 25, 22],
-  juvenile: [174, 730, 26, 15],
+  // Free band: table top 722.330, printed 소년 starts 732.124pt.
+  juvenile: [168, 723.5, 39, 8],
+  // Printed 국참 bounds x177.384..197.413, y748.187..758.673.
+  jury: [174, 746, 26, 15],
   mandatory: [109, 746, 56, 15],
 };
 class LocalCMapReaderFactory {
@@ -91,14 +96,16 @@ export class PDFTextExtractor {
       .sort((a, b) => a.y - b.y)
       .map((r) => ({
         y: r.y,
-        text: r.items
+        text: redactResidentNumbers(r.items
           .sort((a, b) => a.x - b.x)
           .map((i) => i.str)
-          .join(" "),
+          .join(" ")),
       }));
+    const safeText=redactResidentNumbers(lines.map(l=>l.text).join("\n"));
+    const safeLines=safeText.split("\n");
     return {
-      text: lines.map((l) => l.text).join("\n"),
-      lines,
+      text: safeText,
+      lines: lines.map((line,i)=>({...line,text:safeLines[i]})),
       width: view.width,
       height: view.height,
     };
@@ -177,8 +184,8 @@ export async function analyze(
         );
         result = {
           ...result,
-          text: data.text,
-          lines: data.text.split("\n").map((text, i) => ({ text, y: i * 12 })),
+          text: redactResidentNumbers(data.text),
+          lines: redactResidentNumbers(data.text).split("\n").map((text, i) => ({ text, y: i * 12 })),
           ocr: true,
           confidence: data.confidence,
         };
@@ -289,7 +296,7 @@ export class MemoPDFRenderer {
     }
     if (!fitted) throw Error("구속 표시가 한 줄에 들어가지 않습니다.");
     const marks = ageMarks(draft);
-    for (const key of ["juvenile", "mandatory"]) {
+    for (const key of ["mandatory"]) {
       if (marks[key]) {
         const [cx, cy, cw, ch] = boxes[key];
         page.drawEllipse({
@@ -302,15 +309,23 @@ export class MemoPDFRenderer {
         });
       }
     }
-    if (juvenileMark(draft) === "cross") {
-      const [cx,cy,cw,ch] = boxes.juvenile;
-      // Same measured center as the juvenile ellipse; printed label stays visible.
-      for (const sign of [-1,1]) page.drawLine({
-        start:{x:cx+cw/2-6,y:height-cy-ch/2-sign*6},
-        end:{x:cx+cw/2+6,y:height-cy-ch/2+sign*6},
-        thickness:1.5,color:rgb(0,0,0),
-      });
-    }
+    const drawGlyphs=(items,key)=>{
+      if(!items.some(g=>g.text.trim()))return;
+      const [gx,gy,gw,gh]=boxes[key];
+      for(let size=14;size>=3;size-=.25){
+        const width=mono.widthOfTextAtSize(items.map(g=>g.text).join(''),size);
+        if(width>gw || size*1.249>gh)continue;
+        let dx=gx+(gw-width)/2;
+        for(const g of items){
+          page.drawText(g.text,{x:dx,y:height-(gy+(gh-size*1.249)/2+size*.932),size,font:mono,color:g.color==='red'?rgb(1,0,0):rgb(0,0,0)});
+          dx+=mono.widthOfTextAtSize(g.text,size);
+        }
+        return;
+      }
+      throw Error(`${key}: 표시가 한 줄에 들어가지 않습니다.`);
+    };
+    drawGlyphs(juvenileGlyphs(draft),'juvenile');
+    drawGlyphs([juryGlyph(draft)],'jury');
     const [secondPage] = await doc.copyPages(second, [0]);
     doc.addPage(secondPage);
     return await doc.save();

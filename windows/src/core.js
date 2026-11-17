@@ -42,37 +42,37 @@ export function parseDate(s) {
   if (!m || !validDate(+m[1], +m[2], +m[3])) return null;
   return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
 }
-// The auto-only experiment must never infer a century from an indictment's stated age.
-// YYMMDD cannot uniquely identify a full birth year; leave age-based marks unconfirmed.
+// Only YYMMDD and the first suffix digit survive extraction. Tail length is
+// preserved when masking, so an incomplete resident token cannot become valid.
+export function redactResidentNumbers(text) {
+  return String(text ?? "").replace(/(?<!\d)(\d{6}\s*[-－]\s*)([0-9Xx*●•?](?:[ \t]*[0-9Xx*●•?]){0,6}[0-9Xx*●•?]*)/g,
+    (_, front, tail) => { const compact=tail.replace(/[ \t]/g, ""); return front+compact[0]+"*".repeat(compact.length-1); });
+}
+export function residentBirth(identity) {
+  const safe=redactResidentNumbers(identity);
+  const front=safe.match(/(?<!\d)(\d{6})(?!\d)/)?.[1] ?? "";
+  const matches=[...safe.matchAll(/(?<!\d)(\d{6})\s*[-－]\s*([*Xx●•?0-9]+)/g)]
+    .filter(m=>m[1]===front);
+  const digits=[...new Set(matches.map(m=>m[2][0]))];
+  const complete=matches.length>0 && matches.every(m=>/^[1-4][*Xx●•?0-9]{6}$/.test(m[2]));
+  return {birthDigits:front,birthCenturyDigit:complete && digits.length===1?digits[0]:""};
+}
 export function birthAssessment(person, filingDate) {
-  const front = String(person.birthDigits ?? "").trim();
-  const filing = parseDate(filingDate);
-  if (!/^\d{6}$/.test(front))
-    return { resolved: false, birth: null, age: null, warnings: ["주민등록번호 앞 6자리 추출 실패"] };
-  const yy = Number(front.slice(0, 2));
-  const month = Number(front.slice(2, 4));
-  const day = Number(front.slice(4, 6));
-  if (!validDate(2000 + yy, month, day) && !validDate(1900 + yy, month, day))
-    return { resolved: false, birth: null, age: null, warnings: ["유효하지 않은 생년월일 앞 6자리"] };
-  if (!filing)
-    return { resolved: false, birth: null, age: null, warnings: ["기소일을 자동 추출하지 못했습니다"] };
-  const rawEvidence = person.birthDateEvidence ?? [];
-  const evidence = [...new Set(rawEvidence.map(parseDate).filter(Boolean))];
-  if (!person.birthReview && evidence.length === 1 && rawEvidence.every(parseDate)) {
-    const birth = evidence[0];
-    const digits = birth.slice(2).replaceAll("-", "");
-    if (digits === front && birth <= filing) {
-      const [fy,fm,fd] = filing.split("-").map(Number);
-      const [by,bm,bd] = birth.split("-").map(Number);
-      return {resolved:true,birth,age:fy-by-Number(fm<bm || (fm===bm && fd<bd)),warnings:[]};
-    }
-  }
-  return {
-    resolved: false,
-    birth: null,
-    age: null,
-    warnings: ["YYMMDD만으로 출생 세기를 확정할 수 없어 소년·필요적국선 자동 원 표시를 보류합니다."],
-  };
+  const unresolved=message=>({resolved:false,birth:null,age:null,warnings:[message]});
+  const front=String(person.birthDigits ?? "").trim();
+  const marker=String(person.birthCenturyDigit ?? "");
+  if(!/^\d{6}$/.test(front))return unresolved("주민등록번호 앞 6자리 추출 실패");
+  if(!/^[1-4]$/.test(marker))return unresolved("세기 판정 숫자(하이픈 뒤 첫 자리 1~4)를 확인할 수 없어 나이 표시를 보류합니다.");
+  if(person.birthReview)return unresolved("OCR 생년월일을 확정할 수 없어 나이 표시를 보류합니다.");
+  const year=(Number(marker)<=2?1900:2000)+Number(front.slice(0,2));
+  const month=Number(front.slice(2,4)),day=Number(front.slice(4,6));
+  if(!validDate(year,month,day))return unresolved("유효하지 않은 생년월일");
+  const filing=parseDate(filingDate);
+  if(!filing)return unresolved("기소일을 자동 추출하지 못했습니다");
+  const birth=`${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  if(birth>filing)return unresolved("생년월일이 기소일 이후여서 나이 표시를 보류합니다.");
+  const [fy,fm,fd]=filing.split('-').map(Number);
+  return {resolved:true,birth,age:fy-year-Number(fm<month || (fm===month && fd<day)),warnings:[]};
 }
 export function ageMarks(draft, rules = AGE_RULES) {
   const ages = draft.defendants.map((p) =>
@@ -83,11 +83,30 @@ export function ageMarks(draft, rules = AGE_RULES) {
     mandatory: draft.defendants.some(p => p.detention === "detained") || ages.some((a) => a.resolved && a.age >= rules.mandatoryAtLeast),
   };
 }
-export function juvenileMark(draft) {
-  const ages = draft.defendants.map(p => birthAssessment(p, draft.filingDate));
-  if (ages.some(a => a.resolved && a.age < AGE_RULES.juvenileUnder)) return "circle";
-  if (ages.length && ages.every(a => a.resolved && a.age >= AGE_RULES.juvenileUnder)) return "cross";
-  return "";
+export function juvenileGlyphs(draft) {
+  return draft.defendants.map(p=>{
+    const age=birthAssessment(p,draft.filingDate);
+    return {text:!age.resolved?' ':age.age<AGE_RULES.juvenileUnder?'O':'X',color:age.resolved&&age.age<AGE_RULES.juvenileUnder?'red':'black'};
+  });
+}
+const juryTitles=new Set(['특수상해','특수공갈','특정범죄가중처벌등에관한법률위반(도주치상)','특정범죄가중처벌등에관한법률위반(도주치사)']);
+const normalizedCharge=value=>String(value).normalize('NFC').replace(/[（]/g,'(').replace(/[）]/g,')').replace(/\s/g,'');
+// Exact parsed charge membership only: this is a user-defined classification,
+// not a final legal decision about participation in a jury trial.
+export function juryGlyph(draft) {
+  if(draft.defendants.some(p=>p.charges.some(c=>juryTitles.has(normalizedCharge(c)))))return {text:'O',color:'red'};
+  if(draft.defendants.length && draft.defendants.every(p=>p.chargesComplete===true && p.charges.length))return {text:'X',color:'black'};
+  return {text:' ',color:'black'};
+}
+export function chargesComplete(lines, ocr=false) {
+  const raw=values('죄명',lines),charges=ChargeParser.parse(lines);
+  if(ocr || !raw.length || !charges.length)return false;
+  if(raw.some(v=>!v.trim() || /[,，、;；]\s*$|[.]{2,}|…|판독|미상|불명|불상|확인\s*필요|추출\s*실패|알\s*수\s*없|외\s*\d|등\s*$|[?□�]/.test(v)))return false;
+  return charges.every(c=>{
+    const title=normalizedCharge(c);let balance=0;
+    for(const char of title){if(char==='(')balance++;if(char===')'&&--balance<0)return false;}
+    return balance===0 && /[가-힣]{2}/.test(title) && ![...juryTitles].some(target=>target!==title && target.startsWith(title));
+  });
 }
 const clean = (s) =>
   s
@@ -193,7 +212,7 @@ export class DefendantParser {
   static split(text) {
     const sections = [];
     let pending = false;
-    const lines = contentLines(clean(text).split(/\r?\n/));
+    const lines = contentLines(clean(redactResidentNumbers(text)).split(/\r?\n/));
     for (const [index, line] of lines.entries()) {
       if (!line) continue;
       if (isBodyHeading(line)) break;
@@ -242,7 +261,7 @@ export class DefendantParser {
       ...values("주민등록번호", section.lines),
       ...values("생년월일", section.lines),
     ].join("\n");
-    const front = identity.match(/(?<!\d)(\d{6})(?!\d)/)?.[1] ?? "";
+    const birth = residentBirth(identity);
     const named = values("성명", section.lines)[0]?.split("\n")[0];
     return {
       id: crypto.randomUUID?.() ?? Math.random().toString(36),
@@ -252,11 +271,11 @@ export class DefendantParser {
         .replace(/^\d+[.)]\s*/, "")
         .replace(/^[_、:：\s]+/, "")
         .trim(),
-      birthDigits: front,
+      ...birth,
       birthReview: ocr,
-      birthDateEvidence: values("생년월일", section.lines),
       counsel: CounselParser.parse(section.lines, ocr),
       charges: ChargeParser.parse(section.lines),
+      chargesComplete: chargesComplete(section.lines, ocr),
       detention: DetentionParser.parse(section.lines, {caseType}),
     };
   }
@@ -560,7 +579,7 @@ export class FilingDateParser {
 }
 export class IndictmentParser {
   static parse(document, {caseType} = {}) {
-    const text = clean(document.text),
+    const text = clean(redactResidentNumbers(document.text)),
       sections = DefendantParser.split(text),
       lines = text.split("\n"),
       filingDateAssessment = FilingDateParser.assess(document.pages[0]);
@@ -611,6 +630,8 @@ export function emptyDefendant() {
     id: crypto.randomUUID?.() ?? Math.random().toString(36),
     name: "",
     birthDigits: "",
+    birthCenturyDigit: "",
+    chargesComplete: false,
     statedAge: null,
     birthReview: false,
     charges: [],

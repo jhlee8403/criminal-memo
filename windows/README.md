@@ -1,4 +1,4 @@
-# Criminal Memo — 2페이지·부분 추출·개별 저장 시험판
+# Criminal Memo — 다운로드·피고인별 소년·국참 시험판
 
 **회사 Windows의 Microsoft Edge 104.0.1293.47 실행은 미검증입니다.** PDF.js legacy 호환 빌드와 Edge 104 문법 타깃을 사용합니다. Linux Chromium 103의 실제 `file://`에서 전체 흐름을 검증했고, 최신 Chromium은 관리 URL 정책 차단으로 동일 HTML의 메모리 진단을 수행했습니다. 구형 Linux 엔진 및 API 제거 시험의 성공을 실제 Windows Edge 104 실행 성공으로 해석하지 않습니다. 서버·설치 없이 단일 HTML로 실행하는 구조는 유지했습니다.
 
@@ -12,15 +12,15 @@
 
 Edge 104 호환 빌드 변경 및 실제 검증 범위: [호환성 보고서](docs/EDGE104_COMPATIBILITY.md).
 
-## 2페이지·개별 저장 브랜치
+## 다운로드·소년·국참 브랜치
 
-`f25b9b0`에서 분기한 `experiment/v1-two-page-memo`입니다.
-기존 `experiment/v1-batch-case-number`는 변경하지 않습니다.
-첨부된 `templates/형사메모(2쪽).pdf`를 HTML에 내장하여 모든 생성 PDF에 두 번째 페이지로 복사합니다.
-추출 실패는 경고·빈칸으로 처리하고 생성 자체의 오류와 구분합니다.
-소년은 확정 소년 O / 전원 확정 성인 X / 불확실 빈칸이며 필요적국선 규칙은 유지합니다.
-생성 PDF의 ZIP 묶음을 제거하고 선택 폴더 저장·사건별 다운로드를 제공합니다.
-[구현과 실제 검증 범위](docs/TWO_PAGE_VALIDATION.md).
+`b53ac20`에서 분기한 `experiment/v1-download-juvenile-jury`입니다.
+기존 `experiment/v1-two-page-memo`는 변경하지 않습니다.
+다운로드는 사용자 클릭마다 한 건씩 요청하며, 권한을 허용한 폴더의 전체 순차 저장도 유지합니다.
+주민번호 앞 6자리와 뒤 첫 숫자 1~4로 만 나이를 계산하고 피고인별 소년 OX를 출력합니다.
+국참은 지정된 네 죄명의 정확한 일치와 죄명 정보 완전성에 따라 O/X/보류합니다.
+2페이지 원본 양식·부분 추출 생성·기타 파서와 OCR 엔진은 유지합니다.
+[원인·구현·검증 범위](docs/DOWNLOAD_JUVENILE_JURY_VALIDATION.md).
 
 ## 배포 후보
 
@@ -44,7 +44,7 @@ Edge 104 호환 빌드 변경 및 실제 검증 범위: [호환성 보고서](do
 - `scripts/verify_outputs.py`: 브라우저가 다운로드한 실제 PDF를 독립 엔진으로 검사.
 - `distribution/`: 사용자가 실행할 빌드 산출물. `node_modules`와 테스트 문서는 포함하지 않습니다.
 
-초기 Windows 구현 이력과 이전 실험 브랜치는 보존합니다. 이번 작업의 기준은 `f25b9b0`입니다.
+초기 Windows 구현 이력과 이전 실험 브랜치는 보존합니다. 이번 작업의 기준은 `b53ac20`입니다.
 
 ## 빌드와 테스트 (개발자용)
 
@@ -58,7 +58,7 @@ npm run test:built-compatibility
 python -m pip install -r scripts/requirements-test.txt
 python scripts/prepare_fixtures.py
 npm run test:browser
-python scripts/verify_two_page.py
+python scripts/verify_download_juvenile_jury.py
 ```
 
 브라우저 실행 파일은 기본 `/usr/bin/chromium`, 필요하면 `CM_CHROMIUM` 환경 변수로 지정합니다. 일반 Chromium의 기본 보안 설정을 사용하며 `--disable-web-security`, `--allow-file-access-from-files` 등을 사용하지 않습니다. 컨테이너에서는 Playwright의 기본 프로세스 샌드박스 옵션을 사용하지만 관리 URL 정책을 수정하지 않습니다.

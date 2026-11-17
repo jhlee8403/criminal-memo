@@ -1,25 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {juvenileMark,ageMarks,emptyDefendant,detentionGlyphs,validateDraft,IndictmentParser} from '../src/core.js';
+import {ageMarks,emptyDefendant,detentionGlyphs,validateDraft,IndictmentParser} from '../src/core.js';
 import {canChooseFolder,chooseFolder,writeMemo,FolderUnavailable} from '../src/storage.js';
-const person=(digits,birth,detention='released')=>({...emptyDefendant(),birthDigits:digits,birthDateEvidence:birth?[birth]:[],detention});
-const draft=defendants=>({defendants,filingDate:'2026-11-17'});
-for(const [name,people,expected]of[
- ['juvenile',[person('071118','2007-11-18')],'circle'],
- ['19th birthday',[person('071117','2007-11-17')],'cross'],
- ['adult',[person('900101','1990-01-01')],'cross'],
- ['century unknown',[person('071118')],''],
- ['no defendants',[],''],
- ['juvenile wins unknown',[person('071118'),person('071118','2007-11-18')],'circle'],
- ['adult and unknown',[person('900101','1990-01-01'),person('071118')],''],
- ['all adults',[person('900101','1990-01-01'),person('561118','1956-11-18')],'cross'],
-])test('juvenile mark: '+name,()=>assert.equal(juvenileMark(draft(people)),expected));
-test('unknown filing date, stated age and resident suffix cannot produce an X',()=>{
- const p={...person('071118'),statedAge:70,residentNumber:'071118-1000000'};
- assert.equal(juvenileMark(draft([p])),'');
- assert.equal(juvenileMark({...draft([person('900101','1990-01-01')]),filingDate:null}),'');
-});
-test('mandatory mark still includes detention despite uncertain age',()=>assert.deepEqual(ageMarks(draft([person('071118',null,'detained')])),{juvenile:false,mandatory:true}));
+const person=(digits,birth,detention='released')=>({...emptyDefendant(),birthDigits:digits,detention});
 test('partial detention preserves defendant slots without inferring an X',()=>{
  const people=[person('900101',null,'detained'),person('920202',null,'unknown'),person('930303')];
  assert.throws(()=>detentionGlyphs(people));

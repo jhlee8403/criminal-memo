@@ -1,0 +1,10 @@
+{
+  "checksPassed": 550,
+  "pdfsVerified": 54,
+  "secondTemplateSHA256": "5164a65054179dd49edaf601f009324051f608f8aef0e3d4e0b5d94bccd4b26b",
+  "firstPageComparedTo": "b53ac20 shipped renderer, same drafts and inputs, new marks excluded",
+  "windowsEdge104Verified": false,
+  "outputTransports": {
+    "browser download": 54
+  }
+}

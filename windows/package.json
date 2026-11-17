@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --test tests/core.test.mjs tests/compatibility.test.mjs tests/first-hearing.test.mjs tests/batch.test.mjs tests/two-page.test.mjs",
-    "test:browser": "node tests/two-page-browser.mjs",
+    "test": "node --test tests/core.test.mjs tests/compatibility.test.mjs tests/first-hearing.test.mjs tests/batch.test.mjs tests/two-page.test.mjs tests/download-juvenile-jury.test.mjs",
+    "test:browser": "node tests/download-juvenile-jury-browser.mjs",
     "test:built-compatibility": "node --test tests/built-compatibility.test.mjs"
   },
   "dependencies": {

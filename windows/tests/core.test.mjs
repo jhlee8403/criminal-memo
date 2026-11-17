@@ -81,10 +81,10 @@ test("actual sample2 cross-page defendant relationships", async () => {
     { text: "X", color: "black" },
   ]);
   assert.ok(
-    d.defendants.every((p) => !birthAssessment(p, d.filingDate).resolved),
+    birthAssessment(d.defendants[0], d.filingDate).resolved === false && birthAssessment(d.defendants[1], d.filingDate).age === 55,
   );
 });
-test("suffix changes do not affect extraction or age", async () => {
+test("unused suffix digits never affect extraction or age", async () => {
   const original = await text(2);
   const a = IndictmentParser.parse(doc(original)),
     b = IndictmentParser.parse(
