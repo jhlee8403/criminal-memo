@@ -502,11 +502,16 @@ export class FilingDateParser {
     const explicit = fields(beforeIdentity).filter((f) =>
       ["기소일", "기소일자", "공소제기일"].includes(f.label),
     );
-    for (const f of explicit)
-      candidates.push({
-        source: "explicit",
-        date: parseDate(f.parts.join(" ")),
-      });
+    for (const f of explicit) {
+      let found=false;
+      for(const [i,line] of f.parts.entries()){
+        if(!/^[\d\s.년월일/\-]+$/.test(line))break;
+        if(i===0 || /^\d{4}\s*[.년/\-]/.test(line)){
+          candidates.push({source:"explicit",date:readDate(f.parts,i)});found=true;
+        }
+      }
+      if(!found)candidates.push({source:"explicit",date:null});
+    }
     for (const [i, line] of beforeIdentity.entries()) {
       if (!heading(line) && /검\s*찰\s*청|공\s*소\s*청/.test(line))
         candidates.push({
@@ -514,20 +519,8 @@ export class FilingDateParser {
           date: readDate(beforeIdentity, i + 1),
         });
     }
-    // Submission is corroboration/conflict evidence only, never a filing-date fallback.
-    for (const [i, line] of raw.entries()) {
-      const tail = line.match(/제\s*출\s*일\s*시\s*[:：]?\s*(.*)$/)?.[1];
-      if (tail === undefined) continue;
-      const value = tail.trim() || raw[i + 1]?.trim() || "";
-      const match = value.match(
-        /^(\d{4}\s*[.년/\-]\s*\d{1,2}\s*[.월/\-]\s*\d{1,2}\s*[.일]?)/,
-      );
-      candidates.push({
-        source: "submission",
-        date: match ? parseDate(match[1]) : null,
-      });
-    }
-    const contextual = candidates.filter((c) => c.source !== "submission");
+    // Copy/download/submission metadata is never filing-date evidence.
+    const contextual = candidates;
     if (!contextual.length && !raw.some((l) => metadata.test(l))) {
       const header = firstPage.ocr
         ? lines.slice(0, 8)
@@ -546,7 +539,10 @@ export class FilingDateParser {
           candidates.push({ source: "header", date: readDate(header, i) });
       }
     }
-    const evidence = candidates.filter((c) => c.source !== "submission");
+    // A valid explicit filing-date field takes priority over an agency header date.
+    // Conflicting or unreadable candidates at the selected priority remain unresolved.
+    const explicitEvidence=candidates.filter(c=>c.source==='explicit');
+    const evidence = explicitEvidence.length?explicitEvidence:candidates;
     if (!evidence.length)
       return result(
         null,
@@ -560,20 +556,6 @@ export class FilingDateParser {
     const dates = [...new Set(evidence.map((c) => c.date))];
     if (dates.length !== 1)
       return result(null, "공소장 본문 날짜와 다른 기소일 후보가 충돌합니다.");
-    if (
-      candidates.some(
-        (c) => c.source === "submission" && c.date && c.date !== dates[0],
-      )
-    )
-      return result(
-        null,
-        "공소장 본문 날짜와 법원 제출일시의 날짜가 다릅니다.",
-      );
-    if (candidates.some((c) => c.source === "submission" && !c.date))
-      return result(
-        null,
-        "법원 제출일시를 판독하지 못해 본문 날짜와 비교할 수 없습니다.",
-      );
     return result(dates[0]);
   }
 }

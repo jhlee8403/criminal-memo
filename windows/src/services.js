@@ -21,13 +21,13 @@ export const boxes = {
   charges: [180, 78, 151, 161],
   prosecutor: [385, 48, 112, 22],
   counsel: [385, 78, 112, 20],
-  filingDate: [231, 247, 174, 20],
-  // Measured original cell: x=29.744..106.263, y=540.1292..600.9031 pt.
-  firstHearing: [34, 548, 67, 42],
+  filingDate: [231, 247, 230, 20],
+  // New first-row cell x=29.744..106.263, y=562.305..681.455 pt.
+  firstHearing: [34, 573, 67, 44],
   detention: [537, 48, 25, 22],
   juvenile: markFitRects.juvenile,
   jury: markFitRects.jury,
-  mandatory: [109, 746, 56, 15],
+  mandatory: [108.245914, 510.828339, 56, 15],
 };
 class LocalCMapReaderFactory {
   async fetch({ name }) {
@@ -199,16 +199,14 @@ export async function analyze(
   return { pages, usedOCR, warnings, text: pages.map((p) => p.text).join("\n") };
 }
 export class MemoPDFRenderer {
-  static async render(draft, { templateBytes, secondTemplateBytes, firstHearing, caseNumber } = {}) {
+  static async render(draft, { templateBytes, firstHearing, caseNumber } = {}) {
     const hearing = assessFirstHearing(firstHearing);
     if (hearing.error) throw Error(hearing.error);
     const glyphs = detentionGlyphs(draft.defendants, {partial:true});
     const doc = await PDFDocument.load(
       templateBytes ?? bytes(window.CM_DOCUMENTS.template),
     );
-    if (doc.getPageCount() !== 1) throw Error("첫 페이지 원본 양식은 1페이지여야 합니다.");
-    const second = await PDFDocument.load(secondTemplateBytes ?? bytes(window.CM_DOCUMENTS.secondTemplate));
-    if (second.getPageCount() !== 1) throw Error("두 번째 원본 양식은 1페이지여야 합니다.");
+    if (doc.getPageCount() !== 2) throw Error("내장 원본 양식은 정확히 2페이지여야 합니다.");
     const fontData = bytes(window.CM_DOCUMENTS.font);
     doc.registerFontkit(fontkit);
     const font = await doc.embedFont(fontData, { subset: false });
@@ -324,8 +322,6 @@ export class MemoPDFRenderer {
     };
     drawOverlay(juvenileGlyphs(draft),'juvenile');
     drawOverlay([juryGlyph(draft)],'jury');
-    const [secondPage] = await doc.copyPages(second, [0]);
-    doc.addPage(secondPage);
     return await doc.save();
   }
 }

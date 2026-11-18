@@ -1,7 +1,7 @@
 // Measured printed-label rectangles in the original first page (top-down pt).
 export const markTextRects = Object.freeze({
-  juvenile: Object.freeze([177.383865, 732.124207, 20.028656, 10.486389]),
-  jury: Object.freeze([177.383865, 748.186707, 20.028656, 10.486389]),
+  juvenile: Object.freeze([206.288193, 493.33429, 19.90921, 9.951874]),
+  jury: Object.freeze([206.288193, 513.352417, 19.90921, 9.951843]),
 });
 const centered = ([x,y,w,h], width, height) => [x+(w-width)/2, y+(h-height)/2, width, height];
 export const markFitRects = Object.freeze({

@@ -10,18 +10,12 @@ const read = (p) => fs.readFile(path.join(root, p));
 const browserTarget = "edge104";
 await fs.mkdir(path.join(out, "assets"), { recursive: true });
 await fs.mkdir(path.join(out, "templates"), { recursive: true });
-const pdfs = (await fs.readdir(path.join(root, ".."))).filter(
-  (n) => n.normalize("NFC") === "형사메모.pdf",
-);
-if (pdfs.length !== 1)
-  throw Error("원본 형사메모 PDF를 하나로 찾을 수 없습니다.");
-const template = await fs.readFile(path.join(root, "..", pdfs[0]));
-await fs.writeFile(path.join(out, "templates/형사메모.pdf"), template);
-const secondTemplate = await read("templates/형사메모(2쪽).pdf");
-await fs.writeFile(path.join(out, "templates/형사메모(2쪽).pdf"), secondTemplate);
+// One user-supplied, two-page original; no runtime template selection/merging.
+const template = await read("templates/형사메모(1).pdf");
+await fs.rm(path.join(out, "templates"), {recursive:true,force:true});
+await fs.mkdir(path.join(out, "templates"), {recursive:true});
+await fs.writeFile(path.join(out, "templates/형사메모(1).pdf"), template);
 const resources = {
-  secondTemplate: secondTemplate.toString("base64"),
-  secondTemplateSHA256: createHash("sha256").update(secondTemplate).digest("hex"),
   template: template.toString("base64"),
   font: (await read("vendor/NanumGothic-Regular.ttf")).toString("base64"),
   templateSHA256: createHash("sha256").update(template).digest("hex"),
@@ -165,7 +159,6 @@ const manifest = {
   pdfjsBuild: "legacy",
   pdfjsVersion: "4.8.69",
   templateSHA256: resources.templateSHA256,
-  secondTemplateSHA256: resources.secondTemplateSHA256,
   files: {},
 };
 async function scan(dir) {

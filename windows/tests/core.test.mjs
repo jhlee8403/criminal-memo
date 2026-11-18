@@ -388,17 +388,11 @@ for (const title of [
     assert.equal(counselText(draft), "");
   });
 }
-test("v1.3 dates: submission conflict is reported and blocks PDF validation", async () => {
-  const t = (await latestText()).replaceAll(
-    "제출일시: 2026.08.28",
-    "제출일시: 2026.08.29",
-  );
+test("copy metadata submission conflicts no longer invalidate a valid body date", async () => {
+  const t = (await latestText()).replaceAll("제출일시: 2026.08.28","제출일시: 2026.08.29");
   const result = FilingDateParser.assess(doc(t).pages[0]);
-  assert.equal(result.date, null);
-  assert.match(result.reason, /본문 날짜.*제출일시.*다릅니다/);
-  const draft = IndictmentParser.parse(doc(t));
-  assert.ok(draft.warnings.includes(result.reason));
-  assert.ok(validateDraft(draft).some((s) => s.includes(result.reason)));
+  assert.equal(result.date,"2026-08-28");assert.equal(result.reason,"");
+  assert.ok(!validateDraft(IndictmentParser.parse(doc(t))).some(s=>s.includes("기소일")));
 });
 test("v1.3 dates: submission/download/arrest/crime dates alone never establish filing date", async () => {
   const t = (await latestText()).replace(
@@ -475,14 +469,9 @@ test("v1.3 header fallback cannot consume standalone crime or arrest dates", () 
     assert.equal(FilingDateParser.parse(doc(t).pages[0]), null);
   }
 });
-test("v1.3 unreadable submission date remains unconfirmed", async () => {
-  const t = (await latestText()).replaceAll(
-    "제출일시: 2026.08.28 10:00",
-    "제출일시: 판독불가",
-  );
-  const result = FilingDateParser.assess(doc(t).pages[0]);
-  assert.equal(result.date, null);
-  assert.match(result.reason, /제출일시.*판독/);
+test("unreadable copy submission metadata does not affect the body date", async () => {
+  const t = (await latestText()).replaceAll("제출일시: 2026.08.28 10:00","제출일시: 판독불가");
+  const result=FilingDateParser.assess(doc(t).pages[0]);assert.equal(result.date,"2026-08-28");assert.equal(result.reason,"");
 });
 // Format examples use fictional lawyer names; no private document data is added.
 for (const [source, output, names] of [

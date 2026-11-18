@@ -1,0 +1,22 @@
+{
+  "checksPassed": 768,
+  "browserPDFs": 54,
+  "layoutPDFs": 24,
+  "templateSHA256": "d4cfd5a2ea5b3929c0c44f80a3518d22e5f4e44fe6589d9a8d32382e0bd2e72b",
+  "htmlSHA256": "ae5c8db6623a0b8d0b0c443df546a06ba192a324dc78189c60437d623938a9b0",
+  "filingBefore": null,
+  "filingAfter": "2026-11-10",
+  "windowsEdge104Verified": false,
+  "folderTest": {
+    "nativeSelectionVerified": false,
+    "oneButtonPickerAndSave": true,
+    "waitedForClose": true,
+    "perFileRetry": true,
+    "simulatedWrites": 10,
+    "byteExact": true,
+    "sequentialClose": true,
+    "partialFailureContinues": true,
+    "collisionPreserved": true,
+    "permissionFallback": true
+  }
+}

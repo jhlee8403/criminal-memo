@@ -1,0 +1,827 @@
+{
+  "browser": "103.0.5058.0",
+  "platform": "linux",
+  "htmlSHA256": "ae5c8db6623a0b8d0b0c443df546a06ba192a324dc78189c60437d623938a9b0",
+  "windowsEdge104Verified": false,
+  "maskRequested": false,
+  "softwareGL": true,
+  "externalRequests": [],
+  "errors": [],
+  "checks": [],
+  "fileMode": true,
+  "compatibility": {
+    "before": {
+      "withResolvers": "undefined",
+      "toSorted": "undefined",
+      "setUnion": "undefined"
+    },
+    "atBoot": {
+      "withResolvers": "undefined",
+      "toSorted": "undefined",
+      "setUnion": "undefined"
+    },
+    "after": "function"
+  },
+  "extractionSummaries": [
+    {
+      "case": "2026고단7100",
+      "missingFields": [],
+      "generated": true
+    },
+    {
+      "case": "2026고단7101",
+      "missingFields": [],
+      "generated": true
+    },
+    {
+      "case": "2026고단7102",
+      "missingFields": [],
+      "generated": true
+    },
+    {
+      "case": "2026고단7103",
+      "missingFields": [],
+      "generated": true
+    },
+    {
+      "case": "2026고단7104",
+      "missingFields": [],
+      "generated": true
+    },
+    {
+      "case": "2026고단7105",
+      "missingFields": [],
+      "generated": true
+    },
+    {
+      "case": "2026고단7106",
+      "missingFields": [
+        "나이 판정",
+        "죄명"
+      ],
+      "generated": true
+    },
+    {
+      "case": "2026고단7107",
+      "missingFields": [
+        "나이 판정"
+      ],
+      "generated": true
+    },
+    {
+      "case": "2026고단7108",
+      "missingFields": [
+        "나이 판정",
+        "죄명"
+      ],
+      "generated": true
+    },
+    {
+      "case": "2026고단7109",
+      "missingFields": [],
+      "generated": true
+    }
+  ],
+  "outputTransports": [
+    {
+      "file": "djj-memo-0.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-1.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-2.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-3.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-4.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-5.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-6.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-7.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-8.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-memo-9.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-two-0.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-two-1.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-partial.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-latest.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-four-people.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-private-safe.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-jury-no-target.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-jury-unknown.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-jury-none.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-jury-truncated.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-missing-all.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-missing-prosecutor.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-missing-counsel.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-empty.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-original-1.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-original-2.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-no-parentheses.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-parentheses.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-multiline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-all-names.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-appointed.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-none.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-missing.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-appointed-heading.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-appointed-no-title.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-appointed-lawyer.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-appointed-split.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-regular-title.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-regular-split.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-appointed-explicit-none.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-appointed-suffix-split.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-four-spaced.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-six-name-split.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-twelve-2-rows-newline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-twelve-2-rows-comma.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-twelve-3-rows-newline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-twelve-3-rows-comma.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-twelve-4-rows-newline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-twelve-4-rows-comma.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-name-split-two-one.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-four-inline.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-counsel-firm-parentheses-lines.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-scanned.pdf",
+      "transport": "browser download"
+    },
+    {
+      "file": "djj-mixed.pdf",
+      "transport": "browser download"
+    }
+  ],
+  "tenDownloadRequests": [
+    {
+      "name": "1000 2026고단7100.pdf",
+      "length": 785962,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1100 2026고단7101.pdf",
+      "length": 785925,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1200 2026고단7102.pdf",
+      "length": 786080,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1300 2026고단7103.pdf",
+      "length": 786082,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1400 2026고단7104.pdf",
+      "length": 786128,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1500 2026고단7105.pdf",
+      "length": 786136,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1600 2026고단7106.pdf",
+      "length": 786115,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1700 2026고단7107.pdf",
+      "length": 786178,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1800 2026고단7108.pdf",
+      "length": 785939,
+      "magic": "%PDF"
+    },
+    {
+      "name": "1900 2026고단7109.pdf",
+      "length": 786237,
+      "magic": "%PDF"
+    }
+  ],
+  "blockedDownloadSimulation": {
+    "notClaimedSaved": true,
+    "individualRetry": true
+  },
+  "folderCapability": {
+    "secure": true,
+    "picker": "function",
+    "supported": true
+  },
+  "initialSaveSummary": {
+    "total": 10,
+    "generated": 10,
+    "saved": 9,
+    "saveFailed": 1,
+    "warnings": 3,
+    "generationFailed": 0,
+    "pending": 0
+  },
+  "folderTest": {
+    "nativeSelectionVerified": false,
+    "oneButtonPickerAndSave": true,
+    "waitedForClose": true,
+    "perFileRetry": true,
+    "simulatedWrites": 10,
+    "byteExact": true,
+    "sequentialClose": true,
+    "partialFailureContinues": true,
+    "collisionPreserved": true,
+    "permissionFallback": true
+  },
+  "twoFileQueue": true,
+  "filingComparison": {
+    "before": {
+      "date": null,
+      "reason": "공소장 본문 날짜와 법원 제출일시의 날짜가 다릅니다.",
+      "candidates": [
+        {
+          "source": "body",
+          "date": "2026-11-10"
+        },
+        {
+          "source": "submission",
+          "date": "2026-11-12"
+        }
+      ]
+    },
+    "after": {
+      "date": "2026-11-10",
+      "reason": "",
+      "candidates": [
+        {
+          "source": "body",
+          "date": "2026-11-10"
+        }
+      ]
+    }
+  },
+  "definitions": [
+    {
+      "people": [
+        {
+          "front": "080318",
+          "marker": "3"
+        }
+      ],
+      "youth": "O",
+      "jury": "X",
+      "mandatory": false,
+      "case": "2026고단7100",
+      "filename": "1000 2026고단7100.pdf",
+      "output": "djj-memo-0.pdf",
+      "time": "1000"
+    },
+    {
+      "people": [
+        {
+          "front": "840318",
+          "marker": "2"
+        }
+      ],
+      "youth": "X",
+      "jury": "X",
+      "mandatory": false,
+      "case": "2026고단7101",
+      "filename": "1100 2026고단7101.pdf",
+      "output": "djj-memo-1.pdf",
+      "time": "1100"
+    },
+    {
+      "people": [
+        {
+          "front": "080318",
+          "marker": "3"
+        },
+        {
+          "front": "840318",
+          "marker": "2",
+          "name": "이가상",
+          "charges": "특수상해"
+        }
+      ],
+      "youth": "OX",
+      "jury": "O",
+      "mandatory": false,
+      "case": "2026고단7102",
+      "filename": "1200 2026고단7102.pdf",
+      "output": "djj-memo-2.pdf",
+      "time": "1200"
+    },
+    {
+      "people": [
+        {
+          "front": "840318",
+          "marker": "2"
+        },
+        {
+          "front": "080318",
+          "marker": "3",
+          "name": "이가상",
+          "charges": "특수공갈"
+        }
+      ],
+      "youth": "XO",
+      "jury": "O",
+      "mandatory": false,
+      "case": "2026고단7103",
+      "filename": "1300 2026고단7103.pdf",
+      "output": "djj-memo-3.pdf",
+      "time": "1300"
+    },
+    {
+      "people": [
+        {
+          "front": "080318",
+          "marker": "3"
+        },
+        {
+          "front": "080318",
+          "marker": "3",
+          "name": "이가상",
+          "charges": "특정범죄가중처벌등에관한법률위반 ( 도주치상 )"
+        }
+      ],
+      "youth": "OO",
+      "jury": "O",
+      "mandatory": false,
+      "case": "2026고단7104",
+      "filename": "1400 2026고단7104.pdf",
+      "output": "djj-memo-4.pdf",
+      "time": "1400"
+    },
+    {
+      "people": [
+        {
+          "front": "840318",
+          "marker": "2"
+        },
+        {
+          "front": "840318",
+          "marker": "2",
+          "name": "이가상",
+          "charges": "특정범죄가중처벌등에관한법률위반(도주치사)"
+        }
+      ],
+      "youth": "XX",
+      "jury": "O",
+      "mandatory": false,
+      "case": "2026고단7105",
+      "filename": "1500 2026고단7105.pdf",
+      "output": "djj-memo-5.pdf",
+      "time": "1500"
+    },
+    {
+      "people": [
+        {
+          "front": "080318",
+          "marker": "3"
+        },
+        {
+          "front": "080318",
+          "marker": "X",
+          "name": "이가상"
+        },
+        {
+          "front": "840318",
+          "marker": "2",
+          "name": "최가상",
+          "charges": null
+        }
+      ],
+      "youth": "O X",
+      "jury": "",
+      "mandatory": false,
+      "case": "2026고단7106",
+      "filename": "1600 2026고단7106.pdf",
+      "output": "djj-memo-6.pdf",
+      "time": "1600"
+    },
+    {
+      "people": [
+        {
+          "front": "561117",
+          "marker": "1"
+        },
+        {
+          "front": "080318",
+          "marker": "X",
+          "name": "이가상"
+        }
+      ],
+      "youth": "X ",
+      "jury": "X",
+      "mandatory": true,
+      "case": "2026고단7107",
+      "filename": "1700 2026고단7107.pdf",
+      "output": "djj-memo-7.pdf",
+      "time": "1700"
+    },
+    {
+      "people": [
+        {
+          "front": "080318",
+          "marker": "X",
+          "charges": "특수상해"
+        },
+        {
+          "front": "080318",
+          "marker": "X",
+          "name": "이가상",
+          "charges": null
+        }
+      ],
+      "youth": "  ",
+      "jury": "O",
+      "mandatory": false,
+      "case": "2026고단7108",
+      "filename": "1800 2026고단7108.pdf",
+      "output": "djj-memo-8.pdf",
+      "time": "1800"
+    },
+    {
+      "people": [
+        {
+          "front": "840318",
+          "marker": "2",
+          "detention": "2026. 10. 28. 구속(2026. 10. 26. 체포)",
+          "label": "구속여부."
+        },
+        {
+          "front": "080318",
+          "marker": "3",
+          "name": "이가상"
+        }
+      ],
+      "youth": "XO",
+      "jury": "X",
+      "mandatory": true,
+      "case": "2026고단7109",
+      "filename": "1900 2026고단7109.pdf",
+      "output": "djj-memo-9.pdf",
+      "time": "1900"
+    }
+  ],
+  "juryCases": [
+    {
+      "id": "no-target",
+      "people": [
+        {
+          "front": "840318",
+          "marker": "2",
+          "charges": "특수상해미수"
+        }
+      ],
+      "jury": "X"
+    },
+    {
+      "id": "unknown",
+      "people": [
+        {
+          "front": "840318",
+          "marker": "2",
+          "charges": "절도, 판독불가"
+        }
+      ],
+      "jury": ""
+    },
+    {
+      "id": "none",
+      "people": [
+        {
+          "front": "840318",
+          "marker": "2",
+          "charges": null
+        }
+      ],
+      "jury": ""
+    },
+    {
+      "id": "truncated",
+      "people": [
+        {
+          "front": "840318",
+          "marker": "2",
+          "charges": "특정범죄가중처벌등에관한법률위반(도주치"
+        }
+      ],
+      "jury": ""
+    }
+  ],
+  "emitted": [
+    "djj-memo-0.pdf",
+    "djj-memo-1.pdf",
+    "djj-memo-2.pdf",
+    "djj-memo-3.pdf",
+    "djj-memo-4.pdf",
+    "djj-memo-5.pdf",
+    "djj-memo-6.pdf",
+    "djj-memo-7.pdf",
+    "djj-memo-8.pdf",
+    "djj-memo-9.pdf",
+    "djj-two-0.pdf",
+    "djj-two-1.pdf",
+    "djj-partial.pdf",
+    "djj-latest.pdf",
+    "djj-four-people.pdf",
+    "djj-private-safe.pdf",
+    "djj-jury-no-target.pdf",
+    "djj-jury-unknown.pdf",
+    "djj-jury-none.pdf",
+    "djj-jury-truncated.pdf",
+    "djj-missing-all.pdf",
+    "djj-missing-prosecutor.pdf",
+    "djj-missing-counsel.pdf",
+    "djj-empty.pdf",
+    "djj-original-1.pdf",
+    "djj-original-2.pdf",
+    "djj-counsel-no-parentheses.pdf",
+    "djj-counsel-parentheses.pdf",
+    "djj-counsel-multiline.pdf",
+    "djj-counsel-all-names.pdf",
+    "djj-counsel-appointed.pdf",
+    "djj-counsel-none.pdf",
+    "djj-counsel-missing.pdf",
+    "djj-counsel-appointed-heading.pdf",
+    "djj-counsel-appointed-no-title.pdf",
+    "djj-counsel-appointed-lawyer.pdf",
+    "djj-counsel-appointed-split.pdf",
+    "djj-counsel-regular-title.pdf",
+    "djj-counsel-regular-split.pdf",
+    "djj-counsel-appointed-explicit-none.pdf",
+    "djj-counsel-appointed-suffix-split.pdf",
+    "djj-counsel-firm-four-spaced.pdf",
+    "djj-counsel-firm-six-name-split.pdf",
+    "djj-counsel-firm-twelve-2-rows-newline.pdf",
+    "djj-counsel-firm-twelve-2-rows-comma.pdf",
+    "djj-counsel-firm-twelve-3-rows-newline.pdf",
+    "djj-counsel-firm-twelve-3-rows-comma.pdf",
+    "djj-counsel-firm-twelve-4-rows-newline.pdf",
+    "djj-counsel-firm-twelve-4-rows-comma.pdf",
+    "djj-counsel-firm-name-split-two-one.pdf",
+    "djj-counsel-firm-four-inline.pdf",
+    "djj-counsel-firm-parentheses-lines.pdf",
+    "djj-scanned.pdf",
+    "djj-mixed.pdf"
+  ],
+  "counselCases": [
+    {
+      "id": "no-parentheses",
+      "expected": "태평양) 김가상 박가상 이가상 최가상"
+    },
+    {
+      "id": "parentheses",
+      "expected": "와이케이) 강가상 윤가상 한가상 정가상"
+    },
+    {
+      "id": "multiline",
+      "expected": "가상) 김가상 박가상 이가상"
+    },
+    {
+      "id": "all-names",
+      "expected": "가상) 김가상 박가상 이가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "appointed",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "none",
+      "expected": ""
+    },
+    {
+      "id": "missing",
+      "expected": ""
+    },
+    {
+      "id": "appointed-heading",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-no-title",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-lawyer",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "appointed-split",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "regular-title",
+      "expected": "김가상"
+    },
+    {
+      "id": "regular-split",
+      "expected": "김가상"
+    },
+    {
+      "id": "appointed-explicit-none",
+      "expected": ""
+    },
+    {
+      "id": "appointed-suffix-split",
+      "expected": "김가상(국선)"
+    },
+    {
+      "id": "firm-four-spaced",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-six-name-split",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상"
+    },
+    {
+      "id": "firm-twelve-2-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-2-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-3-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-3-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-4-rows-newline",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-twelve-4-rows-comma",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상"
+    },
+    {
+      "id": "firm-name-split-two-one",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-four-inline",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    },
+    {
+      "id": "firm-parentheses-lines",
+      "expected": "가상) 김가상 이가상 박가상 최가상"
+    }
+  ],
+  "passed": true
+}

@@ -1,6 +1,11 @@
-# Criminal Memo — 다운로드·피고인별 소년·국참 시험판
+# Criminal Memo — 새 2페이지 양식·전체 저장·본문 기소일 시험판
 
-**회사 Windows의 Microsoft Edge 104.0.1293.47 실행은 미검증입니다.** PDF.js legacy 호환 빌드와 Edge 104 문법 타깃을 사용합니다. Linux Chromium 103의 실제 `file://`에서 전체 흐름을 검증했고, 최신 Chromium은 관리 URL 정책 차단으로 동일 HTML의 메모리 진단을 수행했습니다. 구형 Linux 엔진 및 API 제거 시험의 성공을 실제 Windows Edge 104 실행 성공으로 해석하지 않습니다. 서버·설치 없이 단일 HTML로 실행하는 구조는 유지했습니다.
+사용자가 이전 `44a0d39`의 공소장 분석·2페이지 생성·표시를 회사 Edge 104에서 확인했다고 보고했습니다.
+이번 변경의 회사 Windows 실행과 폴더 쓰기 정책은 직접 검증하지 못했습니다.
+Edge 104 legacy 빌드·오프라인 단일 HTML을 유지하며 구형 Chromium 103의 file 실행으로 검사합니다.
+
+최신 변경: [새 원본·전체 저장·기소일 검증](docs/BATCH_SAVE_FILING_DATE_VALIDATION.md).
+`44a0d39`에서 새 브랜치 `experiment/v1-batch-save-filing-date`로 분기했습니다.
 
 기존 자동 전용 실험판 v1.3의 파서 변경 및 검증 범위: [실제 확인 구조 재현 검증](docs/PARSER_V13_VALIDATION.md).
 
@@ -30,7 +35,7 @@ Edge 104 호환 빌드 변경 및 실제 검증 범위: [호환성 보고서](do
 
 라이브러리, OCR Worker와 embedded WASM, kor/eng 학습 데이터, CMap/기본 글꼴, 한글 글꼴, 템플릿을 HTML에 내장했습니다. 선택 PDF는 File API ArrayBuffer로 읽습니다. `fetch(file://...)`·ES module 로딩·CDN·온라인 인증·클라우드 API에 의존하지 않습니다. PDF.js는 번들 안의 WorkerMessageHandler를 이용하는 메인 스레드 fallback을 사용하고, OCR은 HTML 바이트에서 만든 Blob Worker에서 실행합니다. 원본 템플릿은 pdf-lib로 열어 첫 페이지만 오버레이하며 나머지 페이지를 다시 그리지 않습니다.
 
-사용자가 제공한 두 번째 양식 원본을 실제로 열고 렌더링하여 확인했습니다. 원본 파일의 선·글자·크기·여백을 재작성하지 않고 `copyPages`로 병합합니다. 두 번째 페이지에는 자동 기재가 없습니다.
+첨부된 새 원본은 자체 2페이지 PDF이며 `templates/형사메모(1).pdf` 하나를 통째로 HTML에 내장합니다. 첫 페이지만 덧입히고 두 번째 페이지에는 아무 내용도 추가하지 않습니다. 별도 1쪽/2쪽 병합 경로는 제거했습니다.
 
 ## 개발 구조
 
@@ -46,7 +51,7 @@ Edge 104 호환 빌드 변경 및 실제 검증 범위: [호환성 보고서](do
 - `scripts/verify_outputs.py`: 브라우저가 다운로드한 실제 PDF를 독립 엔진으로 검사.
 - `distribution/`: 사용자가 실행할 빌드 산출물. `node_modules`와 테스트 문서는 포함하지 않습니다.
 
-초기 Windows 구현 이력과 이전 실험 브랜치는 보존합니다. 이번 작업의 기준은 `b53ac20`입니다.
+초기 Windows 구현 이력과 이전 실험 브랜치는 보존합니다. 이번 작업의 기준은 `44a0d39`입니다.
 
 ## 빌드와 테스트 (개발자용)
 
@@ -60,8 +65,8 @@ npm run test:built-compatibility
 python -m pip install -r scripts/requirements-test.txt
 python scripts/prepare_fixtures.py
 npm run test:browser
-npm run test:mark-layout
-python scripts/verify_mark_layout.py
+npm run test:new-template
+python scripts/verify_batch_save_form.py
 ```
 
 브라우저 실행 파일은 기본 `/usr/bin/chromium`, 필요하면 `CM_CHROMIUM` 환경 변수로 지정합니다. 일반 Chromium의 기본 보안 설정을 사용하며 `--disable-web-security`, `--allow-file-access-from-files` 등을 사용하지 않습니다. 컨테이너에서는 Playwright의 기본 프로세스 샌드박스 옵션을 사용하지만 관리 URL 정책을 수정하지 않습니다.

@@ -26,7 +26,7 @@ async function load(path,content){
  await p.waitForFunction(()=>!!window.CM && document.querySelector('#templateInfo').textContent.includes('최종 2페이지'));
  return {p,fileMode};
 }
-const blank=await PDFDocument.create();blank.addPage([595,841]);const blankBytes=Array.from(await blank.save());
+const blank=await PDFDocument.create();blank.addPage([595,841]);const blankBeforeBytes=Array.from(await blank.save());blank.addPage([595,841]);const blankBytes=Array.from(await blank.save());
 const cases=[['O','O'],['X','X'],['OX','O'],['XO','X'],['OO','O'],['XX','X'],['OXX','O'],['XOO','X'],['OXOX','O'],['O X',''],[' ',''],[' XO ','O']];
 const names=['김가상','이가상','박가상','최가상'];
 try{
@@ -43,7 +43,7 @@ try{
   const id=String(i).padStart(2,'0');
   for(const [version,target]of [['after',current.p],['before',before.p]])for(const diagnostic of [false,true]){
    const filename=`${id}-${version}${diagnostic?'-ink':''}.pdf`;
-   const bytes=await target.evaluate(async({draft,blank})=>Array.from(await CM.MemoPDFRenderer.render(draft,{caseNumber:'2026고단8000',firstHearing:{date:'20261118',time:'1000'},...(blank?{templateBytes:Uint8Array.from(blank)}:{})})),{draft,blank:diagnostic?blankBytes:null});
+   const bytes=await target.evaluate(async({draft,blank})=>Array.from(await CM.MemoPDFRenderer.render(draft,{caseNumber:'2026고단8000',firstHearing:{date:'20261118',time:'1000'},...(blank?{templateBytes:Uint8Array.from(blank)}:{})})),{draft,blank:diagnostic?(version==='before'?blankBeforeBytes:blankBytes):null});
    await fs.writeFile(resolve(out,filename),Buffer.from(bytes));assert.equal((await PDFDocument.load(Uint8Array.from(bytes))).getPageCount(),2);
   }
   report.cases.push({id,...expected});

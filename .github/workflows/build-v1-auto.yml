@@ -1,8 +1,8 @@
-name: Build Criminal Memo download juvenile jury test
+name: Build Criminal Memo batch save filing date test
 on:
   push:
     branches:
-      - experiment/v1-download-juvenile-jury
+      - experiment/v1-batch-save-filing-date
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,16 +34,16 @@ jobs:
           ! grep -q 'id="addPerson"' windows/distribution/CriminalMemo/CriminalMemo.html
           ! grep -q 'id="reviewed"' windows/distribution/CriminalMemo/CriminalMemo.html
           grep -q 'v1 자동 추출 시험판' windows/distribution/CriminalMemo/CriminalMemo.html
-      - name: Upload download juvenile jury trial distribution ZIP
+      - name: Upload batch save filing date trial distribution ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: CriminalMemo-download-juvenile-jury
+          name: CriminalMemo-batch-save-filing-date
           path: windows/distribution/CriminalMemo/
           if-no-files-found: error
           retention-days: 14
       - name: Download instructions
         run: |
-          echo '### Windows 다운로드·소년·국참 시험판' >> "$GITHUB_STEP_SUMMARY"
-          echo '이 실행의 Artifacts에서 CriminalMemo-download-juvenile-jury ZIP을 다운로드하고 압축을 푼 뒤 CriminalMemo.html을 여세요.' >> "$GITHUB_STEP_SUMMARY"
+          echo '### Windows 새 양식·전체 저장·기소일 시험판' >> "$GITHUB_STEP_SUMMARY"
+          echo '이 실행의 Artifacts에서 CriminalMemo-batch-save-filing-date ZIP을 다운로드하고 압축을 푼 뒤 CriminalMemo.html을 여세요.' >> "$GITHUB_STEP_SUMMARY"
           echo "Source commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
           echo '최신 사용자 공소장 정확도 및 Windows Edge 실행은 별도 검증이 필요합니다.' >> "$GITHUB_STEP_SUMMARY"

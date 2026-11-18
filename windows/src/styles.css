@@ -3,3 +3,5 @@
 .batch-item{padding:16px 22px;border-bottom:1px solid #d5e0e4}.batch-item h3{font-size:14px;overflow-wrap:anywhere;margin:0 0 10px}.batch-item p{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}.batch-item input{font-size:14px}
 
 .warning{color:#805600;white-space:pre-wrap}.save-status{font-size:.85rem}.download-pdf,.folder-save{margin-top:6px;margin-right:6px}
+
+#batchSummary{padding:0 22px;font-size:13px;line-height:1.7}.file-audit{font-weight:600;color:#385365}
