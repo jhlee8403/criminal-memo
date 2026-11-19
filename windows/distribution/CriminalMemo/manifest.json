@@ -1,12 +1,12 @@
 {
-  "builtAt": "2026-11-18T13:27:58.832Z",
+  "builtAt": "2026-11-19T13:49:41.299Z",
   "browserTarget": "edge104",
   "pdfjsBuild": "legacy",
   "pdfjsVersion": "4.8.69",
   "templateSHA256": "d4cfd5a2ea5b3929c0c44f80a3518d22e5f4e44fe6589d9a8d32382e0bd2e72b",
   "files": {
-    "CriminalMemo.html": "ae5c8db6623a0b8d0b0c443df546a06ba192a324dc78189c60437d623938a9b0",
-    "README.txt": "bcd8e1a39a7e6f6e54303a5ae73a58ff49e1eba70e65a26e3cdc97fd2127deb3",
+    "CriminalMemo.html": "eac5337d9deaaaa731cb75869deeb59474d99ada5cb5d5f96b56dfedd63c03c2",
+    "README.txt": "e35f48342711fb4952f5fe7e051891a7433daf85e2c272d34ccefd7f988bc8e0",
     "assets/NanumGothic-OFL.txt": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f",
     "assets/THIRD_PARTY_LICENSES.txt": "3ee5cec4b8bb3c42018245edaba27023ce8007e1955b6ba2d566870d8d2893ba",
     "assets/tessdata-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",

@@ -33,3 +33,17 @@ export async function writeMemo(handle, filename, data) {
     throw error;
   }
 }
+
+// A picker AbortError does not distinguish user cancellation from a protected
+// directory dialog being dismissed. Do not assert that the folder has OS files.
+export function folderFailureNotice(error) {
+  const canceled=error?.name==='AbortError';
+  return {
+    code:error?.name||'Error',
+    detail:String(error?.message||error||''),
+    message:canceled
+      ?'폴더 선택이 취소되었거나 브라우저에서 선택한 폴더의 접근을 허용하지 않았습니다.'
+      :'브라우저에서 폴더 직접 저장을 허용하지 않았거나 이 환경에서 지원하지 않습니다.',
+    guidance:'“시스템 파일” 안내만으로 실제 폴더 안에 시스템 파일이 있다고 단정할 수 없습니다. 보호 경로·file 출처 권한·회사 정책에 따른 제한일 수 있습니다. 허용되는 일반 하위 폴더를 다시 선택하거나 아래 PDF 다운로드를 사용하세요.',
+  };
+}

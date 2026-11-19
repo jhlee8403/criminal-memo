@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --test tests/core.test.mjs tests/compatibility.test.mjs tests/first-hearing.test.mjs tests/batch.test.mjs tests/two-page.test.mjs tests/download-juvenile-jury.test.mjs tests/mark-layout.test.mjs tests/batch-save-filing-date.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/compatibility.test.mjs tests/first-hearing.test.mjs tests/batch.test.mjs tests/two-page.test.mjs tests/download-juvenile-jury.test.mjs tests/mark-layout.test.mjs tests/batch-save-filing-date.test.mjs tests/edge-save-fixed-counsel.test.mjs",
     "test:browser": "node tests/batch-save-filing-date-browser.mjs",
     "test:built-compatibility": "node --test tests/built-compatibility.test.mjs",
     "test:mark-layout": "node tests/mark-layout-browser.mjs",
-    "test:new-template": "node tests/new-template-layout-browser.mjs"
+    "test:new-template": "node tests/new-template-layout-browser.mjs",
+    "test:edge-save-fixed": "node tests/edge-save-fixed-counsel-browser.mjs"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "1.1.1",

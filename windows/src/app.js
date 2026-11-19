@@ -5,17 +5,22 @@ import * as batch from './batch.js';
 import * as storage from './storage.js';
 import * as saving from './batch-save.js';
 const $=id=>document.getElementById(id);
-const state={entries:[],selected:null,busy:false,tab:'source',previewDoc:null,token:0,zoom:1,folder:null,saving:false};
+const state={entries:[],selected:null,busy:false,tab:'source',previewDoc:null,token:0,zoom:1,folder:null,saving:false,downloadMode:false,fallbackVisible:false};
 function status(text,error=false){$('status').textContent=core.redactResidentNumbers(text);$('status').classList.toggle('error',error);}
 const firstHearing=e=>({date:e.dateInput.value,time:e.timeInput.value});
 const successful=()=>state.entries.filter(e=>e.bytes);
 function updateDownload(){
   const outputs=successful();
   $('export').hidden=state.busy || !outputs.length;
-  const pending=outputs.filter(e=>!e.downloadRequested);
-  $('save').textContent=pending.length?`다음 메모 다운로드 (${outputs.length-pending.length+1}/${outputs.length}) · ${pending[0].filename}`:'모든 메모 다운로드 요청됨';
+  const downloadable=state.fallbackVisible?unsavedOutputs():outputs;
+  const pending=downloadable.filter(e=>!e.downloadRequested);
+  $('save').textContent=pending.length?`다음 메모 다운로드 (${downloadable.length-pending.length+1}/${downloadable.length}) · ${pending[0].filename}`:'모든 메모 다운로드 요청됨';
   $('save').disabled=state.busy||!pending.length;
-  $('saveFolder').disabled=state.busy || !outputs.length;
+  $('saveFolder').disabled=state.busy || !outputs.length || state.downloadMode&&!unsavedOutputs().length;
+  $('saveFolder').textContent=state.downloadMode?'전체 메모 저장 (다운로드 요청)':'전체 메모 저장';
+  $('downloadFallback').hidden=!state.fallbackVisible;
+  $('downloadAll').disabled=state.busy || !unsavedOutputs().length;
+  $('restartDownloads').disabled=state.busy || !unsavedOutputs().length;
   for(const e of state.entries){e.downloadButton.disabled=state.busy||!e.bytes;e.folderButton.disabled=state.busy||!e.bytes||!state.folder;e.dateInput.disabled=state.saving;e.timeInput.disabled=state.saving;updateAudit(e);}
   updateSummary();
 }
@@ -29,7 +34,7 @@ function updateAudit(e){
   e.auditText.textContent=`${e.card.dataset.index*1+1}번 파일 / ${e.meta.caseNumber||'사건번호 없음'} / 추출 실패: ${e.draft?(e.missingFields.join(', ')||'없음'):e.generationState==='failed'?'분석 불가':'분석 전'} / ${e.bytes?'메모 생성 완료':e.generationState==='failed'?'메모 생성 실패':'메모 미생성'} / ${label}`;
   e.savedText.textContent=label+(e.saveError?' · '+core.redactResidentNumbers(e.saveError):'')+(e.downloadRequested?' · 다운로드 요청됨(실제 저장 여부는 브라우저에서 확인)':'');
 }
-function acceptFolder(folder){state.folder=folder;for(const e of state.entries)resetSave(e);$('folderInfo').textContent=`선택 폴더: ${folder.name} · 전체 메모 저장 또는 사건별 폴더 저장을 누르세요.`;}
+function acceptFolder(folder){$('fallbackResult').textContent='';state.folder=folder;state.downloadMode=false;state.fallbackVisible=false;for(const e of state.entries)resetSave(e);$('folderInfo').textContent=`선택 폴더: ${folder.name} · 전체 메모 저장 또는 사건별 폴더 저장을 누르세요.`;}
 function setBusy(value){state.busy=value;$('file').disabled=value;$('analyze').disabled=value||!state.entries.length;$('forceOCR').disabled=value;$('chooseFolder').disabled=value;updateDownload();}
 function setRow(e,text,error=false){e.statusText.textContent=text;e.statusText.classList.toggle('error',error);}
 function validateEntry(e){return e.meta.error || hearing.assessFirstHearing(firstHearing(e),{required:true}).error;}
@@ -105,7 +110,7 @@ function entryRow(file,index){
 $('file').onchange=async()=>{
   if(state.busy)return;
   ++state.token;
-  state.entries=Array.from($('file').files).map(entryRow);
+  state.entries=Array.from($('file').files).map(entryRow);$('fallbackResult').textContent='';
   $('batchList').replaceChildren(...state.entries.map(e=>e.card));
   $('fileInfo').textContent=`${state.entries.length}개 파일 선택`;
   state.selected=state.entries[0]||null;state.tab='source';
@@ -116,7 +121,7 @@ $('file').onchange=async()=>{
 $('analyze').onclick=async()=>{
   if(state.busy||!state.entries.length)return;
   setBusy(true);
-  const forceOCR=$('forceOCR').checked;
+  const forceOCR=$('forceOCR').checked;$('fallbackResult').textContent='';
   // Refuse duplicate planned names before generation and folder saving.
   const planned=new Map(),duplicates=new Set();
   for(const e of state.entries){
@@ -165,6 +170,25 @@ function downloadEntry(e){
   updateAudit(e);
   updateDownload();
 }
+function unsavedOutputs(){return successful().filter(e=>!(e.saveState==='saved'&&e.saveRevision===e.revision));}
+function showDownloadFallback(error,entries){
+  const notice=storage.folderFailureNotice(error);$('fallbackResult').textContent='';
+  state.fallbackVisible=true;state.downloadMode=!state.folder;
+  for(const e of entries)if(e.bytes&&!['saved','failed'].includes(e.saveState)){e.saveState='deferred';e.saveError=notice.message;}
+  $('folderInfo').textContent=notice.message+(state.folder?` 기존 선택 폴더 유지: ${state.folder.name}`:'');
+  $('fallbackInfo').textContent=notice.message+' '+notice.guidance+(notice.detail?' · 브라우저 응답: '+core.redactResidentNumbers(notice.detail):'');
+  status('폴더 저장을 완료하지 못했습니다. 전체 PDF 다운로드 요청 또는 사건별 다운로드를 사용할 수 있습니다.',true);
+  updateDownload();
+}
+function requestAllDownloads(){
+  if(state.busy)return;
+  const entries=unsavedOutputs();let requested=0;const launchErrors=[];
+  // Explicit fresh click only. No timers, automatic retries, or policy changes.
+  for(const e of entries){try{downloadEntry(e);requested++;}catch(error){launchErrors.push(e.filename+': '+error.message);}}
+  const message=`PDF ${requested}개 다운로드를 요청했습니다. 실제 저장 완료는 확인할 수 없습니다. 브라우저가 일부 요청을 차단하면 각 사건의 이 메모 다운로드 또는 다음 메모 다운로드를 사용하세요.`;
+  $('fallbackResult').textContent=message+(launchErrors.length?' 요청 오류: '+core.redactResidentNumbers(launchErrors.join(' / ')):'');
+  status(message,launchErrors.length>0);updateDownload();
+}
 async function writeSelected(entries){
   if(state.busy||!entries.some(e=>e.bytes))return;
   state.saving=true;setBusy(true);
@@ -173,32 +197,35 @@ async function writeSelected(entries){
     await saving.saveMemosToFolder(entries,state.folder,{onChange:()=>{for(const e of entries)updateAudit(e);updateSummary();}});
     const result=saving.batchSummary(state.entries);
     status(`전체 저장 작업 종료 · 저장 성공 ${result.saved}개 / 실패 ${result.saveFailed}개. 사건별 상태와 추출 경고를 확인하세요.`,result.saveFailed>0);
-  }catch(error){
-    if(error.name!=='AbortError'){
-      for(const e of entries)if(e.bytes&&e.saveState!=='saved'){e.saveState='deferred';e.saveError=error.message;}
-      $('folderInfo').textContent='폴더 직접 저장 불가 · '+core.redactResidentNumbers(error.message)+' 사건별 또는 다음 메모 다운로드를 사용하세요.';
-      status('폴더에 저장하지 못했습니다. 개별 다운로드를 사용할 수 있습니다.',true);
-    }else status('저장 폴더 선택을 취소했습니다. 저장 완료로 처리하지 않았습니다.');
+    if(result.saveFailed){state.fallbackVisible=true;state.downloadMode=result.saved===0;$('fallbackInfo').textContent='일부 파일의 폴더 저장에 실패했습니다. 각 사건의 실패 원인을 확인하고 재시도하거나 미저장 메모를 PDF로 다운로드 요청할 수 있습니다.';}
+  }catch(error){showDownloadFallback(error,entries);
   }finally{state.saving=false;setBusy(false);}
 }
 async function saveToFolder(e){await writeSelected([e]);}
 $('chooseFolder').onclick=async()=>{
   if(state.busy)return;
   try{acceptFolder(await storage.chooseFolder());}
-  catch(error){if(error.name!=='AbortError')$('folderInfo').textContent='폴더 선택 불가 · '+core.redactResidentNumbers(error.message)+' 개별 다운로드를 사용하세요.';}
+  catch(error){showDownloadFallback(error,successful());}
   updateDownload();
 };
-$('saveFolder').onclick=()=>writeSelected(successful());
+$('saveFolder').onclick=()=>state.downloadMode?requestAllDownloads():writeSelected(successful());
+$('downloadAll').onclick=requestAllDownloads;
+$('restartDownloads').onclick=()=>{
+  if(state.busy)return;
+  const entries=unsavedOutputs();for(const e of entries)e.downloadRequested=false;
+  if(entries[0])downloadEntry(entries[0]);
+  status('한 건씩 다운로드 요청을 다시 시작했습니다. 다음 메모 다운로드 또는 각 사건의 버튼을 눌러 진행하세요. 저장 여부는 브라우저에서 확인하세요.');
+};
 $('save').onclick=()=>{
   if(state.busy)return;
-  const next=successful().find(e=>!e.downloadRequested);
+  const next=(state.fallbackVisible?unsavedOutputs():successful()).find(e=>!e.downloadRequested);
   if(next)downloadEntry(next);
   status('한 번 클릭할 때 메모 하나만 다운로드 요청합니다. 다음 메모 버튼을 계속 누르세요. 차단되거나 저장되지 않은 파일은 각 사건의 이 메모 다운로드 버튼을 누르세요. 실제 저장 완료는 브라우저에서 확인하세요.');
 };
 $('folderInfo').textContent=storage.canChooseFolder()?'폴더를 직접 선택해 저장할 수 있습니다. 회사 정책에 따라 제한될 수 있습니다.':'폴더 직접 저장을 지원하지 않는 환경입니다. 각 사건의 개별 다운로드를 사용하세요.';
 for(const [id,tab]of[['sourceTab','source'],['outputTab','output'],['textTab','text']])$(id).onclick=()=>{state.tab=tab;void preview();};
 for(const [id,delta]of[['zoomIn',.25],['zoomOut',-.25]])$(id).onclick=()=>{state.zoom=Math.max(.5,Math.min(2,state.zoom+delta));$('zoomLabel').textContent=Math.round(state.zoom*100)+'%';void preview();};
-window.CM={...services,...core,...hearing,...batch,...storage,...saving,getDraft:()=>state.selected?.draft,getBatchSummary:()=>saving.batchSummary(state.entries),
+window.CM={...services,...core,...hearing,...batch,...storage,...saving,getDraft:()=>state.selected?.draft,getBatchSummary:()=>saving.batchSummary(state.entries),getSaveMode:()=>state.downloadMode?'downloads':'folder',
   getEntries:()=>state.entries.map(e=>({name:core.redactResidentNumbers(e.file.name),...e.meta,firstHearing:firstHearing(e),filename:e.filename,status:e.statusText.textContent,error:e.errorText.textContent,warning:e.warningText.textContent,saveStatus:e.savedText.textContent,downloadRequested:e.downloadRequested,generationState:e.generationState,missingFields:e.missingFields,saveState:e.saveState,saveError:e.saveError,generated:!!e.bytes,draft:e.draft}))};
 services.PDFInputService.fromBytes(services.bytes(window.CM_DOCUMENTS.template)).then(async pdf=>{
   try{if(pdf.numPages!==2)throw Error('원본 양식은 2페이지여야 합니다.');$('templateInfo').textContent='내장 새 원본 양식: 2페이지 · 최종 2페이지';}finally{await pdf.destroy();}

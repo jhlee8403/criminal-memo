@@ -1,11 +1,15 @@
-# Criminal Memo — 새 2페이지 양식·전체 저장·본문 기소일 시험판
+# Criminal Memo — 회사 폴더 대체 저장·고정사건 변호인 시험판
 
 사용자가 이전 `44a0d39`의 공소장 분석·2페이지 생성·표시를 회사 Edge 104에서 확인했다고 보고했습니다.
 이번 변경의 회사 Windows 실행과 폴더 쓰기 정책은 직접 검증하지 못했습니다.
 Edge 104 legacy 빌드·오프라인 단일 HTML을 유지하며 구형 Chromium 103의 file 실행으로 검사합니다.
 
-최신 변경: [새 원본·전체 저장·기소일 검증](docs/BATCH_SAVE_FILING_DATE_VALIDATION.md).
+이전 변경: [새 원본·전체 저장·기소일 검증](docs/BATCH_SAVE_FILING_DATE_VALIDATION.md).
 `44a0d39`에서 새 브랜치 `experiment/v1-batch-save-filing-date`로 분기했습니다.
+
+최신 수정은 `c5c40a0` 기준 새 브랜치 `experiment/v1-edge-save-fixed-counsel`입니다.
+폴더 제한 시 명시적인 PDF 일괄 다운로드 요청/한 건씩 재시도를 제공하고, 의견·가납명령청구를 변호인 필드 경계로 추가했습니다.
+[원인과 검증 범위](docs/EDGE_SAVE_FIXED_COUNSEL_VALIDATION.md).
 
 기존 자동 전용 실험판 v1.3의 파서 변경 및 검증 범위: [실제 확인 구조 재현 검증](docs/PARSER_V13_VALIDATION.md).
 
