@@ -79,7 +79,7 @@ test('the new complete two-page original is embedded byte-for-byte without a sec
   const docs=context.window.CM_DOCUMENTS;
   const original=await fs.readFile(new URL('../templates/형사메모(1).pdf',import.meta.url));
   assert.deepEqual(Buffer.from(docs.template,'base64'),original);
-  assert.equal(createHash('sha256').update(original).digest('hex'),'d4cfd5a2ea5b3929c0c44f80a3518d22e5f4e44fe6589d9a8d32382e0bd2e72b');
+  assert.equal(createHash('sha256').update(original).digest('hex'),'b16fcb041110090725863c5a4934a03b80ea935f6086d9bcf7111528aeb6f75c');
   assert.equal(docs.secondTemplate,undefined);
   assert.equal(docs.secondTemplateSHA256,undefined);
   const manifest=JSON.parse(await fs.readFile(new URL('manifest.json',root),'utf8'));

@@ -24,7 +24,7 @@ def check_second(doc,name):
  check(doc[1].get_text('dict')==original[1].get_text('dict'),name+': second-page text/fonts/positions unchanged')
  check(np.array_equal(raster(doc[1])[1],raster(original[1])[1]),name+': second page pixel-identical')
 check(len(original)==2,'provided original actually has two pages')
-check(hashlib.sha256(source.read_bytes()).hexdigest()=='d4cfd5a2ea5b3929c0c44f80a3518d22e5f4e44fe6589d9a8d32382e0bd2e72b','source bytes equal upload')
+check(hashlib.sha256(source.read_bytes()).hexdigest()=='b16fcb041110090725863c5a4934a03b80ea935f6086d9bcf7111528aeb6f75c','source bytes equal upload')
 check(source.read_bytes()==(ROOT/'distribution/CriminalMemo/templates/형사메모(1).pdf').read_bytes(),'distributed source unchanged')
 check(len(r['emitted'])==54,'54 PDFs tracked individually, no ZIP')
 for name in r['emitted']:check_second(fitz.open(OUT/name),name)

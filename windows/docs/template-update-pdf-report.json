@@ -1,0 +1,15 @@
+{
+  "checksPassed": 110,
+  "firstPageSize": [
+    0.0,
+    0.0,
+    595.0,
+    841.0
+  ],
+  "firstPagePixelDifference": 0,
+  "secondPageChangedPixelsAt2x": 1890,
+  "pairedOutputCases": 6,
+  "templateSHA256": "b16fcb041110090725863c5a4934a03b80ea935f6086d9bcf7111528aeb6f75c",
+  "htmlSHA256": "25198a07be2a56b582c2021c0355cc9faca88518ee34e699452e368c093669ca",
+  "windowsEdge104Verified": false
+}
