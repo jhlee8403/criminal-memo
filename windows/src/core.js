@@ -98,6 +98,16 @@ export function juryGlyph(draft) {
   if(draft.defendants.length && draft.defendants.every(p=>p.chargesComplete===true && p.charges.length))return {text:'X',color:'black'};
   return {text:' ',color:'black'};
 }
+// User-specified title lists only; positive exact matches never imply a final legal finding.
+const oppositionTitles=new Set(['폭행','존속폭행','과실치상','협박','존속협박','명예훼손','출판물에의한명예훼손','근로기준법위반','근로자퇴직급여보장법위반']);
+const complaintTitles=new Set(['사자명예훼손','모욕','비밀침해','업무상비밀누설']);
+export function complaintMarks(draft) {
+  const titles=draft.defendants.flatMap(p=>p.charges).map(normalizedCharge);
+  return {
+    opposition:titles.some(title=>oppositionTitles.has(title)),
+    complaint:titles.some(title=>complaintTitles.has(title)),
+  };
+}
 export function chargesComplete(lines, ocr=false) {
   const raw=values('죄명',lines),charges=ChargeParser.parse(lines);
   if(ocr || !raw.length || !charges.length)return false;

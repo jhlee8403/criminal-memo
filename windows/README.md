@@ -1,5 +1,7 @@
 # Criminal Memo — 회사 폴더 대체 저장·고정사건 변호인 시험판
 
+최신 추가: [반의사불벌·친고죄 표시 검증](docs/COMPLAINT_MARKS_VALIDATION.md). `5e341b7` 기준 `experiment/v1-complaint-marks`에서 개발했습니다.
+
 사용자가 이전 `44a0d39`의 공소장 분석·2페이지 생성·표시를 회사 Edge 104에서 확인했다고 보고했습니다.
 이번 변경의 회사 Windows 실행과 폴더 쓰기 정책은 직접 검증하지 못했습니다.
 Edge 104 legacy 빌드·오프라인 단일 HTML을 유지하며 구형 Chromium 103의 file 실행으로 검사합니다.

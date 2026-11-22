@@ -1,0 +1,21 @@
+{
+  "checksPassed": 250,
+  "pdfsVerified": 26,
+  "measuredEllipseBounds": {
+    "opposition": [
+      517.1,
+      149.0,
+      564.5,
+      170.4
+    ],
+    "complaint": [
+      517.2,
+      126.2,
+      548.7,
+      146.8
+    ]
+  },
+  "htmlSHA256": "5004e2d67a1e0441e76d19f11691c3e7fb61f0d8a9e1976f7c50921f93d8fb3a",
+  "templateSHA256": "b16fcb041110090725863c5a4934a03b80ea935f6086d9bcf7111528aeb6f75c",
+  "windowsEdge104Verified": false
+}

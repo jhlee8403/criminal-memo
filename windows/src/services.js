@@ -10,6 +10,7 @@ import {
   ageMarks,
   juvenileGlyphs,
   juryGlyph,
+  complaintMarks,
   redactResidentNumbers,
 } from "./core.js";
 export const bytes = (b64) =>
@@ -28,6 +29,10 @@ export const boxes = {
   juvenile: markFitRects.juvenile,
   jury: markFitRects.jury,
   mandatory: [108.245914, 510.828339, 56, 15],
+  // Measured printed labels/cell rules in the unchanged 595 x 841 pt original.
+  // Top-origin ellipse bounds; stay within x=516.442..565.496 and each row.
+  opposition: [517.1, 149, 47.4, 21.4],
+  complaint: [517.2, 126.2, 31.5, 20.6],
 };
 class LocalCMapReaderFactory {
   async fetch({ name }) {
@@ -292,8 +297,8 @@ export class MemoPDFRenderer {
       }
     }
     if (!fitted) throw Error("구속 표시가 한 줄에 들어가지 않습니다.");
-    const marks = ageMarks(draft);
-    for (const key of ["mandatory"]) {
+    const marks = {...ageMarks(draft), ...complaintMarks(draft)};
+    for (const key of ["mandatory", "opposition", "complaint"]) {
       if (marks[key]) {
         const [cx, cy, cw, ch] = boxes[key];
         page.drawEllipse({
@@ -302,7 +307,7 @@ export class MemoPDFRenderer {
           xScale: cw / 2,
           yScale: ch / 2,
           borderColor: rgb(1, 0, 0),
-          borderWidth: 1.3,
+          borderWidth: key === "mandatory" ? 1.3 : 1,
         });
       }
     }
