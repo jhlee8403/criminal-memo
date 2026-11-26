@@ -57,8 +57,10 @@ async function preview(){
     const d=entry.draft;
     const lines=[`사건: ${entry.meta.caseNumber}`,`검사: ${d.prosecutor}`,`기소일: ${d.filingDate}`,
       ...d.defendants.flatMap((p,i)=>[`피고인 ${i+1}: ${p.name}`,`생년월일 앞 6자리: ${p.birthDigits}`,`죄명: ${p.charges.join(', ')}`,`변호인: ${p.counsel.status==='named'?p.counsel.name:p.counsel.status==='needsReview'?'판정 불가':'기재 없음'}`,`구속: ${p.detention==='detained'?'O':p.detention==='released'?'X':'판정 불가'}`]),
-      `소년: ${core.juvenileGlyphs(d).map(g=>g.text).join('')}`,`국참(지정 죄명 자동 분류): ${core.juryGlyph(d).text.trim()||'보류'}`,
-      ...d.warnings];
+      `소년: ${core.juvenileGlyphs(d).map(g=>g.text).join('')}`,`국참(지정 죄명 자동 분류): ${core.juryGlyphs(d).map(g=>g.text).join('').trim()||'보류'}`,
+      `필요적국선: ${core.mandatoryGlyphs(d).map(g=>g.text).join('')}`,
+      ...d.defendants.map((p,i)=>`피고인 ${i+1} 분류 · 필요적국선: ${core.mandatoryAssessment(p,d.filingDate).glyph.text.trim()||'보류'} / 국참: ${core.juryGlyphs({defendants:[p]})[0].text.trim()||'보류'}`),
+      ...core.classificationWarnings(d),...d.warnings];
     for(const text of lines){const p=document.createElement('p');p.textContent=text;$('people').append(p);}
   }
   $('rawText').textContent=entry?.rawText||'';
@@ -145,7 +147,7 @@ $('analyze').onclick=async()=>{
         e.rawText=core.redactResidentNumbers(extracted.text);
         try { e.draft=core.IndictmentParser.parse(extracted,{caseType:e.meta.caseType}); }
         catch (error) { e.draft={prosecutor:'',filingDate:null,defendants:[],warnings:[`정보 해석 실패: ${error.message}`]}; }
-        const warnings=[...new Set([...core.validateDraft(e.draft),...e.draft.warnings,...e.draft.defendants.flatMap((p,i)=>core.birthAssessment(p,e.draft.filingDate).warnings.map(w=>`피고인 ${i+1}: ${w}`)),...(core.juryGlyph(e.draft).text===' '?['죄명 정보가 불완전하여 국참 자동 분류 표시를 보류합니다.']:[]),...(extracted.warnings||[])])];
+        const warnings=[...new Set([...core.validateDraft(e.draft),...e.draft.warnings,...e.draft.defendants.flatMap((p,i)=>core.birthAssessment(p,e.draft.filingDate).warnings.map(w=>`피고인 ${i+1}: ${w}`)),...core.classificationWarnings(e.draft),...(extracted.warnings||[])])];
         e.missingFields=saving.extractionFailures(e.draft);e.hasWarnings=warnings.length>0||e.missingFields.length>0;
         e.warningText.textContent=e.hasWarnings?'추출 경고 · 확인되지 않은 항목은 빈칸으로 생성합니다: '+(warnings.length?warnings.join(' / '):e.missingFields.join(', ')):'';
         setRow(e,'메모 생성 중');

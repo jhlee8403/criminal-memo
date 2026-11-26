@@ -81,6 +81,8 @@ try{
   assert.equal(e.filename,definitions[i].filename);assert.equal(e.draft.prosecutor,'김가상');assert.equal(e.draft.filingDate,'2026-11-17');
   const marks=await page.evaluate(d=>({y:CM.juvenileGlyphs(d).map(g=>g.text).join(''),j:CM.juryGlyph(d).text.trim(),mandatory:CM.ageMarks(d).mandatory}),e.draft);
   assert.deepEqual(marks,{y:definitions[i].youth,j:definitions[i].jury,mandatory:definitions[i].mandatory});
+  definitions[i].mandatorySequence=await page.evaluate(d=>CM.mandatoryGlyphs(d).map(g=>g.text).join(''),e.draft);
+  definitions[i].jurySequence=await page.evaluate(d=>CM.juryGlyphs(d).map(g=>g.text).join(''),e.draft);
  }
  // One genuine click -> exactly ONE download call, preserving file order.
  for(const [i,d]of definitions.entries()){

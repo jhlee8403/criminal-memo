@@ -34,9 +34,9 @@ try{
  if(mask)assert.equal(await current.p.evaluate(()=>window.__withoutResolvers),'undefined');
  assert.equal(await current.p.evaluate(()=>typeof Promise.withResolvers),'function');
  for(const [i,[seq,jury]]of cases.entries()){
-  const draft={prosecutor:'김가상',filingDate:'2026-11-17',warnings:[],defendants:[...seq].map((c,index)=>({name:names[index],birthDigits:c==='X'?'840318':'080318',birthCenturyDigit:c==='X'?'2':c==='O'?'3':'',birthReview:false,detention:i===6&&index===0?'detained':'released',counsel:index===0?{status:'named',name:'가상) 김가상 이가상 박가상'}:{status:'absentMissing',name:''},charges:jury===''?[]:jury==='O'&&index===0?['특수상해']:['절도'],chargesComplete:jury!==''}))};
-  const expected={youth:seq,jury};
-  const actual=await current.p.evaluate(d=>({youth:CM.juvenileGlyphs(d).map(g=>g.text).join(''),jury:CM.juryGlyph(d).text.trim()}),draft);
+  const draft={prosecutor:'김가상',filingDate:'2026-11-17',warnings:[],defendants:[...seq].map((c,index)=>({name:names[index],chargeAttribution:'confirmed',birthDigits:c==='X'?'840318':'080318',birthCenturyDigit:c==='X'?'2':c==='O'?'3':'',birthReview:false,detention:i===6&&index===0?'detained':'released',counsel:index===0?{status:'named',name:'가상) 김가상 이가상 박가상'}:{status:'absentMissing',name:''},charges:jury===''?[]:jury==='O'&&index===0?['특수상해']:['절도'],chargesComplete:jury!==''}))};
+  const expected={youth:seq,jury:[...seq].map((_,j)=>jury===''?' ':jury==='O'&&j===0?'O':'X').join(''),mandatory:[...seq].map((c,j)=>c==='O'||i===6&&j===0?'O':c==='X'&&jury!==''?'X':' ').join('')};
+  const actual=await current.p.evaluate(d=>({youth:CM.juvenileGlyphs(d).map(g=>g.text).join(''),jury:CM.juryGlyphs(d).map(g=>g.text).join(''),mandatory:CM.mandatoryGlyphs(d).map(g=>g.text).join('')}),draft);
   assert.deepEqual(actual,expected);
   const id=String(i).padStart(2,'0');
   for(const [version,target]of [['after',current.p]])for(const diagnostic of [false,true]){

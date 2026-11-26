@@ -1,0 +1,151 @@
+{
+  "browser": "103.0.5058.0",
+  "htmlSHA256": "425028af717a0845f0b4440807c341078c5d9e7f77c49d800ac57bad5e80612a",
+  "fileMode": true,
+  "windowsEdge104Verified": false,
+  "externalRequests": [],
+  "errors": [],
+  "cases": [
+    {
+      "id": "O",
+      "mandatory": "O",
+      "jury": "O",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)"
+      ]
+    },
+    {
+      "id": "X",
+      "mandatory": "X",
+      "jury": "X",
+      "chargeLines": [
+        "절도"
+      ]
+    },
+    {
+      "id": "OO",
+      "mandatory": "OO",
+      "jury": "OO",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)(김가상, 이가상)"
+      ]
+    },
+    {
+      "id": "OX",
+      "mandatory": "OX",
+      "jury": "OX",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)(김가상)",
+        "절도(이가상)"
+      ]
+    },
+    {
+      "id": "XO",
+      "mandatory": "XO",
+      "jury": "XO",
+      "chargeLines": [
+        "절도(김가상)",
+        "특정범죄가중처벌등에관한법률위반(도주치사)(이가상)"
+      ]
+    },
+    {
+      "id": "XX",
+      "mandatory": "XX",
+      "jury": "XX",
+      "chargeLines": [
+        "절도(김가상, 이가상)"
+      ]
+    },
+    {
+      "id": "OXO",
+      "mandatory": "OXO",
+      "jury": "OXO",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)(김가상, 박가상)",
+        "절도(이가상)"
+      ]
+    },
+    {
+      "id": "_OX",
+      "mandatory": " OX",
+      "jury": " OX",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)(이가상)",
+        "절도(박가상)"
+      ]
+    },
+    {
+      "id": "OXOXO",
+      "mandatory": "OXOXO",
+      "jury": "OXOXO",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)(김가상, 박가상, 윤가상)",
+        "절도(이가상, 최가상)"
+      ]
+    },
+    {
+      "id": "different",
+      "mandatory": "XX",
+      "jury": "OX",
+      "chargeLines": [
+        "특수상해(김가상)",
+        "절도(김가상, 이가상)",
+        "폭행(김가상)",
+        "모욕(김가상)"
+      ]
+    },
+    {
+      "id": "causes",
+      "mandatory": "OOOX",
+      "jury": "XXXX",
+      "chargeLines": [
+        "절도(김가상, 이가상, 박가상, 최가상)"
+      ]
+    }
+  ],
+  "uploads": [
+    {
+      "id": "separate",
+      "file": "upload-separate.pdf",
+      "mandatory": "OX",
+      "jury": "OX",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)(김가상)",
+        "절도(이가상)"
+      ],
+      "warning": ""
+    },
+    {
+      "id": "scoped",
+      "file": "upload-scoped.pdf",
+      "mandatory": "XX",
+      "jury": "OX",
+      "chargeLines": [
+        "특수상해(김가상)",
+        "절도(김가상, 이가상)"
+      ],
+      "warning": ""
+    },
+    {
+      "id": "shared",
+      "file": "upload-shared.pdf",
+      "mandatory": "OO",
+      "jury": "OO",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)(김가상, 이가상)"
+      ],
+      "warning": ""
+    },
+    {
+      "id": "ambiguous",
+      "file": "upload-ambiguous.pdf",
+      "mandatory": "  ",
+      "jury": "  ",
+      "chargeLines": [
+        "특정범죄가중처벌등에관한법률위반(도주치사)(귀속 미확인)"
+      ],
+      "warning": "추출 경고 · 확인되지 않은 항목은 빈칸으로 생성합니다: 피고인 1: 죄명 자동 추출 실패 / 피고인 2: 죄명 자동 추출 실패 / 피고인 1: 죄명 귀속 관계를 자동 확인하지 못했습니다. / 피고인 2: 죄명 귀속 관계를 자동 확인하지 못했습니다. / 피고인 1: 필요적국선 사유를 모두 배제할 수 없어 표시 보류 / 피고인 1: 국참 죄명 또는 귀속 관계 미확인으로 표시 보류 / 피고인 2: 필요적국선 사유를 모두 배제할 수 없어 표시 보류 / 피고인 2: 국참 죄명 또는 귀속 관계 미확인으로 표시 보류"
+    }
+  ],
+  "passed": true
+}

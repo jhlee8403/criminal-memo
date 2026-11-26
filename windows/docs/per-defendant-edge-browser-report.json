@@ -1,0 +1,175 @@
+{
+  "browser": "103.0.5058.0",
+  "htmlSHA256": "425028af717a0845f0b4440807c341078c5d9e7f77c49d800ac57bad5e80612a",
+  "windowsEdge104Verified": false,
+  "nativePickerSelectionVerified": false,
+  "externalRequests": [],
+  "errors": [],
+  "batches": [
+    {
+      "count": 2,
+      "fileMode": true,
+      "requested": 2,
+      "observedBatchNames": [
+        "1000 2026고정6200.pdf",
+        "1100 2026고정6201.pdf"
+      ],
+      "individualRetryRequested": true,
+      "individualObserved": "1000 2026고정6200.pdf",
+      "savedReported": 0,
+      "requestsBeforePickerFailure": 0,
+      "pickerCalls": 1,
+      "nativeFolderTest": false,
+      "simulatedBlockedRequestsNotClaimedSaved": true,
+      "oneAtATimeRestart": true
+    },
+    {
+      "count": 10,
+      "fileMode": true,
+      "requested": 10,
+      "observedBatchNames": [
+        "1000 2026고정7000.pdf",
+        "1100 2026고정7001.pdf",
+        "1200 2026고정7002.pdf",
+        "1300 2026고정7003.pdf",
+        "1400 2026고정7004.pdf",
+        "1500 2026고정7005.pdf",
+        "1600 2026고정7006.pdf",
+        "1700 2026고정7007.pdf",
+        "1800 2026고정7008.pdf",
+        "1900 2026고정7009.pdf"
+      ],
+      "individualRetryRequested": true,
+      "individualObserved": "1000 2026고정7000.pdf",
+      "savedReported": 0,
+      "requestsBeforePickerFailure": 0,
+      "pickerCalls": 1,
+      "nativeFolderTest": false,
+      "simulatedBlockedRequestsNotClaimedSaved": true,
+      "oneAtATimeRestart": true
+    }
+  ],
+  "counselCases": [
+    {
+      "id": "fixed-regular",
+      "kind": "고정",
+      "expected": "김가상",
+      "detention": "X",
+      "file": "fixed-regular.pdf"
+    },
+    {
+      "id": "fixed-regular-lines",
+      "kind": "고정",
+      "expected": "김가상",
+      "detention": "X",
+      "file": "fixed-regular-lines.pdf"
+    },
+    {
+      "id": "fixed-appointed",
+      "kind": "고정",
+      "expected": "김가상(국선)",
+      "detention": "X",
+      "file": "fixed-appointed.pdf"
+    },
+    {
+      "id": "fixed-appointed-lines",
+      "kind": "고정",
+      "expected": "김가상(국선)",
+      "detention": "X",
+      "file": "fixed-appointed-lines.pdf"
+    },
+    {
+      "id": "fixed-firm-wrap",
+      "kind": "고정",
+      "expected": "가상) 김가상 강가상 박가상",
+      "detention": "X",
+      "file": "fixed-firm-wrap.pdf"
+    },
+    {
+      "id": "fixed-firm-long",
+      "kind": "고정",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상",
+      "detention": "X",
+      "file": "fixed-firm-long.pdf"
+    },
+    {
+      "id": "fixed-none",
+      "kind": "고정",
+      "expected": "",
+      "detention": "X",
+      "file": "fixed-none.pdf"
+    },
+    {
+      "id": "fixed-missing",
+      "kind": "고정",
+      "expected": "",
+      "detention": "X",
+      "file": "fixed-missing.pdf"
+    },
+    {
+      "id": "ordinary-regular",
+      "kind": "고단",
+      "expected": "김가상",
+      "detention": "O",
+      "file": "ordinary-regular.pdf"
+    },
+    {
+      "id": "ordinary-regular-lines",
+      "kind": "고단",
+      "expected": "김가상",
+      "detention": "O",
+      "file": "ordinary-regular-lines.pdf"
+    },
+    {
+      "id": "ordinary-appointed",
+      "kind": "고단",
+      "expected": "김가상(국선)",
+      "detention": "O",
+      "file": "ordinary-appointed.pdf"
+    },
+    {
+      "id": "ordinary-appointed-lines",
+      "kind": "고단",
+      "expected": "김가상(국선)",
+      "detention": "O",
+      "file": "ordinary-appointed-lines.pdf"
+    },
+    {
+      "id": "ordinary-firm-wrap",
+      "kind": "고단",
+      "expected": "가상) 김가상 강가상 박가상",
+      "detention": "O",
+      "file": "ordinary-firm-wrap.pdf"
+    },
+    {
+      "id": "ordinary-firm-long",
+      "kind": "고단",
+      "expected": "가상) 김가상 이가상 박가상 최가상 강가상 윤가상 한가상 정가상 조가상 송가상 임가상 오가상",
+      "detention": "O",
+      "file": "ordinary-firm-long.pdf"
+    },
+    {
+      "id": "ordinary-none",
+      "kind": "고단",
+      "expected": "",
+      "detention": "O",
+      "file": "ordinary-none.pdf"
+    },
+    {
+      "id": "ordinary-missing",
+      "kind": "고단",
+      "expected": "",
+      "detention": "O",
+      "file": "ordinary-missing.pdf"
+    }
+  ],
+  "boundaryComparison": {
+    "beforeValue": [
+      "변호사 김가상\n의 견 벌금 500만 원\n가 납 명 령 청 구"
+    ],
+    "beforeStatus": "needsReview",
+    "afterName": "김가상"
+  },
+  "fileMode": true,
+  "passed": true
+}

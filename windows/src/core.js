@@ -102,12 +102,93 @@ export function juryGlyph(draft) {
 const oppositionTitles=new Set(['폭행','존속폭행','과실치상','협박','존속협박','명예훼손','출판물에의한명예훼손','근로기준법위반','근로자퇴직급여보장법위반']);
 const complaintTitles=new Set(['사자명예훼손','모욕','비밀침해','업무상비밀누설']);
 export function complaintMarks(draft) {
-  const titles=draft.defendants.flatMap(p=>p.charges).map(normalizedCharge);
+  const titles=[...draft.defendants.flatMap(p=>p.charges),...(draft.unassignedCharges||[])].map(normalizedCharge);
   return {
     opposition:titles.some(title=>oppositionTitles.has(title)),
     complaint:titles.some(title=>complaintTitles.has(title)),
   };
 }
+const mandatoryTitles=new Set(['특정범죄가중처벌등에관한법률위반(도주치사)','특정범죄가중처벌등에관한법률위반(위험운전치사)','보건범죄단속에관한특별조치법']);
+const attributed=p=>p.chargeAttribution==='confirmed';
+const hasTitle=(p,titles)=>attributed(p)&&p.charges.some(c=>titles.has(normalizedCharge(c)));
+export function mandatoryAssessment(p,filingDate) {
+  const age=birthAssessment(p,filingDate),reasons=[];
+  if(p.detention==='detained')reasons.push('구속');
+  if(age.resolved&&age.age<AGE_RULES.juvenileUnder)reasons.push('소년');
+  if(age.resolved&&age.age>=AGE_RULES.mandatoryAtLeast)reasons.push('70세 이상');
+  if(hasTitle(p,mandatoryTitles))reasons.push('지정 죄명');
+  const complete=p.detention==='released'&&age.resolved&&attributed(p)&&p.chargesComplete===true&&p.charges.length>0;
+  return {reasons,glyph:{text:reasons.length?'O':complete?'X':' ',color:reasons.length?'red':'black'}};
+}
+export const mandatoryGlyphs=draft=>draft.defendants.map(p=>mandatoryAssessment(p,draft.filingDate).glyph);
+export const juryGlyphs=draft=>draft.defendants.map(p=>hasTitle(p,juryTitles)?{text:'O',color:'red'}:{text:attributed(p)&&p.chargesComplete===true&&p.charges.length?'X':' ',color:'black'});
+export function classificationWarnings(draft) {
+  return draft.defendants.flatMap((p,i)=>[
+    ...(mandatoryAssessment(p,draft.filingDate).glyph.text===' '?[`피고인 ${i+1}: 필요적국선 사유를 모두 배제할 수 없어 표시 보류`]:[]),
+    ...(juryGlyphs({defendants:[p]})[0].text===' '?[`피고인 ${i+1}: 국참 죄명 또는 귀속 관계 미확인으로 표시 보류`]:[]),
+  ]);
+}
+// Presentation only. Never mutates the per-defendant charge relationship.
+export function memoChargeLines(draft) {
+  if(draft.defendants.length===1&&!draft.unassignedCharges?.length)return draft.defendants[0].charges.slice();
+  const grouped=new Map();
+  for(const [i,p]of draft.defendants.entries())for(const title of p.charges){
+    const key=normalizedCharge(title);
+    if(!grouped.has(key))grouped.set(key,{title:title.trim().replace(/\s*([()])\s*/g,'$1'),owners:new Map()});
+    if(attributed(p))grouped.get(key).owners.set(i,p.name);
+  }
+  for(const title of draft.unassignedCharges||[]){const key=normalizedCharge(title);if(!grouped.has(key))grouped.set(key,{title,owners:new Map()});}
+  const order=[...new Set([...(draft.chargeOrder||[]).map(normalizedCharge),...grouped.keys()])];
+  return order.filter(k=>grouped.has(k)).map(k=>{const g=grouped.get(k),names=[...g.owners.values()].filter(Boolean);return g.title+(names.length?'('+names.join(', ')+')':'(귀속 미확인)');});
+}
+// Recognize only explicit known-name scopes, never infer shared ownership from proximity.
+function assignChargeAttribution(draft,sections,ocr,lines) {
+  draft.unassignedCharges=[];
+  if(draft.defendants.length<=1){
+    for(const p of draft.defendants){p.chargeAttribution='confirmed';p.charges=ChargeParser.parse(lines);p.chargesComplete=chargesComplete(lines,ocr);}
+    return;
+  }
+  const defs=draft.defendants;
+  const parseScope=value=>{
+    const entries=[];
+    for(const line of value.split(/\n|[;；]/).map(s=>s.trim()).filter(Boolean)){
+      let m=line.match(/^(.+?)\s*[:：]\s*(.+)$/),ownerText=m?.[1],title=m?.[2];
+      if(!m){m=line.match(/^(.+?)\s*\(([^()]*)\)\s*$/);title=m?.[1];ownerText=m?.[2];}
+      if(!m)return null;
+      const all=/^(?:피고인\s*)?(?:전원|모두|공통)$/.test(ownerText);
+      const names=ownerText.replace(/^피고인\s*/, '').split(/[,，、]/).map(s=>s.trim());
+      const owners=all?defs.map((_,i)=>i):names.map(n=>defs.findIndex(p=>p.name===n));
+      if(!owners.length||owners.some(i=>i<0))return null;
+      const charges=ChargeParser.parse(['죄명 '+title]);if(!charges.length)return null;
+      entries.push({owners,charges,complete:chargesComplete(['죄명 '+title],ocr)});
+    }
+    return entries.length?entries:null;
+  };
+  const local=sections.flatMap((s,index)=>values('죄명',s.lines).map(value=>({index,value})));
+  const allEntries=values('죄명',lines).map(value=>{const i=local.findIndex(e=>e.value===value);const index=i<0?-1:local.splice(i,1)[0].index;return {index,value,scope:parseScope(value)};});
+  draft.chargeOrder=allEntries.flatMap(e=>e.scope?e.scope.flatMap(item=>item.charges):ChargeParser.parse(['죄명 '+e.value]));
+  const hasScoped=allEntries.some(e=>e.scope);
+  if(hasScoped){
+    for(const p of defs){p.charges=[];p.chargesComplete=false;p.chargeAttribution='unknown';}
+    const complete=defs.map(()=>true),seen=defs.map(()=>false);
+    for(const e of allEntries){
+      if(!e.scope){draft.unassignedCharges.push(...ChargeParser.parse(['죄명 '+e.value]));complete.fill(false);continue;}
+      for(const item of e.scope)for(const i of item.owners){defs[i].charges.push(...item.charges);seen[i]=true;complete[i]&&=item.complete;}
+    }
+    defs.forEach((p,i)=>{if(seen[i])p.chargeAttribution='confirmed';p.chargesComplete=seen[i]&&complete[i];});
+  }else{
+    defs.forEach((p,i)=>{
+      // A field before the next identity belongs to this section. A trailing
+      // unscoped field after a list of identities could be a shared field.
+      const ambiguous=i===defs.length-1&&p.charges.length&&defs.slice(0,-1).some(q=>!q.charges.length);
+      p.chargeAttribution=ambiguous||!p.charges.length?'unknown':'confirmed';
+      if(ambiguous){draft.unassignedCharges.push(...p.charges);p.charges=[];p.chargesComplete=false;}
+    });
+  }
+  if(!hasScoped)for(const e of allEntries.filter(e=>e.index<0)){draft.unassignedCharges.push(...ChargeParser.parse(['죄명 '+e.value]));defs.forEach(p=>p.chargesComplete=false);}
+  defs.forEach((p,i)=>{if(p.chargeAttribution==='unknown')draft.warnings.push(`피고인 ${i+1}: 죄명 귀속 관계를 자동 확인하지 못했습니다.`);});
+}
+
 export function chargesComplete(lines, ocr=false) {
   const raw=values('죄명',lines),charges=ChargeParser.parse(lines);
   if(ocr || !raw.length || !charges.length)return false;
@@ -208,6 +289,7 @@ const fields = (lines) => {
     }
     // A standalone counsel title ends the preceding field, while titles inside
     // an existing counsel field remain part of its multiline value.
+    if(current?.label==='죄명'&&/^피\s*고\s*인\s+.+[:：]/.test(line)){current.parts.push(line);continue;}
     const field = heading(line) ?? (current?.label !== "변호인" ? CounselParser.heading(line) : null);
     if (field) {
       current = { label: field.label, parts: field.value ? [field.value] : [] };
@@ -230,6 +312,7 @@ export class DefendantParser {
       if (isBodyHeading(line)) break;
       if (identityHead(line)) continue;
       const field = heading(line);
+      if(field?.label==='피고인'&&/^.+[:：]/.test(field.value)&&sections.length){sections.at(-1).lines.push(line);continue;}
       if (field?.label === "피고인") {
         if (/관\s*련\s*사\s*항/.test(field.value)) continue;
         pending = true;
@@ -586,6 +669,7 @@ export class IndictmentParser {
       filingDateAssessment,
       warnings: [],
     };
+    assignChargeAttribution(draft,sections,document.usedOCR,lines);
     if (!draft.defendants.length)
       draft.warnings.push("피고인 이름을 자동 추출하지 못했습니다.");
     if (!draft.prosecutor) draft.warnings.push("검사 이름을 확인하세요.");

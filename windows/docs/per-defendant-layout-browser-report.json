@@ -1,0 +1,84 @@
+{
+  "browser": "103.0.5058.0",
+  "htmlSHA256": "425028af717a0845f0b4440807c341078c5d9e7f77c49d800ac57bad5e80612a",
+  "windowsEdge104Verified": false,
+  "externalRequests": [],
+  "errors": [],
+  "cases": [
+    {
+      "id": "00",
+      "youth": "O",
+      "jury": "O",
+      "mandatory": "O"
+    },
+    {
+      "id": "01",
+      "youth": "X",
+      "jury": "X",
+      "mandatory": "X"
+    },
+    {
+      "id": "02",
+      "youth": "OX",
+      "jury": "OX",
+      "mandatory": "OX"
+    },
+    {
+      "id": "03",
+      "youth": "XO",
+      "jury": "XX",
+      "mandatory": "XO"
+    },
+    {
+      "id": "04",
+      "youth": "OO",
+      "jury": "OX",
+      "mandatory": "OO"
+    },
+    {
+      "id": "05",
+      "youth": "XX",
+      "jury": "XX",
+      "mandatory": "XX"
+    },
+    {
+      "id": "06",
+      "youth": "OXX",
+      "jury": "OXX",
+      "mandatory": "OXX"
+    },
+    {
+      "id": "07",
+      "youth": "XOO",
+      "jury": "XXX",
+      "mandatory": "XOO"
+    },
+    {
+      "id": "08",
+      "youth": "OXOX",
+      "jury": "OXXX",
+      "mandatory": "OXOX"
+    },
+    {
+      "id": "09",
+      "youth": "O X",
+      "jury": "   ",
+      "mandatory": "O  "
+    },
+    {
+      "id": "10",
+      "youth": " ",
+      "jury": " ",
+      "mandatory": " "
+    },
+    {
+      "id": "11",
+      "youth": " XO ",
+      "jury": "OXXX",
+      "mandatory": " XO "
+    }
+  ],
+  "fileMode": true,
+  "maskRequested": false,
+  "passed": true
+}

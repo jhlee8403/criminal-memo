@@ -11,6 +11,7 @@ import {
   juvenileGlyphs,
   juryGlyph,
   complaintMarks,
+  mandatoryGlyphs, juryGlyphs, memoChargeLines,
   redactResidentNumbers,
 } from "./core.js";
 export const bytes = (b64) =>
@@ -28,7 +29,7 @@ export const boxes = {
   detention: [537, 48, 25, 22],
   juvenile: markFitRects.juvenile,
   jury: markFitRects.jury,
-  mandatory: [108.245914, 510.828339, 56, 15],
+  mandatory: markFitRects.mandatory,
   // Measured printed labels/cell rules in the unchanged 595 x 841 pt original.
   // Top-origin ellipse bounds; stay within x=516.442..565.496 and each row.
   opposition: [517.1, 149, 47.4, 21.4],
@@ -262,13 +263,7 @@ export class MemoPDFRenderer {
     draw(caseNumber, "caseNumber");
     draw(numbered(draft.defendants.map((p) => p.name)), "defendants");
     draw(
-      numbered(
-        draft.defendants.flatMap((p) =>
-          p.charges.map((c) =>
-            draft.defendants.length > 1 && p.name ? `${c} (${p.name})` : c,
-          ),
-        ),
-      ),
+      numbered(memoChargeLines(draft)),
       "charges",
     );
     draw(draft.prosecutor, "prosecutor");
@@ -297,8 +292,8 @@ export class MemoPDFRenderer {
       }
     }
     if (!fitted) throw Error("구속 표시가 한 줄에 들어가지 않습니다.");
-    const marks = {...ageMarks(draft), ...complaintMarks(draft)};
-    for (const key of ["mandatory", "opposition", "complaint"]) {
+    const marks = complaintMarks(draft);
+    for (const key of ["opposition", "complaint"]) {
       if (marks[key]) {
         const [cx, cy, cw, ch] = boxes[key];
         page.drawEllipse({
@@ -307,7 +302,7 @@ export class MemoPDFRenderer {
           xScale: cw / 2,
           yScale: ch / 2,
           borderColor: rgb(1, 0, 0),
-          borderWidth: key === "mandatory" ? 1.3 : 1,
+          borderWidth: 1,
         });
       }
     }
@@ -326,7 +321,8 @@ export class MemoPDFRenderer {
       }
     };
     drawOverlay(juvenileGlyphs(draft),'juvenile');
-    drawOverlay([juryGlyph(draft)],'jury');
+    drawOverlay(juryGlyphs(draft),'jury');
+    drawOverlay(mandatoryGlyphs(draft),'mandatory');
     return await doc.save();
   }
 }

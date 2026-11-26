@@ -1,0 +1,282 @@
+{
+  "browser": "103.0.5058.0",
+  "htmlSHA256": "425028af717a0845f0b4440807c341078c5d9e7f77c49d800ac57bad5e80612a",
+  "fileMode": true,
+  "windowsEdge104Verified": false,
+  "cases": [
+    {
+      "id": "target-1",
+      "lists": [
+        [
+          "폭행"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-2",
+      "lists": [
+        [
+          "존속폭행"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-3",
+      "lists": [
+        [
+          "과실치상"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-4",
+      "lists": [
+        [
+          "협박"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-5",
+      "lists": [
+        [
+          "존속협박"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-6",
+      "lists": [
+        [
+          "명예훼손"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-7",
+      "lists": [
+        [
+          "출판물에의한명예훼손"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-8",
+      "lists": [
+        [
+          "근로기준법위반"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-9",
+      "lists": [
+        [
+          "근로자퇴직급여보장법위반"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": false
+      },
+      "paired": false
+    },
+    {
+      "id": "target-10",
+      "lists": [
+        [
+          "사자명예훼손"
+        ]
+      ],
+      "expected": {
+        "opposition": false,
+        "complaint": true
+      },
+      "paired": false
+    },
+    {
+      "id": "target-11",
+      "lists": [
+        [
+          "모욕"
+        ]
+      ],
+      "expected": {
+        "opposition": false,
+        "complaint": true
+      },
+      "paired": false
+    },
+    {
+      "id": "target-12",
+      "lists": [
+        [
+          "비밀침해"
+        ]
+      ],
+      "expected": {
+        "opposition": false,
+        "complaint": true
+      },
+      "paired": false
+    },
+    {
+      "id": "target-13",
+      "lists": [
+        [
+          "업무상비밀누설"
+        ]
+      ],
+      "expected": {
+        "opposition": false,
+        "complaint": true
+      },
+      "paired": false
+    },
+    {
+      "id": "none",
+      "lists": [
+        [
+          "특수폭행",
+          "특수협박",
+          "업무상과실치상",
+          "절도"
+        ]
+      ],
+      "expected": {
+        "opposition": false,
+        "complaint": false
+      },
+      "paired": true
+    },
+    {
+      "id": "both",
+      "lists": [
+        [
+          "폭행",
+          "모욕",
+          "명예훼손"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": true
+      },
+      "paired": true
+    },
+    {
+      "id": "multiple",
+      "lists": [
+        [
+          "절도"
+        ],
+        [
+          "출판물에 의한 명예훼손"
+        ],
+        [
+          "사자 명예훼손"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": true
+      },
+      "paired": true
+    },
+    {
+      "id": "unknown",
+      "lists": [
+        []
+      ],
+      "expected": {
+        "opposition": false,
+        "complaint": false
+      },
+      "paired": true
+    },
+    {
+      "id": "jury",
+      "lists": [
+        [
+          "특수상해",
+          "폭행",
+          "모욕"
+        ]
+      ],
+      "expected": {
+        "opposition": true,
+        "complaint": true
+      },
+      "paired": true
+    }
+  ],
+  "externalRequests": [],
+  "errors": [],
+  "uploads": [
+    {
+      "file": "upload-1-0.pdf",
+      "expected": {
+        "opposition": true,
+        "complaint": true
+      },
+      "name": "1000 2026고단9100.pdf"
+    },
+    {
+      "file": "upload-2-0.pdf",
+      "expected": {
+        "opposition": true,
+        "complaint": true
+      },
+      "name": "1000 2026고단9100.pdf"
+    },
+    {
+      "file": "upload-2-1.pdf",
+      "expected": {
+        "opposition": false,
+        "complaint": false
+      },
+      "name": "1030 2026고정9101.pdf"
+    }
+  ],
+  "passed": true
+}

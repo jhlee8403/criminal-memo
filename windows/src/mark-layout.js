@@ -1,12 +1,14 @@
 // Measured printed-label rectangles in the original first page (top-down pt).
 export const markTextRects = Object.freeze({
   juvenile: Object.freeze([206.288193, 493.33429, 19.90921, 9.951874]),
+  mandatory: Object.freeze([111.299675, 513.352417, 49.892479, 9.951843]),
   jury: Object.freeze([206.288193, 513.352417, 19.90921, 9.951843]),
 });
 const centered = ([x,y,w,h], width, height) => [x+(w-width)/2, y+(h-height)/2, width, height];
 export const markFitRects = Object.freeze({
   // Keeps a gap to 집유결격자/필요적국선, the other mark, and the table lines.
   juvenile: Object.freeze(centered(markTextRects.juvenile, 36, 14)),
+  mandatory: Object.freeze(centered(markTextRects.mandatory, 54, 12)),
   jury: Object.freeze(centered(markTextRects.jury, 26, 14)),
 });
 

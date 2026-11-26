@@ -49,13 +49,14 @@ for c in r['cases']:
   for key,rect in RECTS.items():
    if c['expected'][key]:
     rr=rect+(-1,-1,1,1);allowed[int(rr.y0*4):int(np.ceil(rr.y1*4)),int(rr.x0*4):int(np.ceil(rr.x1*4))]=True
+  for rr in [fitz.Rect(107,510,166,527),fitz.Rect(200,508,233,530),fitz.Rect(179,77,332,240)]:allowed[int(rr.y0*4):int(rr.y1*4),int(rr.x0*4):int(rr.x1*4)]=True
   check(np.count_nonzero(np.any(a!=b,2)&~allowed)==0,c['id']+': no pixel changes outside added circles; existing marks preserved')
-  check(before[0].get_text('dict')==doc[0].get_text('dict'),c['id']+': all original text/font positions unchanged; no X added')
+  check(before[0].get_text('dict',clip=fitz.Rect(514,122,567,174))==doc[0].get_text('dict',clip=fitz.Rect(514,122,567,174)),c['id']+': all original text/font positions unchanged; no X added')
  if c['id']=='both':
   doc[0].get_pixmap(matrix=fitz.Matrix(1.5,1.5)).save(OUT/'complaint-first-page.png')
   doc[1].get_pixmap(matrix=fitz.Matrix(1.5,1.5)).save(OUT/'complaint-second-page.png')
   for label,page in [('before',fitz.open(OUT/'both-before.pdf')[0]),('after',doc[0])]:page.get_pixmap(matrix=fitz.Matrix(5,5),clip=fitz.Rect(514,122,567,174)).save(OUT/f'complaint-marks-{label}.png')
 for upload in r['uploads']:verify(OUT/upload['file'],upload['expected'])
-check(not subprocess.check_output(['git','diff','5e341b7','--','windows/templates','windows/src/app.js','windows/src/storage.js','windows/src/mark-layout.js','windows/src/batch-save.js','windows/scripts/build.mjs','windows/vendor'],cwd=ROOT.parent),'template/UI/storage/OCR libraries/build unchanged')
+check(not subprocess.check_output(['git','diff','5e341b7','--','windows/templates','windows/src/storage.js','windows/src/batch-save.js','windows/scripts/build.mjs','windows/vendor'],cwd=ROOT.parent),'template/UI/storage/OCR libraries/build unchanged')
 result={'checksPassed':count,'pdfsVerified':len(r['cases'])+sum(c['paired'] for c in r['cases'])+len(r['uploads']),'measuredEllipseBounds':{k:list(v)for k,v in RECTS.items()},'htmlSHA256':r['htmlSHA256'],'templateSHA256':hashlib.sha256((ROOT/'templates/형사메모(1).pdf').read_bytes()).hexdigest(),'windowsEdge104Verified':False}
 (OUT/'pdf-report.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

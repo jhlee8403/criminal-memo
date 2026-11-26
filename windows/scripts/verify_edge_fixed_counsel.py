@@ -38,9 +38,9 @@ for c in r['counselCases']:
  for span in p.get_texttrace():
   for char in span['chars']:
    if chr(char[0]) in 'OX' and char[2][1]>480 and char[2][1]<540:lower.append((chr(char[0]),span['color'],char[2][1]))
- check(len(lower)==2 and all(g[0]=='O' and g[1]==(1,0,0) for g in lower),c['id']+': juvenile/jury red O unchanged')
+ check(len(lower)==3 and all(g[0]=='O' and g[1]==(1,0,0) for g in lower),c['id']+': juvenile/jury red O unchanged')
  shapes=[d for d in p.get_drawings() if d['color']==(1,0,0) and fitz.Rect(d['rect']).intersects(fitz.Rect(108,510,165,526))]
- check(len(shapes)==int(c['kind']=='고단'),c['id']+': detained mandatory circle unchanged')
+ check(len(shapes)==0,c['id']+': legacy mandatory ellipse removed; juvenile mandatory O retained')
  if c['id']=='fixed-firm-long':p.get_pixmap(matrix=fitz.Matrix(4,4),clip=fitz.Rect(334,43,505,102)).save(OUT/'fixed-firm-long.png')
 before=pdf(OUT/'fixed-regular-before.pdf')[0];after=fitz.open(OUT/'fixed-regular.pdf')[0]
 check(text(before,(385,78,497,98))=='' and text(after,(385,78,497,98))=='김가상','before unconfirmed blank -> exact name after boundary fix')

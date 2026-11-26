@@ -41,10 +41,14 @@ for i,d in enumerate(r['definitions']):
   spans=[s for b in p.get_text('dict',clip=fitz.Rect(BOX[key]))['blocks'] for line in b.get('lines',[]) for s in line['spans']]
   check(all(fitz.Rect(cell).contains(fitz.Rect(s['bbox'])) for s in spans),'all '+key+' text fits measured new cell '+str(i))
  circles=[s for s in p.get_drawings() if s['color']==(1,0,0) and fitz.Rect(s['rect']).intersects(fitz.Rect(BOX['mandatory']))]
- check(len(circles)==int(d['mandatory']),'new mandatory circle exactly once/absent '+str(i))
- if circles:
-  label=next(fitz.Rect(w[:4]) for w in original[0].get_text('words') if w[4]=='필요적국선')
-  check(circles[0]['fill'] is None and fitz.Rect(circles[0]['rect']).contains(label),'new mandatory circle covers actual printed label')
+ check(len(circles)==0,'old mandatory ellipse removed '+str(i))
+ for key,expected_seq in [('mandatory',d['mandatorySequence']),('jury',d['jurySequence'])]:
+  rect=fitz.Rect(BOX[key])+(-8,-4,8,4);glyphs=[]
+  for span in p.get_texttrace():
+   for ch in span['chars']:
+    if chr(ch[0]) in 'OX' and rect.contains(fitz.Point(ch[2])):glyphs.append((ch[2][0],chr(ch[0]),span['color']))
+  glyphs.sort();check(''.join(g[1]for g in glyphs)==expected_seq.replace(' ',''),'per defendant '+key+' '+str(i))
+  check(all(g[2]==((1,0,0)if g[1]=='O'else(0,0,0))for g in glyphs),'per glyph colors '+key)
  a=raster(original[0])[1];b=raster(p)[1];allowed=np.zeros(a.shape[:2],bool)
  for x0,y0,x1,y1 in BOX.values():allowed[int((y0-2)*2):int((y1+2)*2)+1,int((x0-2)*2):int((x1+2)*2)+1]=True
  check(np.count_nonzero(np.any(a!=b,2)&~allowed)==0,'original first-page non-input pixels unchanged '+str(i))
@@ -60,8 +64,8 @@ for id,key in [('prosecutor','prosecutor'),('counsel','counsel')]:check(text(fit
 p=fitz.open(OUT/'djj-missing-all.pdf')[0];check(all(not text(p,k) for k in ['names','charges','prosecutor','counsel','filing','detention']),'all extraction absent leaves blanks')
 check(r['filingComparison']['before']['date'] is None and r['filingComparison']['after']['date']=='2026-11-10','before/after submission mismatch comparison')
 # Isolated ink on the white first-page diagnostic preserves the original second page.
-REF={'youth':(206.288193,493.33429,19.90921,9.951874),'jury':(206.288193,513.352417,19.90921,9.951843)}
-CROP={'youth':fitz.Rect(196,488,237,508),'jury':fitz.Rect(201,508,232,530)}
+REF={'youth':(206.288193,493.33429,19.90921,9.951874),'jury':(206.288193,513.352417,19.90921,9.951843),'mandatory':(111.299675,513.352417,49.892479,9.951843)}
+CROP={'youth':fitz.Rect(196,488,237,508),'jury':fitz.Rect(201,508,232,530),'mandatory':fitz.Rect(107,510,166,527)}
 def marks(page,key,expected):
  p,a=raster(page,8,CROP[key]);m=a.min(2)<210;active=np.flatnonzero(m.any(0));groups=np.split(active,np.flatnonzero(np.diff(active)>1)+1) if active.size else []
  check(len(groups)==len(expected.replace(' ','')),key+': confirmed glyph count and blank slots')
@@ -71,13 +75,13 @@ def marks(page,key,expected):
   rx=(p.x+group[0]+xx.min())/8;ry=(p.y+yy.min())/8;rw=(xx.max()-xx.min()+1)/8;rh=(yy.max()-yy.min()+1)/8
   check(red==(char=='O'),key+': correct red O/black X')
   check(abs(ry+rh/2-cy)<.25,key+': actual vertical center')
-  if len(expected)<=3:check(rh>=h-.25,key+': sufficiently large to cover new printed label')
+  if len(expected)<=(2 if key=='jury' else 3):check(rh>=h-.25,key+': sufficiently large to cover new printed label')
   if len(expected)==1:check(rw>=w-.25,key+': single covers two characters')
  if active.size and expected[0]!=' ' and expected[-1]!=' ':check(abs((p.x+(active.min()+active.max()+1)/2)/8-cx)<.25,key+': whole string horizontally centered')
 for c in l['cases']:
  doc=fitz.open(LAYOUT/f"{c['id']}-after.pdf");diag=fitz.open(LAYOUT/f"{c['id']}-after-ink.pdf")
  check_second(doc,c['id']+' layout');check_second(diag,c['id']+' ink')
- marks(diag[0],'youth',c['youth']);marks(diag[0],'jury',c['jury'])
+ marks(diag[0],'youth',c['youth']);marks(diag[0],'jury',c['jury']);marks(diag[0],'mandatory',c['mandatory'])
  if c['id']=='06':
   doc[0].get_pixmap(matrix=fitz.Matrix(1.4,1.4)).save(OUT/'new-first-page.png');doc[1].get_pixmap(matrix=fitz.Matrix(1.4,1.4)).save(OUT/'new-second-page.png');doc[0].get_pixmap(matrix=fitz.Matrix(4,4),clip=fitz.Rect(100,483,245,532)).save(OUT/'new-mark-layout.png')
 result={'checksPassed':count,'browserPDFs':len(r['emitted']),'layoutPDFs':len(l['cases'])*2,'templateSHA256':hashlib.sha256(source.read_bytes()).hexdigest(),'htmlSHA256':r['htmlSHA256'],'filingBefore':r['filingComparison']['before']['date'],'filingAfter':r['filingComparison']['after']['date'],'windowsEdge104Verified':False,'folderTest':r['folderTest']}

@@ -103,6 +103,8 @@ try{
   const before=old.IndictmentParser.parse({text,usedOCR:false,pages:[{text,height:842,lines:[]}]},{caseType:kind});
   if(c.id==='regular'&&kind==='고정'){
    assert.equal(before.defendants[0].counsel.status,'needsReview');
+   // This comparison fixture has exactly one defendant; migrate its legacy schema.
+   before.defendants[0].chargeAttribution='confirmed';
    const beforeBytes=await page.evaluate(async d=>Array.from(await CM.MemoPDFRenderer.render(d,{caseNumber:'2026고정8000',firstHearing:{date:'20261120',time:'1000'}})),before);await fs.writeFile(resolve(out,'fixed-regular-before.pdf'),Buffer.from(beforeBytes));
    report.boundaryComparison={beforeValue:old.values('변호인',text.split('\n')),beforeStatus:before.defendants[0].counsel.status,afterName:c.expected};
   }
